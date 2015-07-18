@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Making a bar chart with SVG rects, dynamic widths and spacing</title>
+		<script type="text/javascript" src="../d3/d3.js"></script>
+		<style type="text/css">
+			
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 700;
+			var h = 800;
+			var barPadding = 15;
+			
+			var dataset = [1128,1015,703,695,687,        675,675];//,670,665,685,        687.7,691.1,722.2,976,780,        906,913,950,788,889,     892,1005,1022];
+			var years = [1990,1991,1992,1993,1994,     1995,1996];//,1997,1998,1999,     2000,2001,2002,2003,2004,     2005,2006,2007,2008,2009,   2010,2011,2012]
+			var hgt = h / dataset.length - barPadding
+			
+			
+			
+			
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			
+			   
+			   			   
+			   //background of the rectangle - shows the negative space
+			   svg.selectAll("rect")
+			   .data(years)
+			   .enter()
+			   .append("rect")
+			   .attr("y", function(d, i) { 
+			   	return i * (h / dataset.length);
+			   })
+			   .attr("x", 0)
+			   .attr("height", hgt)
+			   .attr("width", w)
+			   .attr("fill", "darkgrey")
+			   .attr("stroke", "black")
+			   .attr("stroke-width",3)
+			   .attr("transform", "scale(1," + function(d,i) {return .1*i+.1} + ")");
+			   
+			   
+			   
+			   
+			   //foreground of the rectangle - shows the actual magnitude
+			   svg.selectAll("rect_front")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")
+			   .attr("y", function(d, i) {
+			   		return i * (h / dataset.length);
+			   })
+			   .attr("x", 0)
+			   .attr("height", hgt)
+			   .attr("width", function(d) {    return d*.5;})			   
+			   .attr("fill", "darkorange")			   
+			   .attr("transform", "scale(1," + function(d,i) {return .1*i+.1} + ")");
+			   
+			   	
+			   
+			svg.selectAll("text")
+			   .data(years)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {        return d;   })
+			   .attr("y", function(d, i) {
+			   		return i* (hgt )+hgt/2+barPadding*i+barPadding;
+			   }) 
+			   .attr("x", w/2)
+			   .attr("font-family", "sans-serif")
+			   .attr("text-anchor", "middle")
+			   .attr("font-size", "20px")
+			   .attr("transform", "scale(1," + function(d,i) {return .1*i+.1} + ")");
+			   
+
+
+			
+		</script>
+	</body>
+</html>
