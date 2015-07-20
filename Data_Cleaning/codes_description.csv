@@ -1,0 +1,27 @@
+Original,Description
+Population,population
+Electricity - imports,imported
+Electricity - exports,exported
+Electricity - Gross production,produced
+"Electricity - Own use by electricity, heat and CHP plants",own_use_1
+Electricity - Losses,lost
+Electricity - Energy industries own use,own_use_2
+Electricity - Own use by pump-storage plants,stored
+"Electricity - Consumption by manufacturing, construction and non-fuel industry",non_energy_ind
+Electricity - Consumption by transport,transport
+Electricity - Consumption by households,household
+Electricity - Consumption by commercial and public services,services
+"Electricity - Consumption in agriculture, forestry and fishing",agri
+Electricity - Consumption not elsewhere specified (other),cons_other
+From chemical heat -  Autoproducer,chem_auto_add
+From chemical heat -  Main activity,chem_main_add
+From combustible fuels -  Autoproducer,comb_auto_add
+From combustible fuels -  Main activity,comb_main_add
+From other sources -  Autoproducer,other_auto_add
+From other sources -  Main activity,other_main_add
+Electricity - total geothermal production,geo
+Electricity - total hydro production,hydro
+Electricity - total nuclear production,nuclear
+Electricity - total solar production,solar
+"Electricity - total tide, wave production",ocean
+Electricity - total wind production,wind

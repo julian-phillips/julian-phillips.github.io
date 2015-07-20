@@ -1,0 +1,225 @@
+OrigCountryName,Country,CountryCode,SubContinent,SubContCode,Continent,ContCode,Develop
+Afghanistan,Afghanistan,4,Southern Asia,34,Asia,142,Developing
+Albania,Albania,8,Southern Europe,39,Europe,150,Developed
+Algeria,Algeria,12,Northern Africa,15,Africa,2,Developing
+American Samoa,American Samoa,16,Polynesia,61,Oceania,9,Developing
+Andorra,Andorra,20,Southern Europe,39,Europe,150,Developed
+Angola,Angola,24,Middle Africa,17,Africa,2,Developing
+Anguilla,Anguilla,660,Caribbean,29,Americas,19,Developing
+Antigua and Barbuda,Antigua and Barbuda,28,Caribbean,29,Americas,19,Developing
+Argentina,Argentina,32,South America,5,Americas,19,Developing
+Armenia,Armenia,51,Western Asia,145,Asia,142,Developing
+Aruba,Aruba,533,Caribbean,29,Americas,19,Developing
+Australia,Australia,36,Australia and New Zealand,53,Oceania,9,Developed
+Austria,Austria,40,Western Europe,155,Europe,150,Developed
+Azerbaijan,Azerbaijan,31,Western Asia,145,Asia,142,Developing
+Bahamas,Bahamas,44,Caribbean,29,Americas,19,Developing
+Bahrain,Bahrain,48,Western Asia,145,Asia,142,Developing
+Bangladesh,Bangladesh,50,Southern Asia,34,Asia,142,Developing
+Barbados,Barbados,52,Caribbean,29,Americas,19,Developing
+Belarus,Belarus,112,Eastern Europe,151,Europe,150,Developed
+Belgium,Belgium,56,Western Europe,155,Europe,150,Developed
+Belize,Belize,84,Central America,13,Americas,19,Developing
+Benin,Benin,204,Western Africa,11,Africa,2,Developing
+Bermuda,Bermuda,60,Northern America,21,Americas,19,Developed
+Bhutan,Bhutan,64,Southern Asia,34,Asia,142,Developing
+Bolivia (Plur. State of),Bolivia,68,South America,5,Americas,19,Developing
+Bosnia and Herzegovina,Bosnia and Herzegovina,70,Southern Europe,39,Europe,150,Developed
+Botswana,Botswana,72,Southern Africa,18,Africa,2,Developing
+Brazil,Brazil,76,South America,5,Americas,19,Developing
+British Virgin Islands,British Virgin Islands,92,Caribbean,29,Americas,19,Developing
+Brunei Darussalam,Brunei Darussalam,96,South-Eastern Asia,35,Asia,142,Developing
+Bulgaria,Bulgaria,100,Eastern Europe,151,Europe,150,Developed
+Burkina Faso,Burkina Faso,854,Western Africa,11,Africa,2,Developing
+Burundi,Burundi,108,Eastern Africa,14,Africa,2,Developing
+Cabo Verde,Cabo Verde,132,Western Africa,11,Africa,2,Developing
+Cambodia,Cambodia,116,South-Eastern Asia,35,Asia,142,Developing
+Cameroon,Cameroon,120,Middle Africa,17,Africa,2,Developing
+Canada,Canada,124,Northern America,21,Americas,19,Developed
+Cayman Islands,Cayman Islands,136,Caribbean,29,Americas,19,Developing
+Central African Rep.,Central African Republic,140,Middle Africa,17,Africa,2,Developing
+Chad,Chad,148,Middle Africa,17,Africa,2,Developing
+Chile,Chile,152,South America,5,Americas,19,Developing
+China,China,156,Eastern Asia,30,Asia,142,Developing
+"China, Hong Kong SAR",China Hong Kong SAR,344,Eastern Asia,30,Asia,142,Developing
+"China, Macao SAR",China Macao SAR,446,Eastern Asia,30,Asia,142,Developing
+Colombia,Colombia,170,South America,5,Americas,19,Developing
+Comoros,Comoros,174,Eastern Africa,14,Africa,2,Developing
+Congo,Congo,178,Middle Africa,17,Africa,2,Developing
+Cook Islands,Cook Islands,184,Polynesia,61,Oceania,9,Developing
+Costa Rica,Costa Rica,188,Central America,13,Americas,19,Developing
+Côte d'Ivoire,Cote dIvoire,384,Western Africa,11,Africa,2,Developing
+Croatia,Croatia,191,Southern Europe,39,Europe,150,Developed
+Cuba,Cuba,192,Caribbean,29,Americas,19,Developing
+Cyprus,Cyprus,196,Western Asia,145,Asia,142,Developing
+Czech Republic,Czech Republic,203,Eastern Europe,151,Europe,150,Developed
+Dem. Rep. of the Congo,Congo,178,Middle Africa,17,Africa,2,Developing
+Denmark,Denmark,208,Northern Europe,154,Europe,150,Developed
+Djibouti,Djibouti,262,Eastern Africa,14,Africa,2,Developing
+Dominica,Dominica,212,Caribbean,29,Americas,19,Developing
+Dominican Republic,Dominican Republic,214,Caribbean,29,Americas,19,Developing
+Ecuador,Ecuador,218,South America,5,Americas,19,Developing
+Egypt,Egypt,818,Northern Africa,15,Africa,2,Developing
+El Salvador,El Salvador,222,Central America,13,Americas,19,Developing
+Equatorial Guinea,Equatorial Guinea,226,Middle Africa,17,Africa,2,Developing
+Eritrea,Eritrea,232,Eastern Africa,14,Africa,2,Developing
+Estonia,Estonia,233,Northern Europe,154,Europe,150,Developed
+Ethiopia,Ethiopia,231,Eastern Africa,14,Africa,2,Developing
+Faeroe Islands,Faeroe Islands,234,Northern Europe,154,Europe,150,Developed
+Falkland Is. (Malvinas),Falkland Islands,238,South America,5,Americas,19,Developing
+Fiji,Fiji,242,Melanesia,54,Oceania,9,Developing
+Finland,Finland,246,Northern Europe,154,Europe,150,Developed
+France,France,250,Western Europe,155,Europe,150,Developed
+French Guiana,French Guiana,254,South America,5,Americas,19,Developing
+French Polynesia,French Polynesia,258,Polynesia,61,Oceania,9,Developing
+Gabon,Gabon,266,Middle Africa,17,Africa,2,Developing
+Gambia,Gambia,270,Western Africa,11,Africa,2,Developing
+Georgia,Georgia,268,Western Asia,145,Asia,142,Developing
+Germany,Germany,276,Western Europe,155,Europe,150,Developed
+Ghana,Ghana,288,Western Africa,11,Africa,2,Developing
+Gibraltar,Gibraltar,292,Southern Europe,39,Europe,150,Developed
+Greece,Greece,300,Southern Europe,39,Europe,150,Developed
+Greenland,Greenland,304,Northern America,21,Americas,19,Developed
+Grenada,Grenada,308,Caribbean,29,Americas,19,Developing
+Guadeloupe,Guadeloupe,312,Caribbean,29,Americas,19,Developing
+Guam,Guam,316,Micronesia,57,Oceania,9,Developing
+Guatemala,Guatemala,320,Central America,13,Americas,19,Developing
+Guernsey,Guernsey,831,Northern Europe,154,Europe,150,Developed
+Guinea,Guinea,324,Western Africa,11,Africa,2,Developing
+Guinea-Bissau,Guinea Bissau,624,Western Africa,11,Africa,2,Developing
+Guyana,Guyana,328,South America,5,Americas,19,Developing
+Haiti,Haiti,332,Caribbean,29,Americas,19,Developing
+Honduras,Honduras,340,Central America,13,Americas,19,Developing
+Hungary,Hungary,348,Eastern Europe,151,Europe,150,Developed
+Iceland,Iceland,352,Northern Europe,154,Europe,150,Developed
+India,India,356,Southern Asia,34,Asia,142,Developing
+Indonesia,Indonesia,360,South-Eastern Asia,35,Asia,142,Developing
+Iran(Islamic Rep. of),Iran,364,Southern Asia,34,Asia,142,Developing
+Iraq,Iraq,368,Western Asia,145,Asia,142,Developing
+Ireland,Ireland,372,Northern Europe,154,Europe,150,Developed
+Isle of Man,Isle of Man,833,Northern Europe,154,Europe,150,Developed
+Israel,Israel,376,Western Asia,145,Asia,142,Developing
+Italy,Italy,380,Southern Europe,39,Europe,150,Developed
+Jamaica,Jamaica,388,Caribbean,29,Americas,19,Developing
+Japan,Japan,392,Eastern Asia,30,Asia,142,Developed
+Jersey,Jersey,832,Northern Europe,154,Europe,150,Developed
+Jordan,Jordan,400,Western Asia,145,Asia,142,Developing
+Kazakhstan,Kazakhstan,398,Central Asia,143,Asia,142,Developing
+Kenya,Kenya,404,Eastern Africa,14,Africa,2,Developing
+Kiribati,Kiribati,296,Micronesia,57,Oceania,9,Developing
+"Korea, Dem.Ppl's.Rep.",Korea North,408,Eastern Asia,30,Asia,142,Developing
+"Korea, Republic of",Korea South,410,Eastern Asia,30,Asia,142,Developing
+Kuwait,Kuwait,414,Western Asia,145,Asia,142,Developing
+Kyrgyzstan,Kyrgyzstan,417,Central Asia,143,Asia,142,Developing
+Lao People's Dem. Rep.,Lao,418,South-Eastern Asia,35,Asia,142,Developing
+Latvia,Latvia,428,Northern Europe,154,Europe,150,Developed
+Lebanon,Lebanon,422,Western Asia,145,Asia,142,Developing
+Lesotho,Lesotho,426,Southern Africa,18,Africa,2,Developing
+Liberia,Liberia,430,Western Africa,11,Africa,2,Developing
+Libya,Libya,434,Northern Africa,15,Africa,2,Developing
+Liechtenstein,Liechtenstein,438,Western Europe,155,Europe,150,Developed
+Lithuania,Lithuania,440,Northern Europe,154,Europe,150,Developed
+Luxembourg,Luxembourg,442,Western Europe,155,Europe,150,Developed
+Madagascar,Madagascar,450,Eastern Africa,14,Africa,2,Developing
+Malawi,Malawi,454,Eastern Africa,14,Africa,2,Developing
+Malaysia,Malaysia,458,South-Eastern Asia,35,Asia,142,Developing
+Maldives,Maldives,462,Southern Asia,34,Asia,142,Developing
+Mali,Mali,466,Western Africa,11,Africa,2,Developing
+Malta,Malta,470,Southern Europe,39,Europe,150,Developed
+Marshall Islands,Marshall Islands,584,Micronesia,57,Oceania,9,Developing
+Martinique,Martinique,474,Caribbean,29,Americas,19,Developing
+Mauritania,Mauritania,478,Western Africa,11,Africa,2,Developing
+Mauritius,Mauritius,480,Eastern Africa,14,Africa,2,Developing
+Mexico,Mexico,484,Central America,13,Americas,19,Developing
+Micronesia(Fed. States of),Micronesia,583,Micronesia,57,Oceania,9,Developing
+Mongolia,Mongolia,496,Eastern Asia,30,Asia,142,Developing
+Montenegro,Montenegro,499,Southern Europe,39,Europe,150,Developed
+Montserrat,Montserrat,500,Caribbean,29,Americas,19,Developing
+Morocco,Morocco,504,Northern Africa,15,Africa,2,Developing
+Mozambique,Mozambique,508,Eastern Africa,14,Africa,2,Developing
+Myanmar,Myanmar,104,South-Eastern Asia,35,Asia,142,Developing
+Namibia,Namibia,516,Southern Africa,18,Africa,2,Developing
+Nauru,Nauru,520,Micronesia,57,Oceania,9,Developing
+Nepal,Nepal,524,Southern Asia,34,Asia,142,Developing
+Netherlands,Netherlands,528,Western Europe,155,Europe,150,Developed
+Netherlands Antilles,Netherlands Antilles,535,Caribbean,29,Americas,19,Developing
+New Caledonia,New Caledonia,540,Melanesia,54,Oceania,9,Developing
+New Zealand,New Zealand,554,Australia and New Zealand,53,Oceania,9,Developed
+Nicaragua,Nicaragua,558,Central America,13,Americas,19,Developing
+Niger,Niger,562,Western Africa,11,Africa,2,Developing
+Nigeria,Nigeria,566,Western Africa,11,Africa,2,Developing
+Niue,Niue,570,Polynesia,61,Oceania,9,Developing
+Northern Mariana Islands,Northern Mariana Islands,580,Micronesia,57,Oceania,9,Developing
+Norway,Norway,578,Northern Europe,154,Europe,150,Developed
+Oman,Oman,512,Western Asia,145,Asia,142,Developing
+Pakistan,Pakistan,586,Southern Asia,34,Asia,142,Developing
+Palau,Palau,585,Micronesia,57,Oceania,9,Developing
+Panama,Panama,591,Central America,13,Americas,19,Developing
+Papua New Guinea,Papua New Guinea,598,Melanesia,54,Oceania,9,Developing
+Paraguay,Paraguay,600,South America,5,Americas,19,Developing
+Peru,Peru,604,South America,5,Americas,19,Developing
+Philippines,Philippines,608,South-Eastern Asia,35,Asia,142,Developing
+Poland,Poland,616,Eastern Europe,151,Europe,150,Developed
+Portugal,Portugal,620,Southern Europe,39,Europe,150,Developed
+Puerto Rico,Puerto Rico,630,Caribbean,29,Americas,19,Developing
+Qatar,Qatar,634,Western Asia,145,Asia,142,Developing
+Republic of Moldova,Republic of Moldova,498,Eastern Europe,151,Europe,150,Developed
+Réunion,Reunion,638,Eastern Africa,14,Africa,2,Developing
+Romania,Romania,642,Eastern Europe,151,Europe,150,Developed
+Russian Federation,Russian Federation,643,Eastern Europe,151,Europe,150,Developed
+Rwanda,Rwanda,646,Eastern Africa,14,Africa,2,Developing
+St. Helena and Depend.,St Helena,654,Western Africa,11,Africa,2,Developing
+St. Kitts-Nevis,St Kitts Nevis,659,Caribbean,29,Americas,19,Developing
+St. Lucia,St Lucia,662,Caribbean,29,Americas,19,Developing
+St. Pierre-Miquelon,St Pierre Miquelon,666,Northern America,21,Americas,19,Developed
+St. Vincent-Grenadines,St Vincent Grenadines,670,Caribbean,29,Americas,19,Developing
+Samoa,Samoa,882,Polynesia,61,Oceania,9,Developing
+Sao Tome and Principe,Sao Tome and Principe,678,Middle Africa,17,Africa,2,Developing
+Saudi Arabia,Saudi Arabia,682,Western Asia,145,Asia,142,Developing
+Senegal,Senegal,686,Western Africa,11,Africa,2,Developing
+Serbia,Serbia,688,Southern Europe,39,Europe,150,Developed
+Seychelles,Seychelles,690,Eastern Africa,14,Africa,2,Developing
+Sierra Leone,Sierra Leone,694,Western Africa,11,Africa,2,Developing
+Singapore,Singapore,702,South-Eastern Asia,35,Asia,142,Developing
+Slovakia,Slovakia,703,Eastern Europe,151,Europe,150,Developed
+Slovenia,Slovenia,705,Southern Europe,39,Europe,150,Developed
+Solomon Islands,Solomon Islands,90,Melanesia,54,Oceania,9,Developing
+Somalia,Somalia,706,Eastern Africa,14,Africa,2,Developing
+South Africa,South Africa,710,Southern Africa,18,Africa,2,Developing
+Spain,Spain,724,Southern Europe,39,Europe,150,Developed
+Sri Lanka,Sri Lanka,144,Southern Asia,34,Asia,142,Developing
+State of Palestine,State of Palestine,275,Western Asia,145,Asia,142,Developing
+Sudan,Sudan,729,Northern Africa,15,Africa,2,Developing
+Suriname,Suriname,740,South America,5,Americas,19,Developing
+Swaziland,Swaziland,748,Southern Africa,18,Africa,2,Developing
+Sweden,Sweden,752,Northern Europe,154,Europe,150,Developed
+Switzerland,Switzerland,756,Western Europe,155,Europe,150,Developed
+Syrian Arab Republic,Syrian Arab Republic,760,Western Asia,145,Asia,142,Developing
+T.F.Yug.Rep. Macedonia,Macedonia FYR,807,Southern Europe,39,Europe,150,Developed
+Tajikistan,Tajikistan,762,Central Asia,143,Asia,142,Developing
+Thailand,Thailand,764,South-Eastern Asia,35,Asia,142,Developing
+Timor-Leste,Timor Leste,626,South-Eastern Asia,35,Asia,142,Developing
+Togo,Togo,768,Western Africa,11,Africa,2,Developing
+Tonga,Tonga,776,Polynesia,61,Oceania,9,Developing
+Trinidad and Tobago,Trinidad and Tobago,780,Caribbean,29,Americas,19,Developing
+Tunisia,Tunisia,788,Northern Africa,15,Africa,2,Developing
+Turkey,Turkey,792,Western Asia,145,Asia,142,Developing
+Turkmenistan,Turkmenistan,795,Central Asia,143,Asia,142,Developing
+Turks and Caicos Islands,Turks and Caicos Islands,796,Caribbean,29,Americas,19,Developing
+Tuvalu,Tuvalu,798,Polynesia,61,Oceania,9,Developing
+Uganda,Uganda,800,Eastern Africa,14,Africa,2,Developing
+Ukraine,Ukraine,804,Eastern Europe,151,Europe,150,Developed
+United Arab Emirates,United Arab Emirates,784,Western Asia,145,Asia,142,Developing
+United Kingdom,United Kingdom,826,Northern Europe,154,Europe,150,Developed
+United Rep. of Tanzania,Tanzania,834,Eastern Africa,14,Africa,2,Developing
+United States,United States,840,Northern America,21,Americas,19,Developed
+United States Virgin Is.,Virgin Islands,850,Caribbean,29,Americas,19,Developing
+Uruguay,Uruguay,858,South America,5,Americas,19,Developing
+Uzbekistan,Uzbekistan,860,Central Asia,143,Asia,142,Developing
+Vanuatu,Vanuatu,548,Melanesia,54,Oceania,9,Developing
+Venezuela(Bolivar. Rep.),Venezuela,862,South America,5,Americas,19,Developing
+Viet Nam,Viet Nam,704,South-Eastern Asia,35,Asia,142,Developing
+Wallis and Futuna Is.,Wallis and Futuna Islands,876,Polynesia,61,Oceania,9,Developing
+Yemen,Yemen,887,Western Asia,145,Asia,142,Developing
+Zambia,Zambia,894,Eastern Africa,14,Africa,2,Developing
+Zimbabwe,Zimbabwe,716,Eastern Africa,14,Africa,2,Developing
