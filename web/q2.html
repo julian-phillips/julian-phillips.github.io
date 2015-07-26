@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Electricity Data Query Test</title>
+    <style>
+     body {
+       font: 11px sans-serif;
+     }
+    </style>
+  </head>
+  <body>
+    <div class="options">
+      <span>Country/Region 
+        <select id="region" onChange="updatedata()" >
+          <option value="World" >World</option>
+          <option value="Asia">Asia</option>
+          <option value="Eastern Asia" selected >Eastern Asia</option>
+          <option value="China">China</option>
+          <option value="Japan">Japan</option>
+        </select>
+      </span>
+      <span>Year
+        <select id="year" onChange="updatedata()"  >
+          <option value="2002">2002</option>
+          <option value="2003">2003</option>
+          <option value="2004">2004</option>
+          <option value="2005">2005</option>
+          <option value="2006" selected>2006</option>
+          <option value="2007">2007</option>
+          <option value="2008">2008</option>
+          <option value="2009">2009</option>
+          <option value="2010">2010</option>
+          <option value="2011">2011</option>
+          <option value="2012">2012</option>
+        </select>
+      </span>
+      <span>Units
+        <select id="units" onChange="updatedata()" >
+          <option value="absolute" selected="selected" >Absolute</option>
+          <option value="percap">Per Capita</option>
+        </select>
+      </span>
+      <span>Flow Types
+        <select id="flow" onChange="updatedata()" >
+          <option value="all" >All</option>
+          <option value="consumption">Consumption</option>
+          <option value="production">Production</option>
+          <option value="renewable">Renewable</option>
+          <option value="nonrenewable">Non-Renewable</option>
+          <option value="import_export" selected>Import/Export</option>
+        </select>
+      </span>
+    </div>
+    
+    <script src="./js/d3.min.js" charset="utf-8"></script>
+    <script src="./data/electricity_codes.js" ></script>
+
+    <script>
+     var data = null;
+     var req = new XMLHttpRequest();
+     // make an asynchronous call to retrieve the electricity data
+     req.open("GET", "./data/electricity_data.json", false);
+     req.send(null);
+     data = JSON.parse(req.responseText);
+     
+     function getmultiples(o)
+     {
+       var opts = [];
+       for (var i = 0; i < o.options.length; i++) {
+         if (o.options[i].selected)
+         {
+           opts.push(o.options[i].value);
+         }
+       }
+       return opts;
+     }
+     
+     function updatedata()
+     {
+       var regions = getmultiples(document.getElementById("region"));
+       var years = getmultiples(document.getElementById("year"));
+       var unit = document.getElementById("units").value;
+       var flows = getmultiples(document.getElementById("flow"));
+       render(regions, years, unit, flows);
+     }
+     
+     function render(regions, years, units, flows)
+     {
+       qdata = query(regions, years, units, flows);
+       drawdata(qdata);
+     }
+
+     function drawdata(qdata)
+     {
+       var s = "";
+       qdata.forEach(function(item, index, array)
+         {
+           s = s + JSON.stringify(item, null, '  ') + "\n";
+         });
+      document.getElementById("code").innerHTML = "<hr/>" + "<pre>" + s + "</pre>" + "<hr/>";
+     }
+     
+     var codediv = d3.select("body").append("div")   
+                     .attr("class", "code")
+                     .attr("id", "code");
+
+     function getsubregions(region)
+     {
+       if (region == 'World')
+       {
+         return Object.keys(regions).sort();
+       }
+       else
+       {
+         return Object.keys(regions[region]).sort();
+       }
+     }
+
+     function getcountries(region, subregion)
+     {
+       return regions[region][subregion];
+     }
+     
+     function query(names, years, valuetype, flows)
+     {
+       var curdata = []
+       for (var i = 0; i < names.length; i++)
+       {
+         var region = names[i];
+         var nyears = data[region];
+         for (var j = 0; j < years.length; j++)
+         {
+           var year = years[j];
+           var facts = data[region][year];
+           var r = new Object();
+           r['name'] = region;
+           r['year'] = year;
+           r['population'] = facts.population;
+           r['isregion'] = nyears.isregion;
+           r['issubregion'] = nyears.issubregion;
+           r['region'] = nyears.region;
+           r['subregion'] = nyears.subregion;
+           r['renewable'] = facts.renewable;
+           r['nonrenewable'] = facts.nonrenewable;
+           curdata.push(getAttributes(r, facts, valuetype, flows));
+           if (nyears.isregion == 'Y')
+           {
+             var subregions = getsubregions(region);
+             r['subregions'] = query(subregions, years, valuetype, flows);
+           }
+           if (r['issubregion'] == 'Y')
+           {
+             var countries = getcountries(nyears.region, region);
+             if (region == 'Micronesia')
+             {
+               // hack to handle the fact that Micronesia is a country and a subregion
+               // we lose Micronesia as a country to avoid an infinite loop
+               var idx = countries.indexOf("Micronesia");
+               if (idx >= 0)
+               {
+                 countries.splice(idx, 1);
+               }
+             }
+             r['countries'] = query(countries, years, valuetype, flows);
+           }
+         }
+       }
+       return curdata;
+     }
+
+     function getDescription(name)
+     {
+       return ((descriptions[name] == null) ? "" : descriptions[name]);
+     }
+
+     function getAttributes(r, facts, valuetype, flows) {
+       // determine the multiplier to use for per capita units
+       mult = 1;
+       units = "MkWh";
+       if (valuetype == 'percap') {
+         mult = 1000000 / Number(r.population);
+         units = "kWh per capita"
+       }
+       // build list of requested flow types
+       var flowtypes = {}
+       var flowlist = [];
+       for (var i = 0; i < flows.length; i++)
+       {
+         flow = flows[i].toLowerCase();
+         if (flow == "renewable")
+         {
+           flowlist = renewables;
+         }
+         else if (flow == "nonrenewable")
+         {
+           flowlist = nonrenewables;
+         }
+         else if (flow == "consumption")
+         {
+           flowlist = consumption;
+         }
+         else if (flow == "production")
+         {
+           flowlist = production;
+         }
+         else if (flow == "imports")
+         {
+           flowlist = imports;
+         }
+         else if (flow == "exports")
+         {
+           flowlist = exports;
+         }
+         else if (flow == "import_export")
+         {
+           flowlist = import_export;
+         }
+         else
+         {
+           flowlist = all;
+         }
+         for (j = 0; j < flowlist.length; j++)
+         {
+           flowtypes[flowlist[j]] = 1;
+         }
+       }
+       var details = [];
+       for (key in flowtypes)
+       {
+         // if value == 0 should we not include it in list?
+         details.push({
+           "name": key,
+           "value": Math.round(mult * facts[key]),
+           "units": units,
+           "desc": getDescription(key)
+         });
+       }
+       r["details"] = details;
+       return r;
+     }
+
+     window.onload = updatedata
+
+    </script>
+  </body>
+</html>
