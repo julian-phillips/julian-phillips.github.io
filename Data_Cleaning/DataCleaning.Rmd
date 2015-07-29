@@ -46,8 +46,8 @@ country$OrigCountryName <- gsub('\\(', ".", country$OrigCountryName)
 country$OrigCountryName <- gsub(")", ".", country$OrigCountryName)
 country$OrigCountryName <- gsub("'", ".", country$OrigCountryName)
 country$OrigCountryName <- gsub("-", ".", country$OrigCountryName)
-country$OrigCountryName <- gsub("©", ".", country$OrigCountryName)
-country$OrigCountryName <- gsub("´", ".", country$OrigCountryName)
+country$OrigCountryName <- gsub("Â©", ".", country$OrigCountryName)
+country$OrigCountryName <- gsub("Â´", ".", country$OrigCountryName)
 
 ```
 
