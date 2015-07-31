@@ -200,7 +200,7 @@ function wheel() {
 			   .attr("y", function(d,i) { return (Summation(i) +hgt/2 * ElementReductions[i] +barPadding*PaddingReductions[i] + margin.top)/ElementReductions[i] ;})
 			   .attr("x", w/2+margin.left)
 			   .attr("font-family", "sans-serif")
-			   .attr("font-size", "24px")
+			   .attr("font-size", "60px")
 			   .attr("text-anchor", "middle")
 			   .attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"})
 			   
@@ -233,7 +233,7 @@ function wheel() {
 			
 			gradient1.append("svg:stop")
 				.attr("offset", "100%")
-				.attr("stop-color", "rgb(150,150,150)")
+				.attr("stop-color", "rgb(125,125,125)")
 				.attr("stop-opacity", 1);
 			
 			svg.selectAll("grad1")
@@ -245,7 +245,7 @@ function wheel() {
 			   .attr("height", 118.57142857142857)
 			   .attr("width", w)
 			   .attr("fill", 'url(#gradient1)')
-			   .attr("fill-opacity",.5)
+			   .attr("fill-opacity",.7)
 			   .attr("transform", "translate(15,15)");
 			
 /////////////////////////////////////////////2///////////////////////////			
@@ -262,17 +262,17 @@ function wheel() {
 			// Define the gradient colors
 			gradient2.append("svg:stop")
 				.attr("offset", "0%")
-				.attr("stop-color", "rgb(150,150,150)")
+				.attr("stop-color", "rgb(125,125,125)")
 				.attr("stop-opacity", 1);
 
 			gradient2.append("svg:stop")
 				.attr("offset", "50%")
-				.attr("stop-color", "rgb(200,200,200)")
+				.attr("stop-color", "rgb(150,150,150)")
 				.attr("stop-opacity", 1);
 			
 			gradient2.append("svg:stop")
 				.attr("offset", "100%")
-				.attr("stop-color", "rgb(250,250,250)")
+				.attr("stop-color", "rgb(225,225,225)")
 				.attr("stop-opacity", 1);
 			
 			svg.selectAll("grad2")
@@ -340,17 +340,17 @@ function wheel() {
 			// Define the gradient colors
 			gradient4.append("svg:stop")
 				.attr("offset", "0%")
-				.attr("stop-color", "rgb(250,250,250)")
+				.attr("stop-color", "rgb(225,225,225)")
 				.attr("stop-opacity", 1);
 
 			gradient4.append("svg:stop")
 				.attr("offset", "50%")
-				.attr("stop-color", "rgb(200,200,200)")
+				.attr("stop-color", "rgb(150,150,150)")
 				.attr("stop-opacity", 1);
 			
 			gradient4.append("svg:stop")
 				.attr("offset", "100%")
-				.attr("stop-color", "rgb(150,150,150)")
+				.attr("stop-color", "rgb(125,125,125)")
 				.attr("stop-opacity", 1);
 			
 			svg.selectAll("grad4")
@@ -379,7 +379,7 @@ function wheel() {
 			// Define the gradient colors
 			gradient5.append("svg:stop")
 				.attr("offset", "0%")
-				.attr("stop-color", "rgb(150,150,150)")
+				.attr("stop-color", "rgb(125,125,125)")
 				.attr("stop-opacity", 1);
 
 			gradient5.append("svg:stop")
@@ -401,7 +401,7 @@ function wheel() {
 			   .attr("height", 118.57142857142857)
 			   .attr("width", w)
 			   .attr("fill", 'url(#gradient5)')
-			   .attr("fill-opacity",.5)
+			   .attr("fill-opacity",.7)
 			   .attr("transform", "translate(15,15)");			   
 //////////////////////////////////////////////////////////////////////////////////////
 ////FOR GRADIENT EXPERIEMENTS ONLY.  CANNOT BE FINAL
