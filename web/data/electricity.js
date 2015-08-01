@@ -386,7 +386,6 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
             if (yeardata[cflow] > 0) // exclude records with zero value
             {
                 var units = getunits(valuetype, yeardata.population);
-                console.log([valuetype, yeardata.population, cregion, units.mult].join());
                 var description = getdescription(cflow);
                 var r = new SankeyObj('region');
                 r.georegion = name;
@@ -586,4 +585,110 @@ function getsankeyenergydetails(parent, region, yeardata, flow, units)
         }
     }
     return details;
+}
+
+/*
+{
+  "category" : "Top Producers",
+  "year": 1999,
+  "unit": "kilowatts"
+  "countries" :[
+  {
+  "Name" : "USA",
+  "Ranking": 1
+  "Value" : asdfasdfasdf
+  },
+  {
+  "Name" : "Japan",
+  "Ranking": 2
+  "Value" : asdfasdfasdf
+  }
+  ]
+}
+
+*/
+var TopFive = function(category, year, units)
+{
+    this.category = category;
+    this.year = year;
+    this.units = units;
+    this.countries = [];
+    this.addcountry = function(country)
+    {
+        this.countries.push(country);
+        if (this.units == null)
+        {
+            this.units = country.units;
+        }
+    };
+    this.settopfive = function()
+    {
+        this.countries.sort(sortbyvalue);
+        for (var i = 0; i < 5; i++)
+        {
+            this.countries[i].rank = (i + 1);
+        }
+        this.countries.splice(5, Number.MAX_VALUE);
+    }
+};
+
+var TopFiveCountry = function(name, rank, value, units)
+{
+    this.name = name;
+    this.rank = rank;
+    this.value = value;
+    this.units = units;
+}
+
+function sortbyvalue(x, y)
+{
+    // sort in descending order
+    return (sortby(x, y, 'value') * -1);
+}
+
+var topfivecategories = ['produced', 'consumed', 'renewable', 'nuclear'];
+function gettopfivedata(year, valuetype)
+{
+    var topfivedata = {};
+    for (var i = 0; i < topfivecategories.length; i++)
+    {
+        category = topfivecategories[i];
+        topfivedata[category] = new TopFive(category, year, null);
+    }
+    var yeardata = getcountryyeardata(year);
+    for (var name in yeardata)
+    {
+        var yd = yeardata[name];
+        var units = getunits(valuetype, yd.population);
+        for (var i = 0; i < topfivecategories.length; i++)
+        {
+            var category = topfivecategories[i];
+            var value = Math.round(units.mult * yd[category]);
+            topfivedata[category].addcountry(new TopFiveCountry(name, 0, value, units.units));
+        }
+    }
+    var tmp = [];
+    for (var i = 0; i < topfivecategories.length; i++)
+    {
+        var category = topfivecategories[i];
+        topfivedata[category].settopfive();
+        tmp.push(topfivedata[category]);
+    }
+    return tmp;
+}
+
+function getcountryyeardata(year)
+{
+    // gather all yeardata objects
+    var yeardata = {};
+    var regionlist = Object.keys(data);
+    for (var i = 0; i < regionlist.length; i++)
+    {
+        var region = data[regionlist[i]];
+        if (region.iscountry == 'Y' && regionlist[i] != 'Micronesia') // hack for Micronesia
+        {
+            yeardata[regionlist[i]] = region[year];
+        }
+    }
+    return yeardata;
 }
