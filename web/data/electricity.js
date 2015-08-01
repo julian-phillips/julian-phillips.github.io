@@ -53,8 +53,16 @@ function getunits(valuetype, population)
     var mult = 1;
     var units = "MkWh";
     if (valuetype == 'percap') {
-        mult = 1000000 / Number(population);
-        units = "kWh per capita"
+        if (population > 0)
+        {
+            mult = 1000000 / Number(population);
+            units = "kWh per capita"
+        }
+        else
+        {
+            mult = 0;
+            units = "kWh per capita"
+        }
     }
     return {'units': units, 'mult': mult};
 }
@@ -151,7 +159,7 @@ function getwheeldata(names, years, valuetype, adjoining)
             var facts = data[region][year];
             r['population'] = facts.population;
             var units = getunits(valuetype, r.population);
-            r['electricity'] = (units.mult * facts.electricity);
+            r['electricity'] = (units.mult * facts.electricity).toFixed(0);
             r['units'] = units.units;
         }
         else
@@ -308,8 +316,8 @@ var SankeyObjMin = function(o)
 {
     this.name = o.name
     this.description = o.description;
-    this.value = o.value;
-    this.percent = o.percent;
+    this.value = Math.round(o.value);
+    this.percent = o.percent.toFixed(2);
     this.children = o.children;
 }
 
@@ -378,6 +386,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
             if (yeardata[cflow] > 0) // exclude records with zero value
             {
                 var units = getunits(valuetype, yeardata.population);
+                console.log([valuetype, yeardata.population, cregion, units.mult].join());
                 var description = getdescription(cflow);
                 var r = new SankeyObj('region');
                 r.georegion = name;
@@ -401,7 +410,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
     tmp.units = getunits(valuetype, 1).units;
     // collapse small percentage records into an aggregate record
     sankeydata = aggregate(sankeydata, tmp);
-    //    return sankeydata;
+    //return sankeydata;
     return simplify(sankeydata);
 }
 
@@ -456,11 +465,9 @@ function aggregate(o, proto)
         {
             newlist.push(v);
         }
-        v.percent = v.percent.toFixed(2);
     }
     if (r.value > 0)
     {
-        r.percent = r.percent.toFixed(2);
         newlist.push(r);
     }
     return newlist;
