@@ -7,6 +7,26 @@
      body {
        font: 11px sans-serif;
      }
+     .code {
+       float: left;
+       width: 27%;
+       margin-left:0px;
+       margin-right:0px;
+       padding-left:0px;
+       padding-right:0px;
+       word-wrap: normal;
+     }
+     .codemiddle {
+       float: left;
+       width: 43%;
+       margin-left:0px;
+       margin-right:0px;
+       padding-left:0px;
+       padding-right:0px;
+       word-wrap: break-word;
+       border-left: thin solid #000000;
+       border-right: thin solid #000000;
+     }
     </style>
   </head>
   <body>
@@ -26,8 +46,8 @@
           <option value="2003">2003</option>
           <option value="2004">2004</option>
           <option value="2005">2005</option>
-          <option value="2006" selected>2006</option>
-          <option value="2007">2007</option>
+          <option value="2006">2006</option>
+          <option value="2007" selected>2007</option>
           <option value="2008">2008</option>
           <option value="2009">2009</option>
           <option value="2010">2010</option>
@@ -43,205 +63,91 @@
       </span>
       <span>Flow Types
         <select id="flow" onChange="updatedata()" >
+          <!--
           <option value="all" >All</option>
           <option value="consumption">Consumption</option>
           <option value="production">Production</option>
           <option value="renewable">Renewable</option>
           <option value="nonrenewable">Non-Renewable</option>
-          <option value="import_export" selected>Import/Export</option>
+          <option value="import_export" selected>Import / Export</option>
+          -->
+          <!-- <option value="production" >Production / Consumption</option> -->
+          <option value="renewable" selected>Renewable / Non-renewable</option>
+          <option value="import" >Import / Export</option>
         </select>
       </span>
+      <span>Hierarchy
+        <select id="hierarchy" onChange="updatedata()" >
+          <option value="region" >Region first -> then energy</option>
+          <option value="energy" selected >Energy first -> then region</option>
+        </select>
+      </span>
+      <br/>
+      <span title="The Adjoining Years option will NOT be a part of the actual UI">[ Wheel Data Adjoining Years
+        <select id="adjoining" onChange="updatedata()" >
+          <option value="-1" >All</option>
+          <option value="0" >0</option>
+          <option value="1" >1</option>
+          <option value="2" selected>2</option>
+          <option value="3" >3</option>
+        </select>
+         ]
+      </span>
     </div>
+    <div class="code" id="code1" ></div>
+    <div class="codemiddle" id="code2" ></div>
+    <div class="code" id="code3" ></div>
     
     <script src="./js/d3.min.js" charset="utf-8"></script>
     <script src="./data/electricity_codes.js" ></script>
+    <script src="./data/electricity.js" ></script>
 
     <script>
-     var data = null;
-     var req = new XMLHttpRequest();
-     // make an asynchronous call to retrieve the electricity data
-     req.open("GET", "./data/electricity_data.json", false);
-     req.send(null);
-     data = JSON.parse(req.responseText);
-     
-     function getmultiples(o)
+     var data = {};
+
+     window.onload = init
+
+     function init()
      {
-       var opts = [];
-       for (var i = 0; i < o.options.length; i++) {
-         if (o.options[i].selected)
-         {
-           opts.push(o.options[i].value);
-         }
-       }
-       return opts;
+       data = loaddata();
+       updatedata();
      }
-     
+
+
      function updatedata()
      {
        var regions = getmultiples(document.getElementById("region"));
        var years = getmultiples(document.getElementById("year"));
-       var unit = document.getElementById("units").value;
+       var valuetype = document.getElementById("units").value;
        var flows = getmultiples(document.getElementById("flow"));
-       render(regions, years, unit, flows);
+       var hierarchy = document.getElementById("hierarchy").value;
+       var adjoiningyears = parseInt(document.getElementById("adjoining").value);
+
+       var wheeldata = getwheeldata(regions, years, valuetype, adjoiningyears);
+       var maxlevels = 2;
+       var sankeydata = getsankeydata(regions[0], years[0], valuetype, flows[0], hierarchy, maxlevels);
+       var topfivedata = gettopfivedata(years[0], valuetype);
+       drawdata([wheeldata, sankeydata, topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
+     }
+
+     function drawdata(dataarray, labels)
+     {
+       for (var i = 0; i < dataarray.length; i++)
+       {
+         var thisdata = dataarray[i];
+        var s = "";
+        thisdata.forEach(function(item, index, array)
+                         {
+                             s = s + JSON.stringify(item, null, '  ') + "\n";
+                         });
+        s = "<hr/><br/><strong>" + labels[i] + "</strong><br/><hr/>" + "<pre>" + s;
+        s = s + "</pre>" + "<hr/>";
+        var c = "code" + (i + 1);
+        document.getElementById(c).innerHTML = s;
+       }
      }
      
-     function render(regions, years, units, flows)
-     {
-       qdata = query(regions, years, units, flows);
-       drawdata(qdata);
-     }
-
-     function drawdata(qdata)
-     {
-       var s = "";
-       qdata.forEach(function(item, index, array)
-         {
-           s = s + JSON.stringify(item, null, '  ') + "\n";
-         });
-      document.getElementById("code").innerHTML = "<hr/>" + "<pre>" + s + "</pre>" + "<hr/>";
-     }
-     
-     var codediv = d3.select("body").append("div")   
-                     .attr("class", "code")
-                     .attr("id", "code");
-
-     function getsubregions(region)
-     {
-       if (region == 'World')
-       {
-         return Object.keys(regions).sort();
-       }
-       else
-       {
-         return Object.keys(regions[region]).sort();
-       }
-     }
-
-     function getcountries(region, subregion)
-     {
-       return regions[region][subregion];
-     }
-     
-     function query(names, years, valuetype, flows)
-     {
-       var curdata = []
-       for (var i = 0; i < names.length; i++)
-       {
-         var region = names[i];
-         var nyears = data[region];
-         for (var j = 0; j < years.length; j++)
-         {
-           var year = years[j];
-           var facts = data[region][year];
-           var r = new Object();
-           r['name'] = region;
-           r['year'] = year;
-           r['population'] = facts.population;
-           r['isregion'] = nyears.isregion;
-           r['issubregion'] = nyears.issubregion;
-           r['region'] = nyears.region;
-           r['subregion'] = nyears.subregion;
-           r['renewable'] = facts.renewable;
-           r['nonrenewable'] = facts.nonrenewable;
-           curdata.push(getAttributes(r, facts, valuetype, flows));
-           if (nyears.isregion == 'Y')
-           {
-             var subregions = getsubregions(region);
-             r['subregions'] = query(subregions, years, valuetype, flows);
-           }
-           if (r['issubregion'] == 'Y')
-           {
-             var countries = getcountries(nyears.region, region);
-             if (region == 'Micronesia')
-             {
-               // hack to handle the fact that Micronesia is a country and a subregion
-               // we lose Micronesia as a country to avoid an infinite loop
-               var idx = countries.indexOf("Micronesia");
-               if (idx >= 0)
-               {
-                 countries.splice(idx, 1);
-               }
-             }
-             r['countries'] = query(countries, years, valuetype, flows);
-           }
-         }
-       }
-       return curdata;
-     }
-
-     function getDescription(name)
-     {
-       return ((descriptions[name] == null) ? "" : descriptions[name]);
-     }
-
-     function getAttributes(r, facts, valuetype, flows) {
-       // determine the multiplier to use for per capita units
-       mult = 1;
-       units = "MkWh";
-       if (valuetype == 'percap') {
-         mult = 1000000 / Number(r.population);
-         units = "kWh per capita"
-       }
-       // build list of requested flow types
-       var flowtypes = {}
-       var flowlist = [];
-       for (var i = 0; i < flows.length; i++)
-       {
-         flow = flows[i].toLowerCase();
-         if (flow == "renewable")
-         {
-           flowlist = renewables;
-         }
-         else if (flow == "nonrenewable")
-         {
-           flowlist = nonrenewables;
-         }
-         else if (flow == "consumption")
-         {
-           flowlist = consumption;
-         }
-         else if (flow == "production")
-         {
-           flowlist = production;
-         }
-         else if (flow == "imports")
-         {
-           flowlist = imports;
-         }
-         else if (flow == "exports")
-         {
-           flowlist = exports;
-         }
-         else if (flow == "import_export")
-         {
-           flowlist = import_export;
-         }
-         else
-         {
-           flowlist = all;
-         }
-         for (j = 0; j < flowlist.length; j++)
-         {
-           flowtypes[flowlist[j]] = 1;
-         }
-       }
-       var details = [];
-       for (key in flowtypes)
-       {
-         // if value == 0 should we not include it in list?
-         details.push({
-           "name": key,
-           "value": Math.round(mult * facts[key]),
-           "units": units,
-           "desc": getDescription(key)
-         });
-       }
-       r["details"] = details;
-       return r;
-     }
-
-     window.onload = updatedata
-
     </script>
+
   </body>
 </html>

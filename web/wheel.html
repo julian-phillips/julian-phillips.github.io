@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Wheel</title>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<style type="text/css">
+		.area {
+			fill: url(#rectangle-gradient);
+		}
+	
+		</style>
+		
+		
+	
+			
+			
+		<script type="text/javascript">
+
+function wheel() {			
+			//helper function - returns current y position
+			function Summation(m) {
+				total = 0;
+    
+				for (i = m; i >= 0; i--) {
+    
+				if ( i === 0) {
+					return total;
+				} else {
+					total +=ElementReductions[i-1]*hgt+barPadding*PaddingReductions[i];
+				
+				}                  
+				}
+				}
+			
+            
+			//Helper function to generate list of reductions to be applied to the width of graph based on number of elements
+			function GenerateElementList(m) {
+				ElementList=[];
+				half = (m-1)/2
+				spread = .5/half
+    
+				for (i = 0; i < half ; i++) {    
+				if ( i ===0) {
+					ElementList.push(0.5);
+				} else {
+					ElementList.push(i*spread+0.5)
+    
+				}                  
+				}
+				ElementList.push(1.0)
+
+				for (i = half-1; i > -1 ; i--) {    
+				if ( i ===0) {
+					ElementList.push(0.5);
+				} else {
+					ElementList.push(i*spread+0.5)    
+}                  
+}
+				return ElementList;
+}
+
+			//Helper function to generate list of reductions to be applied to the padding of graph based on number of elements
+			function GeneratePaddingList(m) {
+				PaddingList=[0];
+				half = (m-2)/2
+				spread = 0.15/(half+1)
+    
+				for (i = 0; i <= half ; i++) {    
+				if ( i ===half) {
+					PaddingList.push(1.0);
+				} else {
+					PaddingList.push((i+1)*spread+0.5)
+    
+				}                  
+				}
+				
+				for (i = half; i >= 0 ; i--) {    
+				if ( i ===half) {
+					PaddingList.push(1.0);
+				} else {
+					PaddingList.push((i+1)*spread+0.5)
+       
+}                  
+}
+				return PaddingList;
+}
+
+
+
+
+			//set desired number of elements below
+			var NumElements = 5
+			
+			
+			//This series of variables creates the array to be used to reduce elements later on.  Because the number of elements can change how the svg is filled up, the height will vary.  Algebra used to determine element total which will later feed the hgt variable to make sure the entire svg canvas is filled (except margins of course)
+			var ElementReductions = GenerateElementList(NumElements);
+			var elementtotal = 0
+			for ( var i = 0; i < ElementReductions.length; i++ ){
+			elementtotal += ElementReductions[i];
+			}
+			
+			//Similar to the above but figures out how large the padding between the bars should be.
+			var barPaddingsize = 10
+			var NumPaddings = NumElements - 1
+			var PaddingReductions = GeneratePaddingList(NumPaddings);
+			
+			var totalPadding = barPaddingsize*NumPaddings
+			
+			var paddingtotal = 0
+
+			for ( var i = 0; i < PaddingReductions.length; i++ ){
+			paddingtotal += PaddingReductions[i];
+			}
+			
+			barPadding = totalPadding/paddingtotal
+			
+			
+			
+			//margins around the graphic - ensures that text is not cut off
+			
+			//THERE SHOULD BE A WAY TO APPLY TO MARGIN TO ALL SVG ITEMS IN A CANVAS RATHER THAN ONE AT A TIME THE WAY IT IS NOW	
+			
+			var margin = {top: 15, right: 15, bottom: 15, left: 15},
+                w = 900 - margin.left - margin.right,
+                h = 900 - margin.top - margin.bottom;
+			
+			
+			// Define the gradient
+			
+			
+			
+			
+			
+			var dataset = [1128,1015,703,695,687  ];//    ,  675,675,670,665,685,        687.7,691.1,722.2,976,780,        906,913,950,788,889,     892,1005,1022];
+			var dataset2 = [1128,1015,703,695,687   ];//   ,  675,675,670,665,685,        687.7,691.1,722.2,976,780,        906,913,950,788,889,     892,1005,1022];
+			var years = [1990,1991,1992,1993,1994  ];//  ,1995,1996 ,1997,1998,1999,     2000,2001,2002,2003,2004,     2005,2006,2007,2008,2009,   2010,2011,2012]
+			var hgt = (h - barPaddingsize*(ElementReductions.length-1))/elementtotal
+			
+			
+			
+			
+			
+			//Create SVG element - Canvas
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w + margin.left + margin.right)
+						.attr("height", h + margin.top + margin.bottom)
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+	
+			//Left rectangle.  This is the horziontal bar that actually shows the metric			
+			svg.selectAll("dataset.rect")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")			   
+			   .attr("y", function(d,i) { return Summation(i) ;})
+			   .attr("x", 0)
+			   .attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+			   .attr("width", function(d) {    return d*.5;})
+			   .attr("fill","orange")			   
+			   .attr("perspective-origin","top")
+			   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			   
+			 //Right Rectangle.  Fills the negative space so all of the rectangles end at the same point  
+			   svg.selectAll("dataset2.rect")
+			   .data(dataset2)
+			   .enter()
+			   .append("rect")
+			   .attr("y", function(d,i) { return Summation(i) ;})
+			   .attr("x", function(d) {    return d*.5;})
+			   .attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+			   .attr("width", function(d) {  return w- d*.5;})
+			   .attr("fill", "lightgray")
+			   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			   
+			   //Border.  Created as a rect with 100% transparency.  Only the border shows.  
+			   svg.selectAll("border.rect")
+			   .data(dataset2)
+			   .enter()
+			   .append("rect")
+			   .attr("y", function(d,i) { return Summation(i) ;})
+			   .attr("x", 0)
+			   .attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+			   .attr("width",  w)
+			   .attr("fill", "none")
+				//.attr('fill', 'url(#gradient)')
+				.attr("fill-opacity",0.3)
+			   .attr("stroke","black")
+			   .attr("stroke-width",3)
+			   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			 
+
+			//Text Labels
+			svg.selectAll("text")
+			   .data(years)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {        return d;   })
+			   .attr("y", function(d,i) { return (Summation(i) +hgt/2 * ElementReductions[i] +barPadding*PaddingReductions[i] + margin.top)/ElementReductions[i] ;})
+			   .attr("x", w/2+margin.left)
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "60px")
+			   .attr("text-anchor", "middle")
+			   .attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"})
+			   
+
+//////////////////////////////////////////////////////////////////////////////////////
+////FOR GRADIENT EXPERIEMENTS ONLY.  CANNOT BE FINAL
+//////////////////////////////////////////////////////////////////////////////////////
+//gradient	
+
+			var year1 = [1990]
+			var gradient1 = svg.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient1")
+				.attr("x1", "0%")
+				.attr("y1", "0%")
+				.attr("x2", "0%")
+				.attr("y2", "100%")
+				.attr("spreadMethod", "pad");
+
+			// Define the gradient colors
+			gradient1.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", "rgb(0,0,0)")
+				.attr("stop-opacity", 1);
+
+			gradient1.append("svg:stop")
+				.attr("offset", "50%")
+				.attr("stop-color", "rgb(50,50,50)")
+				.attr("stop-opacity", 1);
+			
+			gradient1.append("svg:stop")
+				.attr("offset", "100%")
+				.attr("stop-color", "rgb(125,125,125)")
+				.attr("stop-opacity", 1);
+			
+			svg.selectAll("grad1")
+			.data(year1)
+				.enter()			
+			   .append("rect")
+				.attr("y", 0)
+			   .attr("x", 0)
+			   .attr("height", 118.57142857142857)
+			   .attr("width", w)
+			   .attr("fill", 'url(#gradient1)')
+			   .attr("fill-opacity",.7)
+			   .attr("transform", "translate(15,15)");
+			
+/////////////////////////////////////////////2///////////////////////////			
+			var year2 = [1990]
+			var gradient2 = svg.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient2")
+				.attr("x1", "0%")
+				.attr("y1", "0%")
+				.attr("x2", "0%")
+				.attr("y2", "100%")
+				.attr("spreadMethod", "pad");
+
+			// Define the gradient colors
+			gradient2.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", "rgb(125,125,125)")
+				.attr("stop-opacity", 1);
+
+			gradient2.append("svg:stop")
+				.attr("offset", "50%")
+				.attr("stop-color", "rgb(150,150,150)")
+				.attr("stop-opacity", 1);
+			
+			gradient2.append("svg:stop")
+				.attr("offset", "100%")
+				.attr("stop-color", "rgb(225,225,225)")
+				.attr("stop-opacity", 1);
+			
+			svg.selectAll("grad2")
+			.data(year2)
+				.enter()			
+			   .append("rect")
+				.attr("y", 125.873015873)
+			   .attr("x", 0)
+			   .attr("height", 177.857142857)
+			   .attr("width", w)
+			   .attr("fill", 'url(#gradient2)')
+			   .attr("fill-opacity",.5)
+			   .attr("transform", "translate(15,15)");
+				
+/////////////////////////////////////////////3///////////////////////////				
+			var year3 = [1990]
+			var gradient3 = svg.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient3")
+				.attr("x1", "0%")
+				.attr("y1", "0%")
+				.attr("x2", "0%")
+				.attr("y2", "100%")
+				.attr("spreadMethod", "pad");
+
+			// Define the gradient colors
+			gradient3.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", "rgb(250,250,250)")
+				.attr("stop-opacity", 1);
+
+			gradient3.append("svg:stop")
+				.attr("offset", "50%")
+				.attr("stop-color", "rgb(255,255,255)")
+				.attr("stop-opacity", 1);
+			
+			gradient3.append("svg:stop")
+				.attr("offset", "100%")
+				.attr("stop-color", "rgb(250,250,250)")
+				.attr("stop-opacity", 1);
+			
+			svg.selectAll("grad3")
+			.data(year3)
+				.enter()			
+			   .append("rect")
+				.attr("y", 316.428571428)
+			   .attr("x", 0)
+			   .attr("height", 237.142857142)
+			   .attr("width", w)
+			   .attr("fill", 'url(#gradient3)')
+			   .attr("fill-opacity",.5)
+			   .attr("transform", "translate(15,15)");
+
+/////////////////////////////////////////////4///////////////////////////				
+			var year4 = [1990]
+			var gradient4 = svg.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient4")
+				.attr("x1", "0%")
+				.attr("y1", "0%")
+				.attr("x2", "0%")
+				.attr("y2", "100%")
+				.attr("spreadMethod", "pad");
+
+			// Define the gradient colors
+			gradient4.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", "rgb(225,225,225)")
+				.attr("stop-opacity", 1);
+
+			gradient4.append("svg:stop")
+				.attr("offset", "50%")
+				.attr("stop-color", "rgb(150,150,150)")
+				.attr("stop-opacity", 1);
+			
+			gradient4.append("svg:stop")
+				.attr("offset", "100%")
+				.attr("stop-color", "rgb(125,125,125)")
+				.attr("stop-opacity", 1);
+			
+			svg.selectAll("grad4")
+			.data(year4)
+				.enter()			
+			   .append("rect")
+				.attr("y", 566.2698412698)
+			   .attr("x", 0)
+			   .attr("height",177.857142857)
+			   .attr("width", w)
+			   .attr("fill", 'url(#gradient4)')
+			   .attr("fill-opacity",.5)
+			   .attr("transform", "translate(15,15)");
+
+/////////////////////////////////////////////5///////////////////////////				
+			var year5 = [1990]
+			var gradient5 = svg.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient5")
+				.attr("x1", "0%")
+				.attr("y1", "0%")
+				.attr("x2", "0%")
+				.attr("y2", "100%")
+				.attr("spreadMethod", "pad");
+
+			// Define the gradient colors
+			gradient5.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", "rgb(125,125,125)")
+				.attr("stop-opacity", 1);
+
+			gradient5.append("svg:stop")
+				.attr("offset", "50%")
+				.attr("stop-color", "rgb(50,50,50)")
+				.attr("stop-opacity", 1);
+			
+			gradient5.append("svg:stop")
+				.attr("offset", "100%")
+				.attr("stop-color", "rgb(0,0,0)")
+				.attr("stop-opacity", 1);
+			
+			svg.selectAll("grad5")
+			.data(year5)
+				.enter()			
+			   .append("rect")
+				.attr("y", 751.4285714)
+			   .attr("x", 0)
+			   .attr("height", 118.57142857142857)
+			   .attr("width", w)
+			   .attr("fill", 'url(#gradient5)')
+			   .attr("fill-opacity",.7)
+			   .attr("transform", "translate(15,15)");			   
+//////////////////////////////////////////////////////////////////////////////////////
+////FOR GRADIENT EXPERIEMENTS ONLY.  CANNOT BE FINAL
+//////////////////////////////////////////////////////////////////////////////////////
+}			
+		</script>
+	</head>
+	<body onload="wheel();">
+
+	</body>
+</html>
