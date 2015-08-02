@@ -15,8 +15,9 @@
 }
  
 .link {
-  fill: none;
-  /*stroke: #000;*/
+  fill: #000;
+  fill-opacity: .2;
+  stroke: none;
   stroke-opacity: .2;
 }
  
@@ -57,7 +58,9 @@ var svg = d3.select("#chart").append("svg")
 var sankey = d3.sankey()
     .nodeWidth(15)
     .nodePadding(10)
-    .size([width, height]);
+    .size([width, height])
+	.rightHeight(200)
+	.leftHeight(height);
  
 var path = sankey.link();
  
@@ -86,8 +89,6 @@ d3.json("data/testdata.json", function(error, graph) {
       .attr("class", "link")
       .attr("d", path)
 	  //.attr("stroke", function (d) { return d.color })
-	  .style("stroke", function(d) { 
-		  return  d3.rgb(d.color) })
       .style("stroke-width", function(d) { return Math.max(1, d.dy); })
       .sort(function(a, b) { return b.dy - a.dy; });
  

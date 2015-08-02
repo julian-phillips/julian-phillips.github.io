@@ -4,11 +4,26 @@ d3.sankey = function() {
       nodePadding = 8,
       size = [1, 1],
       nodes = [],
-      links = [];
+      links = [],
+	  maxCol = 0,
+	  rightHeight = 140,
+	  leftHeight = 1;
  
   sankey.nodeWidth = function(_) {
     if (!arguments.length) return nodeWidth;
     nodeWidth = +_;
+    return sankey;
+  };
+  
+  sankey.rightHeight = function(_) {
+    if (!arguments.length) return rightHeight;
+    rightHeight = +_;
+    return sankey;
+  };
+  
+  sankey.leftHeight = function(_) {
+    if (!arguments.length) return leftHeight;
+    leftHeight = +_;
     return sankey;
   };
  
@@ -37,11 +52,13 @@ d3.sankey = function() {
   };
  
   sankey.layout = function(iterations) {
-    computeNodeLinks();
-    computeNodeValues();
-    computeNodeBreadths();
-    computeNodeDepths(iterations);
-    computeLinkDepths();
+    computeNodeLinks();               // For each node, incoming and outgoing links
+    computeNodeValues();              // Height of each node stored as value 
+	computeNodeBreadths();            // Breadth -> placement of nodes along x-axis
+    computeNodeDepths(iterations);    // Depth   -> placement of nodes along y-axis
+    computeLinkDepths();              // 
+	//Added
+	reScaleRightNodes();
     return sankey;
   };
  
@@ -53,7 +70,8 @@ d3.sankey = function() {
   sankey.link = function() {
     var curvature = .5;
  
-    function link(d) {
+    /* Original Curve
+	function link(d) {
       var x0 = d.source.x + d.source.dx,
           x1 = d.target.x,
           xi = d3.interpolateNumber(x0, x1),
@@ -65,6 +83,38 @@ d3.sankey = function() {
            + "C" + x2 + "," + y0
            + " " + x3 + "," + y1
            + " " + x1 + "," + y1;
+    }*/
+	
+	function link(d) {
+	/* Draw path from top of source to top of target,
+	     go down vertically to bottom of target,
+		 and then go from bottom of target to bottom of source
+		 Coordinates are:
+		 Top Source: 	(x0,y0)
+		 Bottom Source: (x1,y1)
+		 Top Target: 	(x1,y4)
+		 Bottom Target: (x0,y5)
+		All other coordinates are control points to create smooth curves
+	  */
+	  var x0 = d.source.x + d.source.dx,
+          x1 = d.target.x,
+          xi = d3.interpolateNumber(x0, x1),
+          x2 = xi(curvature),
+          x3 = xi(1 - curvature),
+          y0 = d.source.y + d.sy,
+		  y5 = d.source.y + d.sy + d.dy,
+          y1 = d.target.y + d.ty,
+		  y4 = d.target.y + d.ty + d.tdy;
+
+      return "M" + x0 + "," + y0
+           + "C" + x2 + "," + y0
+           + " " + x3 + "," + y1
+           + " " + x1 + "," + y1
+		   + "V" + x1 + "," + y4
+		   + "C" + x3 + "," + y4
+           + " " + x2 + "," + y5
+           + " " + x0 + "," + y5
+		   + "Z" ;
     }
  
     link.curvature = function(_) {
@@ -96,6 +146,7 @@ d3.sankey = function() {
   // Compute the value (size) of each node by summing the associated links.
   function computeNodeValues() {
     nodes.forEach(function(node) {
+	  
       node.value = Math.max(
         d3.sum(node.sourceLinks, value),
         d3.sum(node.targetLinks, value)
@@ -110,12 +161,16 @@ d3.sankey = function() {
   function computeNodeBreadths() {
     var remainingNodes = nodes,
         nextNodes,
+		rightmostNodes,
         x = 0;
- 
+	
+	// Determine the "column" or x-position that the node should be at based on an arbitrary scale
     while (remainingNodes.length) {
       nextNodes = [];
       remainingNodes.forEach(function(node) {
-        node.x = x;
+        maxCol = x;		//Added
+		node.col = x;   //Added 
+		node.x = x;
         node.dx = nodeWidth;
         node.sourceLinks.forEach(function(link) {
           nextNodes.push(link.target);
@@ -124,12 +179,12 @@ d3.sankey = function() {
       remainingNodes = nextNodes;
       ++x;
     }
- 
-    //
+	
     moveSinksRight(x);
+	// x-position from arbitrary scale to actual scale (based on width)
     scaleNodeBreadths((size[0] - nodeWidth) / (x - 1));
   }
- 
+	  
   function moveSourcesRight() {
     nodes.forEach(function(node) {
       if (!node.targetLinks.length) {
@@ -183,6 +238,7 @@ d3.sankey = function() {
  
       links.forEach(function(link) {
         link.dy = link.value * ky;
+		link.tdy = link.dy;  	// Keep dy for source and create tdy for target dy
       });
     }
  
@@ -288,5 +344,28 @@ d3.sankey = function() {
     return link.value;
   }
  
+   // --- Added Function --------------------------------------
+  function reScaleRightNodes() {
+	var yStart = (size[1] - rightHeight) /2,
+		yRescaleAbs = d3.scale.linear()
+						   .domain([0,size[1]])
+						   .range([yStart, yStart + rightHeight]); 
+		yRescaleRel = d3.scale.linear()
+						   .domain([0,size[1]])
+						   .range([0, rightHeight]); 
+						   
+	nodes.forEach(function(node) {
+      if (node.col == maxCol) {
+        node.value = yRescaleAbs(node.value);
+		node.y = yRescaleAbs(node.y);
+        node.dy = yRescaleRel(node.dy);
+		node.targetLinks.forEach(function(link) {
+			link.ty = yRescaleRel(link.ty);
+			link.tdy = yRescaleRel(link.tdy);
+		});
+      }
+    });
+   
+  }
   return sankey;
-};
+}
