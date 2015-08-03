@@ -1,0 +1,27 @@
+{
+"nodes":[
+{"node":"0","name":"PushOut1"},
+{"node":"1","name":"PushOut2"},
+{"node":"2","name":"PushOut3"},
+{"node":"3","name":"Produced"},
+{"node":"4","name":"Imported"},
+{"node":"5","name":"Error"},
+{"node":"6","name":"Non Renewables"},
+{"node":"7","name":"Renewables"},
+{"node":"8","name":"USA"},
+{"node":"9","name":"Canada"},
+{"node":"10","name":"Mexico"}
+],
+"links":[
+{"source":"Produced","target":"PushOut1","value":"300","percentage":"97.72"},
+{"source":"Imported","target":"PushOut2","value":"5","percentage":"1.63"},
+{"source":"Error","target":"PushOut3","value":"2","percentage":"0.65"},
+{"source":"Non Renewables","target":"Produced","value":"240","percentage":"80"},
+{"source":"Renewables","target":"Produced","value":"60","percentage":"20"},
+{"source":"USA","target":"Non Renewables","value":"80","percentage":"27.59"},
+{"source":"USA","target":"Renewables","value":"20","percentage":"9.09"},
+{"source":"Canada","target":"Non Renewables","value":"70","percentage":"24.14"},
+{"source":"Canada","target":"Renewables","value":"30","percentage":"13.64"},
+{"source":"Mexico","target":"Non Renewables","value":"90","percentage":"31.03"},
+{"source":"Mexico","target":"Renewables","value":"10","percentage":"4.55"}
+]}

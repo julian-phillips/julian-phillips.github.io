@@ -33,7 +33,7 @@
 </style>
 <body>
  
-	<p id="chart"></p>
+	<div id="chart"></div>
  
     <script src="js/jquery.min.js"></script>
 	<script src="js/d3.min.js" charset="utf-8"></script>
@@ -44,7 +44,7 @@
 var units = "MkWh";
  
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = 500 - margin.left - margin.right,
+    width = 600 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
  
 var formatNumber = d3.format(",.0f"),    // zero decimal places
@@ -62,15 +62,16 @@ var svg = d3.select("#chart").append("svg")
 // Set the sankey diagram properties
 var sankey = d3.sankey()
     .nodeWidth(15)
-    .nodePadding(10)
+    .nodePadding(15)
     .size([width, height])
+	.scaleRight(true)
 	.rightHeight(100)
 	.leftHeight(height);
  
 var path = sankey.link();
  
 // load the data
-d3.json("data/testdata.json", function(error, graph) {
+d3.json("data/testProdData.json", function(error, graph) {
  
     var nodeMap = {};
     graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
@@ -85,7 +86,7 @@ d3.json("data/testdata.json", function(error, graph) {
   sankey
       .nodes(graph.nodes)
       .links(graph.links)
-      .layout(20);
+      .layout(0);
  
 // add in the links
   var link = svg.append("g").selectAll(".link")
@@ -93,8 +94,6 @@ d3.json("data/testdata.json", function(error, graph) {
     .enter().append("path")
       .attr("class", "link")
       .attr("d", path)
-	  //.attr("stroke", function (d) { return d.color })
-      //.style("stroke-width", function(d) { return Math.max(1, d.dy); })
       .sort(function(a, b) { return b.dy - a.dy; });
  
 // add the link titles
@@ -114,6 +113,7 @@ d3.json("data/testdata.json", function(error, graph) {
  
 // add the rectangles for the nodes
   node.append("rect")
+  .filter(function(d) { return !(d.right_ghost == 1) })   // Don't add text if it is a base node
       .attr("height", function(d) { return d.dy; })
       .attr("width", sankey.nodeWidth())
       .style("fill", function(d) { 
@@ -126,15 +126,13 @@ d3.json("data/testdata.json", function(error, graph) {
  
 // add in the title for the nodes
   node.append("text")
-      .attr("x", -6)
+    .filter(function(d) { return !(d.right_ghost == 1) })   // Don't add text if it is a base node
+      .attr("x", 6 + sankey.nodeWidth())
+      .attr("text-anchor", "start")
       .attr("y", function(d) { return d.dy /5; })
       .attr("dy", ".35em")
-      .attr("text-anchor", "end")
       .attr("transform", null)
-      .text(function(d) { return d.name; })
-    .filter(function(d) { return d.x < width / 2; })
-      .attr("x", 6 + sankey.nodeWidth())
-      .attr("text-anchor", "start");
+      .text(function(d) { return d.name; });
 
 });
  

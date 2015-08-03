@@ -5,9 +5,10 @@ d3.sankey = function() {
       size = [1, 1],
       nodes = [],
       links = [],
-	  maxCol = 0,
-	  rightHeight = 140,
-	  leftHeight = 1;
+	  scaleRight = false,
+	  rightHeight = 1, // Scale right-most nodes to this height (for production side)
+	  scaleLeft = false,  
+	  leftHeight = 1;  // Scale left-most nodes to this height (for consumption side)
  
   sankey.nodeWidth = function(_) {
     if (!arguments.length) return nodeWidth;
@@ -15,14 +16,26 @@ d3.sankey = function() {
     return sankey;
   };
   
+  sankey.scaleRight = function(_) {
+    if (!arguments.length) return scaleRight;
+    scaleRight = _;
+    return sankey;
+  };
+
+  sankey.scaleLeft = function(_) {
+    if (!arguments.length) return scaleLeft;
+    scaleLeft = _;
+    return sankey;
+  };
+  
   sankey.rightHeight = function(_) {
-    if (!arguments.length) return rightHeight;
+    if (!arguments.length) return size[1];
     rightHeight = +_;
     return sankey;
   };
   
   sankey.leftHeight = function(_) {
-    if (!arguments.length) return leftHeight;
+    if (!arguments.length) return size[1];
     leftHeight = +_;
     return sankey;
   };
@@ -58,7 +71,13 @@ d3.sankey = function() {
     computeNodeDepths(iterations);    // Depth   -> placement of nodes along y-axis
     computeLinkDepths();              // 
 	//Added
-	reScaleRightNodes();
+	if (scaleRight) {
+		reScaleRightNodes();
+	}
+	if (scaleLeft) {
+		reScaleLeftNodes();
+	}
+	
     return sankey;
   };
  
@@ -70,7 +89,7 @@ d3.sankey = function() {
   sankey.link = function() {
     var curvature = .5;
  
-    /* Original Curve
+    /* //Original Curve
 	function link(d) {
       var x0 = d.source.x + d.source.dx,
           x1 = d.target.x,
@@ -83,8 +102,8 @@ d3.sankey = function() {
            + "C" + x2 + "," + y0
            + " " + x3 + "," + y1
            + " " + x1 + "," + y1;
-    }*/
-	
+    }
+	/* */
 	function link(d) {
 	/* Draw path from top of source to top of target,
 	     go down vertically to bottom of target,
@@ -95,7 +114,7 @@ d3.sankey = function() {
 		 Top Target: 	(x1,y4)
 		 Bottom Target: (x0,y5)
 		All other coordinates are control points to create smooth curves
-	  */
+	*/ 
 	  var x0 = d.source.x + d.source.dx,
           x1 = d.target.x,
           xi = d3.interpolateNumber(x0, x1),
@@ -115,7 +134,7 @@ d3.sankey = function() {
            + " " + x2 + "," + y5
            + " " + x0 + "," + y5
 		   + "Z" ;
-    }
+    } 
  
     link.curvature = function(_) {
       if (!arguments.length) return curvature;
@@ -168,8 +187,6 @@ d3.sankey = function() {
     while (remainingNodes.length) {
       nextNodes = [];
       remainingNodes.forEach(function(node) {
-        maxCol = x;		//Added
-		node.col = x;   //Added 
 		node.x = x;
         node.dx = nodeWidth;
         node.sourceLinks.forEach(function(link) {
@@ -180,11 +197,18 @@ d3.sankey = function() {
       ++x;
     }
 	
-    moveSinksRight(x);
+	if (scaleRight) {
+		moveSinksRight(x);
+		moveSourcesRight();
+	}
+	if (scaleLeft) {
+		tagSourcesLeft();
+	}
+	
 	// x-position from arbitrary scale to actual scale (based on width)
     scaleNodeBreadths((size[0] - nodeWidth) / (x - 1));
   }
-	  
+  
   function moveSourcesRight() {
     nodes.forEach(function(node) {
       if (!node.targetLinks.length) {
@@ -197,10 +221,19 @@ d3.sankey = function() {
     nodes.forEach(function(node) {
       if (!node.sourceLinks.length) {
         node.x = x - 1;
+		node.right_ghost = 1;
       }
     });
   }
- 
+  
+  function tagSourcesLeft() {
+    nodes.forEach(function(node) {
+      if (!node.targetLinks.length) {
+		node.left_ghost = 1;
+      }
+    });
+  }
+  
   function scaleNodeBreadths(kx) {
     nodes.forEach(function(node) {
       node.x *= kx;
@@ -344,7 +377,7 @@ d3.sankey = function() {
     return link.value;
   }
  
-   // --- Added Function --------------------------------------
+   // --- Added Functions --------------------------------------
   function reScaleRightNodes() {
 	var yStart = (size[1] - rightHeight) /2,
 		yRescaleAbs = d3.scale.linear()
@@ -355,7 +388,7 @@ d3.sankey = function() {
 						   .range([0, rightHeight]); 
 						   
 	nodes.forEach(function(node) {
-      if (node.col == maxCol) {
+      if (node.right_ghost == 1) {
         node.value = yRescaleAbs(node.value);
 		node.y = yRescaleAbs(node.y);
         node.dy = yRescaleRel(node.dy);
@@ -365,7 +398,28 @@ d3.sankey = function() {
 		});
       }
     });
-   
   }
+  function reScaleLeftNodes() {
+	var yStart = (size[1] - leftHeight) /2,
+		yRescaleAbs = d3.scale.linear()
+						   .domain([0,size[1]])
+						   .range([yStart, yStart + leftHeight]); 
+		yRescaleRel = d3.scale.linear()
+						   .domain([0,size[1]])
+						   .range([0, leftHeight]); 
+						   
+	nodes.forEach(function(node) {
+      if (node.left_ghost == 1) {
+        node.value = yRescaleAbs(node.value);
+		node.y = yRescaleAbs(node.y);
+        node.dy = yRescaleRel(node.dy);
+		node.sourceLinks.forEach(function(link) {
+			link.sy = yRescaleRel(link.sy);
+			link.dy = yRescaleRel(link.dy);
+		});
+      }
+    });
+  }
+  
   return sankey;
 }
