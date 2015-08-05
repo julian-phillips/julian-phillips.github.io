@@ -76,7 +76,7 @@ function getflowgroups(flow)
     var flowgroups = []
     if (flow == 'production')
     {
-        flowgroups = ['production', 'consumption'];
+        flowgroups = ['produced', 'consumed'];
     }
     else if (flow == "renewable")
     {
@@ -97,7 +97,19 @@ function getflowgroups(flow)
 function getflowtypes(flow)
 {
     var flowlist = [];
-    if (flow == "renewable")
+    if (flow == "consumption")
+    {
+        flowlist = consumption;
+    }
+    else if (flow == "production")
+    {
+        flowlist = ['produced', 'imported', 'prod_error'];
+    }
+    else if (flow == "produced")
+    {
+        flowlist = ['renewable', 'nonrenewable'];
+    }
+    else if (flow == "renewable")
     {
         flowlist = renewables;
     }
@@ -105,44 +117,11 @@ function getflowtypes(flow)
     {
         flowlist = nonrenewables;
     }
-    else if (flow == "consumption")
-    {
-        flowlist = consumption;
-    }
-    else if (flow == "production")
-    {
-        flowlist = production;
-    }
-    else if (flow == "import")
-    {
-        flowlist = imports;
-    }
-    else if (flow == "imported")
-    {
-        flowlist = imports;
-    }
-    else if (flow == "exports")
-    {
-        flowlist = exports;
-    }
-    else if (flow == "exported")
-    {
-        flowlist = exports;
-    }
-    else if (flow == "import_export")
-    {
-        flowlist = import_export;
-    }
     else
     {
-        flowlist = all;
+        flowlist = [];
     }
-    var flowtypes = [];
-    for (j = 0; j < flowlist.length; j++)
-    {
-        flowtypes[flowlist[j]] = 1;
-    }
-    return Object.keys(flowtypes).sort();
+    return flowlist;
 }
 
 function getwheeldata(name, selectedyear, valuetype, adjoining)
@@ -328,8 +307,151 @@ var SankeyObjMin = function(o)
     this.children = o.children;
 }
 
+var SankeyNode = function(node, name)
+{
+    this.node = node;
+    this.name = name;
+}
+var SankeyLink = function(source, target, region, flow)
+{
+    this.source = source;
+    this.target = target;
+    this.value = 0;
+    this.percentage = 0;
+    this.region = region;
+    this.flow = flow;
+    this.units = '';
+}
 
-function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels)
+function getsankeydata(name, selectedyear, valuetype, flow, hierarchy)
+{
+    var sankeydata = [];
+    var flowtypes = getflowtypes(flow);
+    var nodes = [];
+    var links = [];
+    var subregions = getsubregions2(name);
+    for (var i = 0; i < flowtypes.length; i++)
+    {
+        nodes.push(new SankeyNode(nodes.length, 'PushOut' + (nodes.length + 1).toString()));
+    }
+    for (var i = 0; i < flowtypes.length; i++)
+    {
+        var flow = flowtypes[i];
+        nodes.push(new SankeyNode(nodes.length, flow));
+        links.push(new SankeyLink(flow, 'PushOut' + (i + 1).toString(), name, flow));
+    }
+    if (hierarchy == 'energy')
+    {
+        for (var i = 0; i < flowtypes.length; i++)
+        {
+            var flow = flowtypes[i];
+            var subtypes = getflowtypes(flow);
+            for (var j = 0; j < subtypes.length; j++)
+            {
+                var subflow = subtypes[j];
+                nodes.push(new SankeyNode(nodes.length, subflow));
+                links.push(new SankeyLink(subflow, flow, name, subflow));
+                for (var k = 0; k < subregions.length; k++)
+                {
+                    links.push(new SankeyLink(subregions[k], subflow, subregions[k], subflow));
+                }
+            }
+        }
+    }
+    // add regions/countries to node list
+    for (var i = 0; i < subregions.length; i++)
+    {
+        nodes.push(new SankeyNode(nodes.length, subregions[i]));
+    }
+    // look up the electricity values and set the percentages
+    setsankeyvalues(links, selectedyear, valuetype);
+    return {'nodes':nodes, 'links':links};
+
+}
+function setsankeyvalues(links, selectedyear, valuetype)
+{
+    flowtotals = {};
+    for (i in links)
+    {
+        var link = links[i];
+        var rdata = data[link.region][selectedyear];
+        var units = getunits(valuetype, rdata.population);
+        var target = link.target;
+        if (target.substring(0,7).toLowerCase() == 'pushout')
+        {
+            target = 'pushout';
+        }
+        link.value = rdata[link.flow] * units.mult;
+        link.units = units.units;
+        if (typeof flowtotals[target] == 'undefined')
+        {
+            flowtotals[target] = link.value;
+        }
+        else
+        {
+            flowtotals[target] += link.value;
+        }
+    }
+    // now set percents
+    for (i in links)
+    {
+        var link = links[i];
+        var target = link.target;
+        if (target.substring(0,7).toLowerCase() == 'pushout')
+        {
+            target = 'pushout';
+        }
+        var total = flowtotals[target];
+        link.percentage = (100 * (link.value / total)).toFixed(2);
+    }
+}
+                        
+        
+function getsubregions2(name)
+{
+    var children = [];
+    if (name == 'World')
+    {
+        children = Object.keys(regions).sort();
+    }
+    else
+    {
+        var parent = data[name];
+        if (parent.isregion == 'Y')
+        {
+            children = Object.keys(regions[name]).sort();
+        }
+        else if (parent.issubregion == 'Y')
+        {
+            children = regions[parent.region][name];
+
+        }
+        else if (parent.iscountry == 'Y')
+        {
+            children = [];
+        }
+    }
+    return children;
+        
+        
+    if (region.isregion == 'Y')
+    {
+        regionlist = Object.keys(regions[parent.name]).sort();
+    }
+    else if (region.issubregion == 'Y')
+    {
+        regionlist
+    }
+    else
+    {
+        // this is a country, no further details necessary
+        regionlist = [];
+    }
+ 
+}
+
+
+function getsankeydata_old(name, selectedyear, valuetype, flow, hierarchy)
 {
     var sankeydata = [];
 
@@ -337,6 +459,8 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
     var flowgroups = getflowgroups(flow);
     var sankeydata = [];
 
+    console.log([name, flowgroups, hierarchy].join(', '));
+    
     if (hierarchy == 'energy')
     {
         var yeardata = data[name][selectedyear];
@@ -345,6 +469,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
         for (var i = 0; i < flowgroups.length; i++)
         {
             var cflow = flowgroups[i];
+            console.log([cflow, yeardata[cflow]].join(', '));
             if (yeardata[cflow] > 0)  // exclude records with zero value
             {
                 var r = new SankeyObj('energy');
@@ -358,6 +483,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
                 r.children = getsankeychildrenregions(r, cflow, units);
                 r.ctype = 'region';
                 sankeydata.push(r);
+                console.log(r);
             }
         }
     }

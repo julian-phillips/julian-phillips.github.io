@@ -65,21 +65,15 @@
           <option value="percap">Per Capita</option>
         </select>
       </span>
+      <!--
       <span>Flow Types
         <select id="flow" onChange="updatedata()" >
-          <!--
-          <option value="all" >All</option>
-          <option value="consumption">Consumption</option>
-          <option value="production">Production</option>
-          <option value="renewable">Renewable</option>
-          <option value="nonrenewable">Non-Renewable</option>
-          <option value="import_export" selected>Import / Export</option>
-          -->
           <!-- <option value="production" >Production / Consumption</option> -->
           <option value="renewable" selected>Renewable / Non-renewable</option>
           <option value="import" >Import / Export</option>
         </select>
       </span>
+      -->
       <span>Hierarchy
         <select id="hierarchy" onChange="updatedata()" >
           <option value="region" >Region first -> then energy</option>
@@ -87,6 +81,7 @@
         </select>
       </span>
       <br/>
+      <!--
       <span title="The Adjoining Years option will NOT be a part of the actual UI">[ Wheel Data Adjoining Years
         <select id="adjoining" onChange="updatedata()" >
           <option value="-1" >All</option>
@@ -97,6 +92,7 @@
         </select>
          ]
       </span>
+      -->
     </div>
     <div class="code" id="code1" ></div>
     <div class="codemiddle" id="code2" ></div>
@@ -104,30 +100,24 @@
 
     <script>
      var data = {};
-
-     window.onload = init
-
-     function init()
-     {
-       data = loaddata();
-       updatedata();
-     }
-
+     window.onload = function() {data = loaddata(); updatedata(); }
 
      function updatedata()
      {
        var region = document.getElementById("region").value;
        var year = document.getElementById("year").value;
        var valuetype = document.getElementById("units").value;
-       var flow = document.getElementById("flow").value;
+       //var flow = document.getElementById("flow").value;
+       var flow = '';
        var hierarchy = document.getElementById("hierarchy").value;
-       var adjoiningyears = parseInt(document.getElementById("adjoining").value);
+       //var adjoiningyears = parseInt(document.getElementById("adjoining").value);
+       var adjoiningyears = 2;
 
        var wheeldata = getwheeldata(region, year, valuetype, adjoiningyears);
-       var maxlevels = 2;
-       var sankeydata = getsankeydata(region, year, valuetype, flow, hierarchy, maxlevels);
+       var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy);
+       //var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy);
        var topfivedata = gettopfivedata(year, valuetype);
-       drawdata([wheeldata, sankeydata, topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
+       drawdata([wheeldata, sankeyproddata, topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
      }
 
      function drawdata(dataarray, labels)
