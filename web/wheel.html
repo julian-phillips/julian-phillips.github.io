@@ -223,17 +223,17 @@ function wheel() {
 			// Define the gradient colors
 			gradient1.append("svg:stop")
 				.attr("offset", "0%")
-				.attr("stop-color", "rgb(0,0,0)")
+				.attr("stop-color", "black)")
 				.attr("stop-opacity", 1);
 
 			gradient1.append("svg:stop")
 				.attr("offset", "50%")
-				.attr("stop-color", "rgb(50,50,50)")
+				.attr("stop-color", "white")
 				.attr("stop-opacity", 1);
 			
 			gradient1.append("svg:stop")
 				.attr("offset", "100%")
-				.attr("stop-color", "rgb(125,125,125)")
+				.attr("stop-color", "black")
 				.attr("stop-opacity", 1);
 			
 			svg.selectAll("grad1")
@@ -242,170 +242,12 @@ function wheel() {
 			   .append("rect")
 				.attr("y", 0)
 			   .attr("x", 0)
-			   .attr("height", 118.57142857142857)
+			   .attr("height", h)
 			   .attr("width", w)
 			   .attr("fill", 'url(#gradient1)')
 			   .attr("fill-opacity",.7)
 			   .attr("transform", "translate(15,15)");
 			
-/////////////////////////////////////////////2///////////////////////////			
-			var year2 = [1990]
-			var gradient2 = svg.append("svg:defs")
-				.append("svg:linearGradient")
-				.attr("id", "gradient2")
-				.attr("x1", "0%")
-				.attr("y1", "0%")
-				.attr("x2", "0%")
-				.attr("y2", "100%")
-				.attr("spreadMethod", "pad");
-
-			// Define the gradient colors
-			gradient2.append("svg:stop")
-				.attr("offset", "0%")
-				.attr("stop-color", "rgb(125,125,125)")
-				.attr("stop-opacity", 1);
-
-			gradient2.append("svg:stop")
-				.attr("offset", "50%")
-				.attr("stop-color", "rgb(150,150,150)")
-				.attr("stop-opacity", 1);
-			
-			gradient2.append("svg:stop")
-				.attr("offset", "100%")
-				.attr("stop-color", "rgb(225,225,225)")
-				.attr("stop-opacity", 1);
-			
-			svg.selectAll("grad2")
-			.data(year2)
-				.enter()			
-			   .append("rect")
-				.attr("y", 125.873015873)
-			   .attr("x", 0)
-			   .attr("height", 177.857142857)
-			   .attr("width", w)
-			   .attr("fill", 'url(#gradient2)')
-			   .attr("fill-opacity",.5)
-			   .attr("transform", "translate(15,15)");
-				
-/////////////////////////////////////////////3///////////////////////////				
-			var year3 = [1990]
-			var gradient3 = svg.append("svg:defs")
-				.append("svg:linearGradient")
-				.attr("id", "gradient3")
-				.attr("x1", "0%")
-				.attr("y1", "0%")
-				.attr("x2", "0%")
-				.attr("y2", "100%")
-				.attr("spreadMethod", "pad");
-
-			// Define the gradient colors
-			gradient3.append("svg:stop")
-				.attr("offset", "0%")
-				.attr("stop-color", "rgb(250,250,250)")
-				.attr("stop-opacity", 1);
-
-			gradient3.append("svg:stop")
-				.attr("offset", "50%")
-				.attr("stop-color", "rgb(255,255,255)")
-				.attr("stop-opacity", 1);
-			
-			gradient3.append("svg:stop")
-				.attr("offset", "100%")
-				.attr("stop-color", "rgb(250,250,250)")
-				.attr("stop-opacity", 1);
-			
-			svg.selectAll("grad3")
-			.data(year3)
-				.enter()			
-			   .append("rect")
-				.attr("y", 316.428571428)
-			   .attr("x", 0)
-			   .attr("height", 237.142857142)
-			   .attr("width", w)
-			   .attr("fill", 'url(#gradient3)')
-			   .attr("fill-opacity",.5)
-			   .attr("transform", "translate(15,15)");
-
-/////////////////////////////////////////////4///////////////////////////				
-			var year4 = [1990]
-			var gradient4 = svg.append("svg:defs")
-				.append("svg:linearGradient")
-				.attr("id", "gradient4")
-				.attr("x1", "0%")
-				.attr("y1", "0%")
-				.attr("x2", "0%")
-				.attr("y2", "100%")
-				.attr("spreadMethod", "pad");
-
-			// Define the gradient colors
-			gradient4.append("svg:stop")
-				.attr("offset", "0%")
-				.attr("stop-color", "rgb(225,225,225)")
-				.attr("stop-opacity", 1);
-
-			gradient4.append("svg:stop")
-				.attr("offset", "50%")
-				.attr("stop-color", "rgb(150,150,150)")
-				.attr("stop-opacity", 1);
-			
-			gradient4.append("svg:stop")
-				.attr("offset", "100%")
-				.attr("stop-color", "rgb(125,125,125)")
-				.attr("stop-opacity", 1);
-			
-			svg.selectAll("grad4")
-			.data(year4)
-				.enter()			
-			   .append("rect")
-				.attr("y", 566.2698412698)
-			   .attr("x", 0)
-			   .attr("height",177.857142857)
-			   .attr("width", w)
-			   .attr("fill", 'url(#gradient4)')
-			   .attr("fill-opacity",.5)
-			   .attr("transform", "translate(15,15)");
-
-/////////////////////////////////////////////5///////////////////////////				
-			var year5 = [1990]
-			var gradient5 = svg.append("svg:defs")
-				.append("svg:linearGradient")
-				.attr("id", "gradient5")
-				.attr("x1", "0%")
-				.attr("y1", "0%")
-				.attr("x2", "0%")
-				.attr("y2", "100%")
-				.attr("spreadMethod", "pad");
-
-			// Define the gradient colors
-			gradient5.append("svg:stop")
-				.attr("offset", "0%")
-				.attr("stop-color", "rgb(125,125,125)")
-				.attr("stop-opacity", 1);
-
-			gradient5.append("svg:stop")
-				.attr("offset", "50%")
-				.attr("stop-color", "rgb(50,50,50)")
-				.attr("stop-opacity", 1);
-			
-			gradient5.append("svg:stop")
-				.attr("offset", "100%")
-				.attr("stop-color", "rgb(0,0,0)")
-				.attr("stop-opacity", 1);
-			
-			svg.selectAll("grad5")
-			.data(year5)
-				.enter()			
-			   .append("rect")
-				.attr("y", 751.4285714)
-			   .attr("x", 0)
-			   .attr("height", 118.57142857142857)
-			   .attr("width", w)
-			   .attr("fill", 'url(#gradient5)')
-			   .attr("fill-opacity",.7)
-			   .attr("transform", "translate(15,15)");			   
-//////////////////////////////////////////////////////////////////////////////////////
-////FOR GRADIENT EXPERIEMENTS ONLY.  CANNOT BE FINAL
-//////////////////////////////////////////////////////////////////////////////////////
 }			
 		</script>
 	</head>
