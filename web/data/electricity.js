@@ -172,7 +172,7 @@ function getwheeldata(name, selectedyear, valuetype, adjoining)
         }
         wheeldata.push(r);
     }
-    return [wheeldata];
+    return wheeldata;
 }
 
 var minyear = 1990;
@@ -416,8 +416,8 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
     tmp.units = getunits(valuetype, 1).units;
     // collapse small percentage records into an aggregate record
     sankeydata = aggregate(sankeydata, tmp);
-    //return [sankeydata];
-    return [simplify(sankeydata)];
+    //return sankeydata;
+    return simplify(sankeydata);
 }
 
 function simplify(o)
@@ -663,7 +663,7 @@ function gettopfivedata(year, valuetype)
         topfivedata[category].settopfive();
         tmp.push(topfivedata[category]);
     }
-    return [tmp];
+    return tmp;
 }
 function gettopfivecountrieslist(year, valuetype, flow)
 {
