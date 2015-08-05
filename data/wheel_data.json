@@ -1,0 +1,40 @@
+[{
+ "name": "Eastern Asia",
+ "year": "2005",
+ "selected": "N",
+ "population": "1530373",
+ "electricity": "4242761",
+ "units": "MkWh"
+},
+{
+ "name": "Eastern Asia",
+ "year": "2006",
+ "selected": "N",
+ "population": "1530820",
+ "electricity": "4642707",
+ "units": "MkWh"
+},
+{
+ "name": "Eastern Asia",
+ "year": "2007",
+ "selected": "Y",
+ "population": "1541280",
+ "electricity": "5131727",
+ "units": "MkWh"
+},
+{
+ "name": "Eastern Asia",
+ "year": "2008",
+ "selected": "N",
+ "population": "1551745",
+ "electricity": "5291361",
+ "units": "MkWh"
+},
+{
+ "name": "Eastern Asia",
+ "year": "2009",
+ "selected": "N",
+ "population": "1562209",
+ "electricity": "5304822",
+ "units": "MkWh"
+}]
