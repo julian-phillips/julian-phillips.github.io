@@ -34,7 +34,7 @@
       <span>Country/Region 
         <select id="region" onChange="updatedata()" >
           <option value="World" >World</option>
-          <opiton value="t5renewable" >Top 5 Renewable Producers</opiton>
+          <opiton value="Top 5 Renewable" >Top 5 Renewable</opiton>
           <option value="Asia">Asia</option>
           <option value="Eastern Asia" selected >Eastern Asia</option>
           <option value="China">China</option>

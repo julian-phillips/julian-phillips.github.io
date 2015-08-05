@@ -40,7 +40,11 @@ function getcountries(region, subregion)
 
 function getdescription(name)
 {
-    return ((descriptions[name] == null) ? name : descriptions[name]);
+    return ((descriptions[name] == null) ? capitalize(name) : descriptions[name]);
+}
+function capitalize(s)
+{
+    return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 function isnumeric(n) {
@@ -58,9 +62,9 @@ function getunits(valuetype, population)
             mult = 1000000 / Number(population);
             units = "kWh per capita"
         }
-        else
+        else // no population data available
         {
-            mult = 0;
+            mult = -1;
             units = "kWh per capita"
         }
     }
@@ -141,22 +145,20 @@ function getflowtypes(flow)
     return Object.keys(flowtypes).sort();
 }
 
-function getwheeldata(names, years, valuetype, adjoining)
+function getwheeldata(name, selectedyear, valuetype, adjoining)
 {
     var wheeldata = [];
-    var region = names[0];
-    var selectedyear = years[0];
     var yearlist = getyearlist(selectedyear, adjoining)
     for (var i = 0; i < yearlist.length; i++)
     {
         var year = yearlist[i];
         var r = new Object();
-        r['name'] = region;
+        r['name'] = name;
         r['year'] = year;
         r['selected'] = (year == selectedyear) ? 'Y' : 'N';
         if (year >= minyear && year <= maxyear)
         {
-            var facts = data[region][year];
+            var facts = data[name][year];
             r['population'] = facts.population;
             var units = getunits(valuetype, r.population);
             r['electricity'] = (units.mult * facts.electricity).toFixed(0);
@@ -170,7 +172,7 @@ function getwheeldata(names, years, valuetype, adjoining)
         }
         wheeldata.push(r);
     }
-    return wheeldata;
+    return [wheeldata];
 }
 
 var minyear = 1990;
@@ -181,7 +183,7 @@ function getyearlist(selectedyear, adjoining)
     // if adjoining < 0, return all years
     var selectedyear = parseInt(selectedyear);
     var yearlist = [];
-    var padding = 3
+    var padding = 3 // number of extra years to facilitate wheel widget
     var start = minyear - padding;
     var end = maxyear + padding;
     if (adjoining >= 0)
@@ -198,6 +200,11 @@ function getyearlist(selectedyear, adjoining)
     return yearlist;
 }
 
+/*
+calculate percentages
+level: array of values
+target: value of summed percentages
+*/
 function setpercent(level, target)
 {
     var total = 0;
@@ -210,7 +217,7 @@ function setpercent(level, target)
         var p = 0;
         if (total > 0)
         {
-            p = (level[i]['value'] / total * target);
+            p = (level[i]['value'] / total) * target;
         }
         level[i]['percent'] = p;
         var children = level[i]['children'];
@@ -409,8 +416,8 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, maxlevels
     tmp.units = getunits(valuetype, 1).units;
     // collapse small percentage records into an aggregate record
     sankeydata = aggregate(sankeydata, tmp);
-    //return sankeydata;
-    return simplify(sankeydata);
+    //return [sankeydata];
+    return [simplify(sankeydata)];
 }
 
 function simplify(o)
@@ -457,7 +464,7 @@ function aggregate(o, proto)
         if (p < lowthreshold || i >= maxsankey)
         {
             r.value += v.value;
-            r.description += (r.description == '') ? v.name : ', ' + v.name;
+            r.description += (r.description == '') ? capitalize(v.name) : ', ' + capitalize(v.name);
             r.percent += v.percent;
         }
         else
@@ -587,30 +594,11 @@ function getsankeyenergydetails(parent, region, yeardata, flow, units)
     return details;
 }
 
-/*
-{
-  "category" : "Top Producers",
-  "year": 1999,
-  "unit": "kilowatts"
-  "countries" :[
-  {
-  "Name" : "USA",
-  "Ranking": 1
-  "Value" : asdfasdfasdf
-  },
-  {
-  "Name" : "Japan",
-  "Ranking": 2
-  "Value" : asdfasdfasdf
-  }
-  ]
-}
-
-*/
 var TopFive = function(category, year, units)
 {
     this.category = category;
     this.year = year;
+    this.total = 0;
     this.units = units;
     this.countries = [];
     this.addcountry = function(country)
@@ -624,9 +612,10 @@ var TopFive = function(category, year, units)
     this.settopfive = function()
     {
         this.countries.sort(sortbyvalue);
-        for (var i = 0; i < 5; i++)
+        for (var i = 0; i < 5 && i < this.countries.length; i++)
         {
             this.countries[i].rank = (i + 1);
+            this.total += this.countries[i].value;
         }
         this.countries.splice(5, Number.MAX_VALUE);
     }
@@ -674,7 +663,32 @@ function gettopfivedata(year, valuetype)
         topfivedata[category].settopfive();
         tmp.push(topfivedata[category]);
     }
-    return tmp;
+    return [tmp];
+}
+function gettopfivecountrieslist(year, valuetype, flow)
+{
+    var t5 = gettopfivecountries(year, valuetype, flow);
+    countries = [];
+    for (var i = 0; i < t5.countries.length; i++)
+    {
+        countries.push(t5.countries[i].name);
+    }
+    return countries;
+}
+
+function gettopfivecountries(year, valuetype, flow)
+{
+    var t5 = new TopFive(flow, year, null);
+    var yeardata = getcountryyeardata(year);
+    for (var name in yeardata)
+    {
+        var yd = yeardata[name];
+        var units = getunits(valuetype, yd.population);
+        var value = Math.round(units.mult * yd[flow]);
+        t5.addcountry(new TopFiveCountry(name, 0, value, units.units));
+    }
+    t5.settopfive();
+    return t5;
 }
 
 function getcountryyeardata(year)
@@ -685,6 +699,7 @@ function getcountryyeardata(year)
     for (var i = 0; i < regionlist.length; i++)
     {
         var region = data[regionlist[i]];
+        // include only those for countries, not regions or aggregates
         if (region.iscountry == 'Y' && regionlist[i] != 'Micronesia') // hack for Micronesia
         {
             yeardata[regionlist[i]] = region[year];
