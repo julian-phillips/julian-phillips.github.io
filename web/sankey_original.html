@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<!-- sankey -->
+	<style>
+	#chart {
+	  height: 500px;
+	}
+	.node rect {
+	  cursor: move;
+	  fill-opacity: .9;
+	  shape-rendering: crispEdges;
+	}
+	.node text {
+	  pointer-events: none;
+	  text-shadow: 0 1px 0 #fff;
+	}
+	.link {
+	  stroke: #000;
+	  stroke-opacity: .2;
+	}
+	.link:hover {
+	  opacity: .5;
+	}
+	</style>
+	
+	<script>
+		//this specifies pixel details at each level
+		var layoutDetails = [
+		{
+			padding: "0",
+			height: "200",
+			childPadding:10,
+			widthPercentage:"0"
+		},
+		{
+			padding: "0",
+			height: "300",
+			childPadding: 5,
+			widthPercentage:"40"
+		},
+		{
+			padding: "0",
+			height: "max",
+			childPadding: "0",
+			widthPercentage:"100"
+		}
+		];
+	</script>
+
+<!--end sankey-->
+	
+</head>
+
+<body>
+
+	<!-- Section: sankeys -->
+	<p id="chart"></p>
+	
+	<!-- Core JavaScript Files -->
+    <script src="js/jquery.min.js"></script>
+	<script src="js/d3.min.js" charset="utf-8"></script>
+    <script src="js/sankeyHierarchy.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	
+
+<script>
+	var units = "kWh";
+	
+	var margin = {top: 10, right: 10, bottom: 10, left: 10},
+		width = 400 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+		
+	var formatNumber = d3.format(",.0f"),  	// zero decimal places
+		format = function(d) { return formatNumber(d) + " " + units; },
+		color = d3.scale.category20();
+	
+	// append the svg canvas to the page	
+	var svg = d3.select("#chart").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	    .append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	// Set the sankey diagram properties
+	var sankey = d3.sankeyHierarchy()
+		.nodeWidth(10)
+		.globalHeight(height)
+		.globalWidth(width)
+		.layoutDetails(layoutDetails);
+	
+	//path variable as a pointer to the sankey function that make the links between the nodes
+	var path = sankey.link();
+	
+	// -- TO DO: READ REAL DATA -------------------------------------------------
+	// Hard-coded test data
+	var nodes = [
+    {
+        "name": "Renewables", "level": "0", "percent": 30, "children": [
+            { "name": "CND", "level": "1", "percent": 12, "children": [{ "name": "CND", "level": "2", "percent": 12, "children": [] }] },
+            { "name": "USA", "level": "1", "percent": 10, "children": [{ "name": "USA", "level": "2", "percent": 10, "children": [] }] },
+            { "name": "MX", "level": "1", "percent": 8, "children": [{ "name": "MX", "level": "2", "percent": 8, "children": [] }] }
+        ]
+    },
+    {
+        "name": "Wind", "level": "0", "percent": 70, "children": [
+            { "name": "CND", "level": "1", "percent": 20, "children": [{ "name": "CND", "level": "2", "percent": 20, "children": [] }] },
+            { "name": "USA", "level": "1", "percent": 24, "children": [{ "name": "USA", "level": "2", "percent": 24, "children": [] }] },
+            { "name": "MX", "level": "1", "percent": 26, "children": [{ "name": "MX", "level": "2", "percent": 26, "children": [] }] }
+        ]
+    },
+    ];
+	// --------------------------------------------------------------------------
+	
+    sankey
+      .nodes(nodes)
+      .generateCoords();
+	  
+	// add in the links
+    var link = svg.append("g").selectAll(".link")
+      .data(sankey.paths())
+    .enter().append("path")
+      .attr("class", "link")
+      .attr("d", function (d) { return d.d })
+      .attr("fill", function (d) { return d.color })
+	  .attr("data-toggle","tooltip")
+	  .attr("title",function(d) { return  d.name + "\n" + d.percent + "%"})
+	  .style('opacity',0)
+	 .transition()
+		.delay(function(d, i) { return i * 500 })
+    .duration(500)
+    .style('width', function(d) { return (d * 150) + 'px'; })
+    .style('opacity', 1) 
+    /*
+    link.append("title")
+      .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + format(d.value); });
+      */
+	
+	// add in the nodes  
+    var node = svg.append("g").selectAll(".node")
+      .data(sankey.flatNodesList())
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+    // add the rectangles for the nodes
+    node.append("rect")
+      .attr("height", function(d) { return d.dy; })
+      .attr("width", sankey.nodeWidth())
+      .style("fill", function(d) { return d.color})
+	  .style('opacity',0)
+      .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+      .attr("title",function(d) { return d.name + "\n" + d.percent + "%"})
+	   .transition()
+		.delay(function(d, i) { return i * 500 })
+    .duration(500)
+    .style('width', function(d) { return (d * 150) + 'px'; })
+    .style('opacity', 1)
+      //.text(function(d) { return d.name + "\n"});
+
+	
+	/*  
+	// add in the title for the nodes
+	  node.append("text")
+		  .attr("x", -6)
+		  .attr("y", function(d) { return d.dy / 2; })
+		  .attr("dy", ".35em")
+		  .attr("text-anchor", "end")
+		  .attr("transform", null)
+		  .text(function(d) { return d.name; })
+		.filter(function(d) { return d.x < width / 2; })
+		  .attr("x", 6 + sankey.nodeWidth())
+		  .attr("text-anchor", "start");
+      */
+	
+	$(document).ready(function () {
+		$("svg rect").tooltip({
+			'container': 'body',
+			'placement': 'top'
+		});
+		$("svg path").tooltip({
+			'container': 'body',
+			'placement': 'right'
+		});
+	});
+</script>
+
+</body>
+
+</html>

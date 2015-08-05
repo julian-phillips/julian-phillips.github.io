@@ -9,7 +9,7 @@
      }
      .code {
        float: left;
-       width: 33%;
+       width: 27%;
        margin-left:0px;
        margin-right:0px;
        padding-left:0px;
@@ -18,7 +18,7 @@
      }
      .codemiddle {
        float: left;
-       width: 33%;
+       width: 43%;
        margin-left:0px;
        margin-right:0px;
        padding-left:0px;
@@ -104,7 +104,49 @@
 
     <script>
      var data = {};
+
      window.onload = init
+
+     function init()
+     {
+       data = loaddata();
+       updatedata();
+     }
+
+
+     function updatedata()
+     {
+       var regions = getmultiples(document.getElementById("region"));
+       var years = getmultiples(document.getElementById("year"));
+       var valuetype = document.getElementById("units").value;
+       var flows = getmultiples(document.getElementById("flow"));
+       var hierarchy = document.getElementById("hierarchy").value;
+       var adjoiningyears = parseInt(document.getElementById("adjoining").value);
+
+       var wheeldata = getwheeldata(regions, years, valuetype, adjoiningyears);
+       var maxlevels = 2;
+       var sankeydata = getsankeydata(regions[0], years[0], valuetype, flows[0], hierarchy, maxlevels);
+       var topfivedata = gettopfivedata(years[0], valuetype);
+       drawdata([wheeldata, sankeydata, topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
+     }
+
+     function drawdata(dataarray, labels)
+     {
+       for (var i = 0; i < dataarray.length; i++)
+       {
+         var thisdata = dataarray[i];
+        var s = "";
+        thisdata.forEach(function(item, index, array)
+                         {
+                             s = s + JSON.stringify(item, null, '  ') + "\n";
+                         });
+        s = "<hr/><br/><strong>" + labels[i] + "</strong><br/><hr/>" + "<pre>" + s;
+        s = s + "</pre>" + "<hr/>";
+        var c = "code" + (i + 1);
+        document.getElementById(c).innerHTML = s;
+       }
+     }
+     
     </script>
 
   </body>

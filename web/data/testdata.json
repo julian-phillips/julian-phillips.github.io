@@ -1,0 +1,16 @@
+{
+"nodes":[
+{"node":"0","name":"Non Renewables"},
+{"node":"1","name":"Renewables"},
+{"node":"2","name":"Canada"},
+{"node":"3","name":"USA"},
+{"node":"4","name":"Mexico"}
+],
+"links":[
+{"source":"Canada","target":"Non Renewables","value":"70","percentage":"0.32"},
+{"source":"Canada","target":"Renewables","value":"30","percentage":"0.38"},
+{"source":"USA","target":"Non Renewables","value":"60","percentage":"0.27"},
+{"source":"USA","target":"Renewables","value":"40","percentage":"0.5"},
+{"source":"Mexico","target":"Non Renewables","value":"90","percentage":"0.41"},
+{"source":"Mexico","target":"Renewables","value":"10","percentage":"0.13"}
+]}
