@@ -68,7 +68,6 @@
       <!--
       <span>Flow Types
         <select id="flow" onChange="updatedata()" >
-          <!-- <option value="production" >Production / Consumption</option> -->
           <option value="renewable" selected>Renewable / Non-renewable</option>
           <option value="import" >Import / Export</option>
         </select>
@@ -117,7 +116,7 @@
        var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy);
        //var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy);
        var topfivedata = gettopfivedata(year, valuetype);
-       drawdata([wheeldata, sankeyproddata, topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
+       drawdata([wheeldata, [sankeyproddata], topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
      }
 
      function drawdata(dataarray, labels)
