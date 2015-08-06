@@ -110,7 +110,7 @@
        var flow = '';
        var hierarchy = document.getElementById("hierarchy").value;
        //var adjoiningyears = parseInt(document.getElementById("adjoining").value);
-       var adjoiningyears = 2;
+       var adjoiningyears = -1;
 
        var wheeldata = getwheeldata(region, year, valuetype, adjoiningyears);
        var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy);

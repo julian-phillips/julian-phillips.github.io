@@ -98,8 +98,9 @@ function getwheeldata(name, selectedyear, valuetype, adjoining)
         }
         else
         {
+            r['year'] = "";
             r['population'] = "";
-            r['electricity'] = "";
+            r['electricity'] = "0";
             r['units'] = "";
         }
         wheeldata.push(r);
