@@ -2,6 +2,9 @@
 <meta charset="utf-8">
 <title>SANKEY Experiment</title>
 <style>
+ body {
+   font: 11px sans-serif;
+ }
  
 .node rect {
   fill-opacity: .9;
@@ -75,22 +78,12 @@
           <option value="percap">Per Capita</option>
         </select>
       </span>
-      <!--
-      <span>Flow Types
-        <select id="flow" onChange="updatedata()" >
-          <option value="renewable" selected>Renewable / Non-renewable</option>
-          <option value="import" >Import / Export</option>
-        </select>
-      </span>
-      -->
-      <!--
       <span>Hierarchy
         <select id="hierarchy" onChange="updatedata()" >
           <option value="region" >Region first -> then energy</option>
           <option value="energy" selected >Energy first -> then region</option>
         </select>
       </span>
-      -->
       <br/>
      <hr/>
     </div>
@@ -112,8 +105,9 @@
        var region = document.getElementById("region").value;
        var year = document.getElementById("year").value;
        var valuetype = document.getElementById("units").value;
+       var hierarchy = document.getElementById("hierarchy").value;
        var sankeydata = getsankeydata(region, year, valuetype, 2);
-       var graph = getsankeydata(region, year, valuetype, 'production', 'energy');
+       var graph = getsankeydata(region, year, valuetype, 'production', hierarchy);
        displaysankey(graph);
      }
 
