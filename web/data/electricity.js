@@ -165,7 +165,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy)
         nodes.push(new SankeyNode(nodes.length, flow));
         links.push(new SankeyLink(flow, 'PushOut' + (i + 1).toString(), name, flow));
     }
-    if (hierarchy == 'energy')
+    if (hierarchy == 'energy' || subregions.length == 0)
     {
         for (var i = 0; i < flowtypes.length; i++)
         {
@@ -176,9 +176,23 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy)
                 var subflow = subtypes[j];
                 nodes.push(new SankeyNode(nodes.length, subflow));
                 links.push(new SankeyLink(subflow, flow, name, subflow));
-                for (var k = 0; k < subregions.length; k++)
+                if (subregions.length > 0)
                 {
-                    links.push(new SankeyLink(subregions[k], subflow, subregions[k], subflow));
+                    for (var k = 0; k < subregions.length; k++)
+                    {
+                        links.push(new SankeyLink(subregions[k], subflow, subregions[k], subflow));
+                    }
+                }
+                else // this is a country, not a region
+                {
+                    // add further details
+                    var subsubflows = getflowtypes(subflow);
+                    for (var k = 0; k < subsubflows.length; k++)
+                    {
+                        subsubflow = subsubflows[k];
+                        nodes.push(new SankeyNode(nodes.length, subsubflow));
+                        links.push(new SankeyLink(subsubflow, subflow, name, subsubflow));
+                    }
                 }
             }
         }
@@ -228,7 +242,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy)
 }
 function setsankeyvalues(links, selectedyear, valuetype)
 {
-    flowtotals = {};
+    flowtotals = {}; // maintain totals for each flow type
     for (i in links)
     {
         var link = links[i];
@@ -290,24 +304,7 @@ function getsubregions(name)
         }
     }
     return children;
-        
-        
-    if (region.isregion == 'Y')
-    {
-        regionlist = Object.keys(regions[parent.name]).sort();
-    }
-    else if (region.issubregion == 'Y')
-    {
-        regionlist
-    }
-    else
-    {
-        // this is a country, no further details necessary
-        regionlist = [];
-    }
- 
 }
-
 
 var lowthreshold = 2; // minimum percent value, anything less gets aggregated
 var maxsankey = 5; // maximum number of individual records to display, aggregate the rest
