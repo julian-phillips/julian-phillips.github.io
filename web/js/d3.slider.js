@@ -94,20 +94,30 @@ d3.slider = function module() {
       .attr("class", "draggertext")
       .text(displayValue);
 
+      /*
       dragger.append("circle")
       .attr("class", "dragger-outer")
       .attr("r", 10)
       .attr("transform", function(d) {
         return "translate(0,6)";
       });
-      
-      dragger.append("circle")
-      .attr("class", "dragger-inner")
-      .attr("r", 4)
+      */
+      /*
+      dragger.append("rect")        
+      .attr("class", "dragger-outer")
+            .attr("width", "6")
+            .attr("height", "20")
       .attr("transform", function(d) {
         return "translate(0,6)";
       });
-
+      */
+        
+      dragger.append("circle")
+      .attr("class", "dragger-inner")
+      .attr("r", 5)
+      .attr("transform", function(d) {
+        return "translate(0,6)";
+      });
 
       // Enable dragger drag 
       var dragBehaviour = d3.behavior.drag();

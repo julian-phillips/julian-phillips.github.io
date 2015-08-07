@@ -149,7 +149,7 @@ var SankeyLink = function(source, target, region, flow)
     this.units = '';
 }
 
-function getsankeydata(name, selectedyear, valuetype, flow, hierarchy)
+function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, direction)
 {
     var sankeydata = [];
     var flowtypes = getflowtypes(flow);
@@ -238,13 +238,27 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy)
     }
     // set the electricity values and set the percentages
     setsankeyvalues(links, selectedyear, valuetype);
+    if (direction == 'right')
+    {
+        reversesourceandtarget(links);
+    }
     return {'nodes':nodes, 'links':links};
 
+}
+function reversesourceandtarget(links)
+{
+    for (var i in links)
+    {
+        var link = links[i];
+        var tmp = link.target;
+        link.target = link.source;
+        link.source = tmp;
+    }
 }
 function setsankeyvalues(links, selectedyear, valuetype)
 {
     flowtotals = {}; // maintain totals for each flow type
-    for (i in links)
+    for (var i in links)
     {
         var link = links[i];
         var rdata = data[link.region][selectedyear];
