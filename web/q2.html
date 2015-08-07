@@ -12,7 +12,7 @@
      }
      .code {
        float: left;
-       width: 27%;
+       width: 17%;
        margin-left:0px;
        margin-right:0px;
        padding-left:0px;
@@ -21,7 +21,7 @@
      }
      .codemiddle {
        float: left;
-       width: 43%;
+       width: 30%;
        margin-left:0px;
        margin-right:0px;
        padding-left:0px;
@@ -37,7 +37,6 @@
       <span>Country/Region 
         <select id="region" onChange="updatedata()" >
           <option value="World" >World</option>
-          <opiton value="Top 5 Renewable" >Top 5 Renewable</opiton>
           <option value="Asia">Asia</option>
           <option value="Eastern Asia" selected >Eastern Asia</option>
           <option value="China">China</option>
@@ -65,14 +64,6 @@
           <option value="percap">Per Capita</option>
         </select>
       </span>
-      <!--
-      <span>Flow Types
-        <select id="flow" onChange="updatedata()" >
-          <option value="renewable" selected>Renewable / Non-renewable</option>
-          <option value="import" >Import / Export</option>
-        </select>
-      </span>
-      -->
       <span>Hierarchy
         <select id="hierarchy" onChange="updatedata()" >
           <option value="region" >Region first -> then energy</option>
@@ -80,22 +71,11 @@
         </select>
       </span>
       <br/>
-      <!--
-      <span title="The Adjoining Years option will NOT be a part of the actual UI">[ Wheel Data Adjoining Years
-        <select id="adjoining" onChange="updatedata()" >
-          <option value="-1" >All</option>
-          <option value="0" >0</option>
-          <option value="1" >1</option>
-          <option value="2" selected>2</option>
-          <option value="3" >3</option>
-        </select>
-         ]
-      </span>
-      -->
     </div>
-    <div class="code" id="code1" ></div>
-    <div class="codemiddle" id="code2" ></div>
-    <div class="code" id="code3" ></div>
+    <div class="code" id="wheeldata" ></div>
+    <div class="codemiddle" id="sankeyproddata" ></div>
+    <div class="codemiddle" id="sankeyconsdata" ></div>
+    <div class="code" id="topfivedata" ></div>
 
     <script>
      var data = {};
@@ -106,20 +86,49 @@
        var region = document.getElementById("region").value;
        var year = document.getElementById("year").value;
        var valuetype = document.getElementById("units").value;
-       //var flow = document.getElementById("flow").value;
-       var flow = '';
        var hierarchy = document.getElementById("hierarchy").value;
-       //var adjoiningyears = parseInt(document.getElementById("adjoining").value);
        var adjoiningyears = -1;
-
        var wheeldata = getwheeldata(region, year, valuetype, adjoiningyears);
-       var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy);
-       //var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy);
+       var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
+       var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
        var topfivedata = gettopfivedata(year, valuetype);
-       drawdata([wheeldata, [sankeyproddata], topfivedata], ['Wheel Data', 'Sankey Data', 'Top Five Data']);
+       displayJSON(wheeldata, 'Wheel', 'wheeldata');
+       displayJSON([sankeyproddata], 'Sankey Production', 'sankeyproddata');
+       displayJSON([sankeyconsdata], 'Sankey Consumption Data', 'sankeyconsdata');
+       displayJSON(topfivedata, 'Top Five', 'topfivedata');
+//       drawdata([wheeldata], [sankeyproddata], [sankeyconsdata], [topfivedata], ['Wheel Data', 'Sankey Production', 'Sankey Consumption', 'Top Five Data']);
      }
 
+     function displayJSON(o, label, id)
+     {
+       var s = "";
+       o.forEach(function(item, index, array)
+         {
+           s = s + JSON.stringify(item, null, '  ') + "\n";
+         });
+       s = "<hr/><br/><strong>" + label + "</strong><br/><hr/>" + "<pre>" + s;
+       s = s + "</pre>" + "<hr/>";
+       document.getElementById(id).innerHTML = s;
+     }
+       
      function drawdata(dataarray, labels)
+     {
+       for (var i = 0; i < dataarray.length; i++)
+       {
+         var thisdata = dataarray[i];
+        var s = "";
+        thisdata.forEach(function(item, index, array)
+                         {
+                             s = s + JSON.stringify(item, null, '  ') + "\n";
+                         });
+        s = "<hr/><br/><strong>" + labels[i] + "</strong><br/><hr/>" + "<pre>" + s;
+        s = s + "</pre>" + "<hr/>";
+        var c = "code" + (i + 1);
+        document.getElementById(c).innerHTML = s;
+       }
+     }
+     
+     function drawdata_old(dataarray, labels)
      {
        for (var i = 0; i < dataarray.length; i++)
        {

@@ -35,7 +35,7 @@ function getunits(valuetype, population)
         }
         else // no population data available
         {
-            mult = -1;
+            mult = 0;
             units = "kWh per capita"
         }
     }
@@ -240,6 +240,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, direction
     }
     // set the electricity values and set the percentages
     setsankeyvalues(links, selectedyear, valuetype);
+    // for 'right' side sankey need to reverse the source and target values
     if (direction == 'right')
     {
         reversesourceandtarget(links);

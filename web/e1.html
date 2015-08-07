@@ -108,8 +108,8 @@
     </span>
     <span>Units
       <select id="units" onChange="updatedata()" >
-        <option value="absolute" selected="selected" >Absolute</option>
-        <option value="percap">Per Capita</option>
+        <option value="absolute" selected="selected" >Absolute MkWh</option>
+        <option value="percap">Per Capita kWh</option>
       </select>
     </span>
     <span>Hierarchy
@@ -122,6 +122,7 @@
     <hr/>
   </div>
 
+  <div>
   <div class="chart" >
     <span class="chart" id="sankeyleft" style="float:left;"></span>
     <span class="chart"  style="display: table; float: left; margin-top: 100px; border: thin solid #000000">
@@ -132,8 +133,8 @@
     </span>
       <span class="chart" id="sankeyright" style="float:left;"></span>
   </div>
-  <div class="slider" id="slider" width="90%"></div>
-  
+  <div class="slider" id="slider" width="auto"></div>
+  </div>  
 
   <script>
    var data = {};
