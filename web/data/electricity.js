@@ -116,9 +116,11 @@ function getyearlist(selectedyear, adjoining)
     // if adjoining < 0, return all years
     var selectedyear = parseInt(selectedyear);
     var yearlist = [];
-    var padding = 3 // number of extra years to facilitate wheel widget
-    var start = minyear - padding;
-    var end = maxyear + padding;
+    //var padding = 3 // number of extra years to facilitate wheel widget
+    //var start = minyear - padding;
+    //var end = maxyear + padding;
+    var start = minyear;
+    var end = maxyear;
     if (adjoining >= 0)
     {
         // start = Math.max(selectedyear - adjoining, minyear);

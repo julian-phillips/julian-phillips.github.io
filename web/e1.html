@@ -1,7 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <meta charset="utf-8">
 <title>SANKEY Experiment</title>
 <link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
+<script src="js/jquery.min.js"></script>
+<script src="js/d3.min.js" charset="utf-8"></script>
+<script src="js/sankey.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="./data/electricity_codes.js" ></script>
+<script src="./data/electricity.js" ></script>
+<script src="js/d3.slider.js"></script>
+<script src="js/wheel.js"></script>
+
 <style>
  body {
    font: 11px sans-serif;
@@ -125,14 +134,6 @@
   </div>
   <div class="slider" id="slider" width="90%"></div>
   
-  <script src="js/jquery.min.js"></script>
-  <script src="js/d3.min.js" charset="utf-8"></script>
-  <script src="js/sankey.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="./data/electricity_codes.js" ></script>
-  <script src="./data/electricity.js" ></script>
-  <script src="js/d3.slider.js"></script>
-  <script src="js/wheel.js"></script>
 
   <script>
    var data = {};
@@ -159,7 +160,6 @@
      if (typeof turn != "undefined") {
          turnToSelectedYear(year);
      }
-
      var hierarchy = document.getElementById("hierarchy").value;
        
      var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
@@ -167,6 +167,10 @@
 
      var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
      displaysankeyright(sankeyconsdata, '#sankeyright');
+
+     // update and refresh the slider
+     self.slider.setValue(year);
+
    }
 
    function displaysankeyleft(graph, elementid)
@@ -264,7 +268,6 @@
          .attr("transform", null)
          .text(function(d) { return d.name; });
 
-     //});
    }
 
    function displaysankeyright(graph, elementid)
@@ -385,7 +388,7 @@
                     if (newyear != cyear)
                     {
                       document.getElementById("year").value = newyear;
-                      updatedata();
+                      updatedata(true);
                     }
                   });
 
