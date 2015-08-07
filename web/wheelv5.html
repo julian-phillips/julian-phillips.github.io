@@ -199,14 +199,52 @@
 		//find index of the target array to make subarrays containing only the area to be plotted
 	   var targetindex = orig_years.indexOf(year);  
 	   
+	   console.log(targetindex);
+	   
        //set desired number of elements below along with the adjustment that needs to be made to the original dataset to capture the subset    
 	   	   
        var NumElements = 5;
 	   var IndexAdjustment = (NumElements-1)/2;
 	   
 	   //create new array for visualized portion	   
-	   var dataset=orig_dataset.slice(targetindex-IndexAdjustment,targetindex+IndexAdjustment+1);	   
-	   var years=orig_years.slice(targetindex-IndexAdjustment,targetindex+IndexAdjustment+1);
+	   //var dataset=orig_dataset.slice(targetindex-IndexAdjustment,targetindex+IndexAdjustment+1);	   
+	   //var years=orig_years.slice(targetindex-IndexAdjustment,targetindex+IndexAdjustment+1);
+	   
+	   var dataset=[];
+	   var years=[]
+	   
+	   
+	   
+	  
+		 while (dataset.length < NumElements){
+		 
+		 if (targetindex-IndexAdjustment < 0) {
+		 		 
+		 dataset.push(0);
+			years.push('');
+			targetindex++
+		 } else if (targetindex-1 > orig_dataset.length){
+		 		 
+		 dataset.push(0);
+			years.push('');
+			targetindex++
+		 }
+		 
+		 
+		 
+		 else {
+			dataset.push(orig_dataset[targetindex-IndexAdjustment]);
+			years.push(orig_years[targetindex-IndexAdjustment]);
+			targetindex++
+			
+			}
+			}
+			
+	   //console.log(dataset2);
+	   //console.log(years2);
+	   
+	   
+	   
 	   
 	  
        //This series of variables creates the array to be used to reduce elements later on.  Because the number of elements can change how the svg is filled up, the height will vary.  Algebra used to determine element total which will later feed the hgt variable to make sure the entire svg canvas is filled (except margins of course)
@@ -408,6 +446,8 @@
 		   .attr("stop-color", "rgb(50,50,50)")
 		   .attr("stop-opacity", 1);
        
+	   
+	   
        var redgradient = svg.append("svg:defs")
 			    .append("svg:linearGradient")
 			    .attr("id", "redgradient")
