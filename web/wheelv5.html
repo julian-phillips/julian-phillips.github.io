@@ -22,10 +22,7 @@
 			font-size: 10px;
 			transform: rotate(0deg);
 		}
-		
-		.datarect:hover {
-			fill: green;
-			}
+				
 		
     </style>
   </head>
@@ -76,6 +73,7 @@
       <br/>
     </div>
     <div class="wheel" id="wheel" ></div>
+	
 
     <script type="text/javascript">
      var data = {};
@@ -160,6 +158,10 @@
        }
        return PaddingList;
      }
+	 
+	 function addCommas(intNum) {
+  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+}
      //////////////////////////////////////////////////////////////////////////////////////
      //// HELPER FUNCTIONS END
      //////////////////////////////////////////////////////////////////////////////////////	
@@ -233,11 +235,13 @@
        
        //margins around the graphic - ensures that text is not cut off
        
-       //THERE SHOULD BE A WAY TO APPLY TO MARGIN TO ALL SVG ITEMS IN A CANVAS RATHER THAN ONE AT A TIME THE WAY IT IS NOW	
+    
        
+	   var dataspace = 100;
+	   
        var margin = {top: 15, right: 15, bottom: 15, left: 15},
            w = 700 - margin.left - margin.right,
-           h = 700 - margin.top - margin.bottom;
+           h = 1000 - margin.top - margin.bottom - dataspace;
        
        var scale = d3.scale.linear()
                      .domain([0, d3.max(orig_dataset, function(d) { return d; })])
@@ -253,13 +257,14 @@
        d3.select("#wheel").selectAll("*").remove();
        //Create SVG element - Canvas
        var svg = d3.select("#wheel")
-		   .append("svg")
+		   .append("svg")		   
 		   .attr("width", w + margin.left + margin.right)
-		   .attr("height", h + margin.top + margin.bottom)
-		   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		   .attr("height", h + margin.top + margin.bottom+dataspace)
+		   .append("g");
+		   //.attr("transform", "translate(" + margin.left + "," + (margin.top) + ")");
        
        //Left rectangle.  This is the horziontal bar that actually shows the metric			
-       svg.selectAll("rect")
+       svg.selectAll("#bar1")
 		       .data(dataset)
 		       .enter()
 		       //.append("g")
@@ -269,29 +274,48 @@
 		       .attr("height", function(d,i) {return  hgt * ElementReductions[i];})
 		       .attr("width", function(d ) {    return scale(d);})			   
 		       .attr("fill","url(#graygradient)")					
-			 .attr("id", function(d, i) { return i; })
+			 .attr("id", function(d, i) { return 'datarect'+i; })
 				.attr("class","datarect")
-		       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		       .attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace)+ ")");
        
        
        
        
        
 
-       //Text Labels
-       svg.selectAll("text")
+       //Text Labels for years
+       svg.selectAll("yeartext")
 	  .data(years)
 	  .enter()			   
 	  .append("text")			   
-	  .text(function(d) {        return d;   })
-	  .attr("y", function(d,i) { return (Summation(i) +hgt/5 * ElementReductions[i] +barPadding*PaddingReductions[i] + margin.top)/ElementReductions[i] ;})
+	  .text(function(d) {        return d ;   })
+	  .attr("y", function(d,i) { return (Summation(i)+dataspace+margin.top)/ElementReductions[i]+hgt/6;})	  
 	  .attr("x", 4*margin.left)
 	  .attr("font-family", "sans-serif")
 	  .attr("font-size", "40px")
 	  .attr("text-anchor", "middle")
-	  .attr("id", function(d, i) { return i; })
+	  .attr("id", function(d, i) { return 'yeartext'+i; })
 	  .attr("class","yeartext")
+	  //.attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace)+ ")")
 	  .attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"});
+	  
+	  
+	  //Text Labels for data
+       svg.selectAll("datatext")
+	  .data(dataset)
+	  .enter()			   
+	  .append("text")			   
+	  .text(function(d) {        return d.toLocaleString() + ' Mkwh';   })
+	  .attr("y", dataspace/1.2)	  
+	  .attr("x", w/2)
+	  .attr("font-family", "sans-serif")
+	  .attr("font-size", "60px")
+	  .attr("fill","none")
+	  .attr("text-anchor", "middle")
+	  .attr("id", function(d, i) { return 'datatext'+i; })
+	  .attr("class","datatext")
+	  //.attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace)+ ")")
+	  //.attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"});
        
        
        
@@ -304,33 +328,44 @@
 	  .attr("x", 0)
 	  .attr("height", function(d,i) {return  hgt * ElementReductions[i];})
 	  .attr("width", w)
-	  .attr("id", function(d, i) { return i; })	
+	  .attr("id", function(d, i) { return 'hoverrect'+i; })
 	  .attr("class","hoverrect")	
 	  .attr("fill","none")					
 	  .attr("pointer-events","all")
-	  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")	  
-	  .on("mouseover", function() {
-	    svg.selectAll(this.getAttribute('id'))					
+	  .attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace) + ")")
+	  .on("mouseover", function(d,i){ 
+		
+	    
+		  d3.selectAll("#datarect"+i)//.selectAll("text").filter("class","yeartext")
 	      .attr("fill", "url(#redgradient)");
+		  d3.selectAll("#datatext"+i)//.selectAll("text").filter("class","yeartext")
+	      .attr("fill", "black");
+		  
 	  })
-	  .on("mouseout", function(d) {
-	    d3.select(this)//.selectAll("text")
+	  .on("mouseout", function(d,i){ 
+	   
+		  d3.selectAll("#datarect"+i)//.selectAll("text").filter("class","yeartext")
+	      .attr("fill", "url(#graygradient)");
+		  d3.selectAll("#datatext"+i)//.selectAll("text").filter("class","yeartext")
 	      .attr("fill", "none");
 	  });
 	  ;
-       
+
+
        
        //black border that surrounds entire visualization
        var outline = svg.append("rect")			   
-			.attr("y",0)
+			.attr("y",0+dataspace)
 			.attr("x",0)
 			//.append("g")
-			.attr("width",700)
-			.attr("height",700)
+			.attr("width",w+margin.left + margin.right)
+			.attr("height",h+margin.top + margin.bottom )
 			.attr("stroke","black")
 			.attr("stroke-width",5)
 			.attr("fill","none");
 
+			
+			
        //axis
 	   
 	   var xAxis = d3.svg.axis()
@@ -340,7 +375,7 @@
 	   
 	   svg.append("g")
 	   .attr("class","axis")
-	   .attr("transform", "translate("+ margin.left +"," + (h/2+ margin.top)  + ")")
+	   .attr("transform", "translate("+ margin.left +"," + (h/2+ margin.top+dataspace)  + ")")
 	   .call(xAxis);
 	   
 	   //////////////////////////////////////////////////////////////////////////////////////
