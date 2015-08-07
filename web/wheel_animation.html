@@ -1,0 +1,431 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Wheel</title>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<style type="text/css">
+		.area {
+			fill: url(#rectangle-gradient);
+		}
+	
+		</style>
+		
+		<script type="text/javascript">
+		var wheeljson = [{
+  "name": "Eastern Asia",
+  "year": "2005",
+  "selected": "N",
+  "population": "1530373",
+  "electricity": "4242761",
+  "units": "MkWh"
+},
+{
+  "name": "Eastern Asia",
+  "year": "2006",
+  "selected": "N",
+  "population": "1530820",
+  "electricity": "4642707",
+  "units": "MkWh"
+},
+{
+  "name": "Eastern Asia",
+  "year": "2007",
+  "selected": "Y",
+  "population": "1541280",
+  "electricity": "5131727",
+  "units": "MkWh"
+},
+{
+  "name": "Eastern Asia",
+  "year": "2008",
+  "selected": "N",
+  "population": "1551745",
+  "electricity": "5291361",
+  "units": "MkWh"
+},
+{
+  "name": "Eastern Asia",
+  "year": "2009",
+  "selected": "N",
+  "population": "1562209",
+  "electricity": "5304822",
+  "units": "MkWh"
+}];
+		
+		var valueArray = new Array();		
+		var yearArrray = new Array();
+		
+		for (bar in wheeljson){
+			valueArray.push(wheeljson[bar].electricity);
+			yearArrray.push(wheeljson[bar].year);
+
+		}
+		</script>
+
+		<script type="text/javascript">
+		
+		var leftRect,yArray,heightArray,heightIncrementArray,yIncrementArray;
+		var animationIncrement = 3;
+		var currentIncrement = 0;
+		//set desired number of elements below
+		var NumElements = 7;
+		var centerIndex = 5;
+		
+		var ElementReductions;
+			
+		var margin = {top: 15, right: 15, bottom: 15, left: 15},
+                w = 900 - margin.left - margin.right,
+                h = 900 - margin.top - margin.bottom;
+				
+		var dataset,dataset2, years,hgt;
+		var barPaddingsize,NumPaddings,PaddingReductions,totalPadding,paddingtotal;
+		var svg;
+	
+			function Summation(m) {
+				if (m == -1)
+					return -100;
+				total = 0;
+    
+				for (i = m; i >= 0; i--) {
+    
+					if ( i === 0) {
+						return total;
+					} else {
+						total +=ElementReductions[i-1]*hgt+barPadding*PaddingReductions[i];
+				
+					}                  
+				}
+				return total;
+			}
+				
+			function getRelativeCoord(trueIndex){
+				var distanceFromCenter = trueIndex-centerIndex;
+				
+				if (Math.abs(distanceFromCenter) > ((NumElements-1)/2)){ //outside the range, don't display
+					return -1;
+				} else {
+					return distanceFromCenter + (NumElements-1)/2;
+				}
+			}
+function wheel() {			
+			//helper function - returns current y position
+
+			//Helper function to generate list of reductions to be applied to the width of graph based on number of elements
+			function GenerateElementList(m) {
+				ElementList=[];
+				half = (m-1)/2
+				spread = .5/half
+    
+				for (i = 0; i < half ; i++) {    
+				if ( i ===0) {
+					ElementList.push(0.5);
+				} else {
+					ElementList.push(i*spread+0.5)
+    
+				}                  
+				}
+				ElementList.push(1.0)
+
+				for (i = half-1; i > -1 ; i--) {    
+				if ( i ===0) {
+					ElementList.push(0.5);
+				} else {
+					ElementList.push(i*spread+0.5)    
+}                  
+}
+				return ElementList;
+}
+
+			//Helper function to generate list of reductions to be applied to the padding of graph based on number of elements
+			function GeneratePaddingList(m) {
+				PaddingList=[0];
+				half = (m-2)/2
+				spread = 0.15/(half+1)
+    
+				for (i = 0; i <= half ; i++) {    
+				if ( i ===half) {
+					PaddingList.push(1.0);
+				} else {
+					PaddingList.push((i+1)*spread+0.5)
+    
+				}                  
+				}
+				
+				for (i = half; i >= 0 ; i--) {    
+				if ( i ===half) {
+					PaddingList.push(1.0);
+				} else {
+					PaddingList.push((i+1)*spread+0.5)
+       
+}                  
+}
+				return PaddingList;
+}
+
+
+			
+			//This series of variables creates the array to be used to reduce elements later on.  Because the number of elements can change how the svg is filled up, the height will vary.  
+			//Algebra used to determine element total which will later feed the hgt variable to make sure the entire svg canvas is filled (except margins of course)
+			ElementReductions = GenerateElementList(NumElements);
+			var elementtotal = 0
+			for ( var i = 0; i < ElementReductions.length; i++ ){
+			elementtotal += ElementReductions[i];
+			}
+			
+			//Similar to the above but figures out how large the padding between the bars should be.
+			barPaddingsize = 10
+			NumPaddings = NumElements - 1
+			PaddingReductions = GeneratePaddingList(NumPaddings);
+			
+			totalPadding = barPaddingsize*NumPaddings
+			
+			paddingtotal = 0
+
+			for ( var i = 0; i < PaddingReductions.length; i++ ){
+			paddingtotal += PaddingReductions[i];
+			}
+			
+			barPadding = totalPadding/paddingtotal
+			
+			//margins around the graphic - ensures that text is not cut off
+			
+			//THERE SHOULD BE A WAY TO APPLY TO MARGIN TO ALL SVG ITEMS IN A CANVAS RATHER THAN ONE AT A TIME THE WAY IT IS NOW	
+			
+
+			
+			//var yArray = new Array();
+			//for (var i =0; i< ElementReductions.length; i++){
+			
+	//		for (var i =0; i< ElementReductions.length; i++){
+	//			//yArray.push(Summation(i)); 
+	//		}
+			
+			
+			dataset = [800, 700, 1128,1015,703,695,687,459,800,650,900];//    ,  675,675,670,665,685,        687.7,691.1,722.2,976,780,        906,913,950,788,889,     892,1005,1022];
+			dataset2 = [800, 700, 1128,1015,703,695,687,459,800,650,900];//   ,  675,675,670,665,685,        687.7,691.1,722.2,976,780,        906,913,950,788,889,     892,1005,1022];
+			years = [1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000 ];//  ,1995,1996 ,1997,1998,1999,     2000,2001,2002,2003,2004,     2005,2006,2007,2008,2009,   2010,2011,2012]
+			hgt = (h - barPaddingsize*(ElementReductions.length-1))/elementtotal;
+							//Create SVG element - Canvas
+
+			// Define the gradient
+			yArray = new Array();
+			heightArray = new Array();
+			
+			for (var q =0; q< ElementReductions.length; q++){
+				heightArray.push(hgt * ElementReductions[q]);
+				yArray.push(Summation(q)); 
+			}
+			
+			heightIncrementArray = new Array();
+			yIncrementArray = new Array();
+			
+			for (var s =0; s< ElementReductions.length-1; s++){
+				heightIncrementArray.push((heightArray[s+1] - heightArray[s])/animationIncrement);
+				yIncrementArray.push((yArray[s+1] - yArray[s])/animationIncrement);
+			}
+				
+			
+			svg = d3.select("#svgContainer")
+						.append("svg")
+						.attr("width", w + margin.left + margin.right)
+						.attr("height", h + margin.top + margin.bottom)
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			refresh();
+	
+	   
+
+}	
+
+function refresh(){
+			
+			svg.selectAll("dataset.rect").remove();
+			
+			
+			//Left rectangle.  This is the horziontal bar that actually shows the metric			
+			leftRect = svg.selectAll("dataset.rect")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")			   
+			   .attr("y", function(d,i) { return Summation(getRelativeCoord(i)) ;})
+			   .attr("x", 0)
+			   .attr("height", function(d,i) {
+			   		if (getRelativeCoord(i) == -1){
+						return 0;
+					} else {
+						return hgt * ElementReductions[getRelativeCoord(i)];
+					}
+				})
+			   .attr("width", function(d) {    return d*.5;})
+			   .attr("fill","orange")			   
+			   .attr("perspective-origin","top")
+			   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			   
+			 //Right Rectangle.  Fills the negative space so all of the rectangles end at the same point  
+			   svg.selectAll("dataset2.rect")
+			   .data(dataset2)
+			   .enter()
+			   .append("rect")
+			   .attr("y", function(d,i) { return Summation(getRelativeCoord(i)) ;})
+			   .attr("x", function(d) {    return d*.5;})
+			   .attr("height", function(d,i) {
+					if (getRelativeCoord(i) == -1){
+						return 0;
+					} else {
+						return hgt * ElementReductions[getRelativeCoord(i)];
+					}
+				})
+			   .attr("width", function(d) {  return w- d*.5;})
+			   .attr("fill", "lightgray")
+			   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			   
+			   //Border.  Created as a rect with 100% transparency.  Only the border shows.  
+			   /*svg.selectAll("border.rect")
+			   .data(dataset2)
+			   .enter()
+			   .append("rect")
+			   .attr("y", function(d,i) { return Summation(i) ;})
+			   .attr("x", 0)
+			   .attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+			   .attr("width",  w)
+			   .attr("fill", "none")
+				//.attr('fill', 'url(#gradient)')
+				.attr("fill-opacity",0.3)
+			   .attr("stroke","black")
+			   .attr("stroke-width",3)
+			   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			   */
+			   
+			//Text Labels
+			
+			svg.selectAll("text")
+			   .data(years)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {        return d;   })
+			   .attr("y", function(d,i) { 
+					relativeCoord = getRelativeCoord(i);
+					if (relativeCoord == -1)
+					{
+						return -1000;
+					} else 
+					{
+						return (Summation(getRelativeCoord(i)) +hgt/2 * ElementReductions[getRelativeCoord(i)] +barPadding*PaddingReductions[getRelativeCoord(i)] + margin.top)/ElementReductions[getRelativeCoord(i)] ;
+					}
+					})
+			   .attr("x", w/2+margin.left)
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "60px")
+			   .attr("text-anchor", "middle")
+			   .attr("transform", function(d,i) {
+									scaleValue = .8333333;
+									if (getRelativeCoord(i) != -1)
+									{
+										scaleValue = ElementReductions[getRelativeCoord(i)]
+									}
+									return "scale(1.0," + scaleValue + ")"})
+
+}
+
+
+		</script>
+<script>
+function bleh(downward){
+		
+			
+			leftRect.each(function(d,i) {
+				 var ycoo = d3.select(this).attr("y");		 
+					d3.select(this)
+					.transition()
+					.attr("y",function(){
+						if (currentIncrement < animationIncrement){
+					
+					//alert(d3.select(this).attr("y"));
+						//return ycoo+ i*5;
+							var relVal = getRelativeCoord(i);
+							if (relVal != -1)
+							{
+								if (yIncrementArray.length == relVal) //no next size to attain to, 
+								{
+									return parseFloat(d3.select(this).attr("y")) + yIncrementArray[relVal-1];
+								} else {
+									return parseFloat(d3.select(this).attr("y")) + yIncrementArray[relVal];
+								}
+							} else {
+								return -1000;
+							}
+							currentIncrement++;
+						} else {
+						
+							currentIncrement=0;
+							//next level reached 
+							if (downward)
+							{
+								centerIndex++;
+								/*var relVal = getRelativeCoord(i);
+								if (relVal != -1)
+								{
+									if (yIncrementArray.length == relVal) //no next size to attain to, 
+									{
+										return parseFloat(d3.select(this).attr("y")) + yIncrementArray[relVal-1];
+									} else {
+										return parseFloat(d3.select(this).attr("y")) + yIncrementArray[relVal];
+									}
+								} else {
+									return -1000;
+								}*/
+								
+								if (getRelativeCoord(i) == -1){
+									return 0;
+								} else {
+									return hgt * ElementReductions[getRelativeCoord(i)];
+								}
+							}
+						
+						}
+
+					})
+					.attr("height",function(){
+						if (currentIncrement < animationIncrement){
+							var relVal = getRelativeCoord(i);
+							if (relVal != -1)
+							{	if (yIncrementArray.length == relVal) //no next size to attain to, 
+								{
+									return parseFloat(d3.select(this).attr("height")) +heightIncrementArray[relVal-1];
+								} else {
+									return parseFloat(d3.select(this).attr("height")) +heightIncrementArray[relVal];
+								}
+							} else {
+								return 0;
+							}
+						} else {
+						
+							return Summation(getRelativeCoord(i));
+						}
+					})
+					
+					
+					//.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+				})
+			/*} else {
+				currentIncrement=0;
+				//next level reached 
+				if (downward)
+				{
+					centerIndex++;
+					refresh();
+				}
+			}*/
+			
+			 
+
+
+}		
+</script>
+	</head>
+	<body onload="wheel();">
+<span id="svgContainer">
+</span>
+	<button onclick="setInterval(function() {bleh(true);}, 1000)">animate</button>
+	</body>
+</html>
