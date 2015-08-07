@@ -414,6 +414,11 @@ var TopFive = function(category, year, units)
             this.total += this.countries[i].value;
         }
         this.countries.splice(5, Number.MAX_VALUE);
+    };
+    this.maxvalue = function()
+    {
+        this.countries.sort(sortbyvalue);
+        return this.countries[0].value;
     }
 };
 
@@ -432,12 +437,12 @@ function sortbyvalue(x, y)
 }
 
 var topfivecategories = ['produced', 'consumed', 'renewable', 'nuclear'];
-function gettopfivedata(year, valuetype)
+function gettopfivedata(year, valuetype, flowlist)
 {
     var topfivedata = {};
-    for (var i = 0; i < topfivecategories.length; i++)
+    for (var i = 0; i < flowlist.length; i++)
     {
-        category = topfivecategories[i];
+        category = flowlist[i];
         topfivedata[category] = new TopFive(category, year, null);
     }
     var yeardata = getcountryyeardata(year);
@@ -445,17 +450,17 @@ function gettopfivedata(year, valuetype)
     {
         var yd = yeardata[name];
         var units = getunits(valuetype, yd.population);
-        for (var i = 0; i < topfivecategories.length; i++)
+        for (var i = 0; i < flowlist.length; i++)
         {
-            var category = topfivecategories[i];
+            var category = flowlist[i];
             var value = Math.round(units.mult * yd[category]);
             topfivedata[category].addcountry(new TopFiveCountry(name, 0, value, units.units));
         }
     }
     var tmp = [];
-    for (var i = 0; i < topfivecategories.length; i++)
+    for (var i = 0; i < flowlist.length; i++)
     {
-        var category = topfivecategories[i];
+        var category = flowlist[i];
         topfivedata[category].settopfive();
         tmp.push(topfivedata[category]);
     }

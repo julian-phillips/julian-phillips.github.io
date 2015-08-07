@@ -6,43 +6,56 @@
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/sankey.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="./data/electricity_codes.js" ></script>
-<script src="./data/electricity.js" ></script>
+<script src="data/electricity_codes.js" ></script>
+<script src="data/electricity.js" ></script>
 <script src="js/d3.slider.js"></script>
 <script src="js/wheel.js"></script>
+<script src="js/topfive.js" ></script>
 
 <style>
  body {
    font: 11px sans-serif;
  }
- 
  .node rect {
    fill-opacity: .9;
    shape-rendering: crispEdges;
  }
- 
  .node text {
    pointer-events: none;
    //text-shadow: 0 1px 0 #fff;
    font-weight: bold;
  }
-
  .node rect:hover {
    fill-opacity: .6;
    stroke-width: 2;
    font-weight: bold;
  }
- 
  .link {
    fill-opacity: .2;
    stroke: none;
    stroke-opacity: .2;
  }
- 
  .link:hover {
    fill-opacity: .5;
  }
- 
+      .axis path,
+     .axis line {
+       fill: none;
+       stroke: black;
+       shape-rendering: crispEdges;
+     }
+     .axis text {
+       font-family: sans-serif;
+       font-size: 10px;
+       transform: rotate(0deg);
+     }
+     .datarect:hover {
+       fill: green;
+     }
+     .title{
+       font: 18px sans-serif;
+     }
+
 </style>
 <body>
   <div class="options">
@@ -134,6 +147,7 @@
       <span class="chart" id="sankeyright" style="float:left;"></span>
   </div>
   <div class="slider" id="slider" width="auto"></div>
+  <div class="topfive" id="topfive" ></div>
   </div>  
 
   <script>
@@ -171,6 +185,12 @@
 
      // update and refresh the slider
      self.slider.setValue(year);
+
+     // update the top five charts
+     // list of Top Five categories
+     var flowlist = ['produced', 'consumed', 'renewable', 'nuclear', 'combustion'];
+     var topfivedata = gettopfivedata(year, valuetype, flowlist);
+     drawcharts(topfivedata);
 
    }
 
