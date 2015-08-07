@@ -291,9 +291,9 @@ function displaywheel(dataset, years)
    {
        return getTextTransform(i);
    });
-       
-       
-       
+
+
+
     //empty rect that allows the entire group to be selected for mouseover events
     /*
       svg.selectAll("dataset.rect")
