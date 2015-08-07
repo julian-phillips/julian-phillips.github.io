@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+    <title>Boxes</title>
+	<script type="text/javascript" src="./js/d3.min.js" charset="utf-8"></script>
+		<style type="text/css">
+		
+		.axis path,
+		.axis line {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+		}
+
+		.axis text {
+			font-family: sans-serif;
+			font-size: 10px;
+			transform: rotate(0deg);
+		}
+		
+		.datarect:hover {
+			fill: green;
+			}
+			
+			
+			
+		.title{
+       font: 18px sans-serif;
+	   }
+	   
+		</style>
+  </head>
+  <body>
+  <script type="text/javascript">
+  ////Data Imported Here///
+  //// Data needs to get into these arrays///
+  
+  values_1 = [4349840,3281553,1135718,1015333,813102];
+  countries_1 = ['United States','China','Japan','Russian Federation','India'];
+  var category_1 = 'Energy Produced';
+  
+  values_2= [4081228,3271181,1068653,894972,623490];
+  countries_2=['United States','China','Japan','Russian Federation','India'];
+  var category_2 = 'Energy Consumed';
+  
+  values_3 = [496490,374660,370751,328619,179474];
+  countries_3 = ['China','Brazil','Canada','United States','Russian Federation'];
+  var category_3 = 'Renewable Energy';
+  
+  values_4 = [836634,439730,263832,160039,142937];
+  countries_4 = ['United States','France','Japan','Russian Federation','Korea South'];
+  var category_4 = 'Nuclear Energy';
+  
+  ///END DATA//
+  
+  var titlepadding = 50
+  var margin = {top:20, right: 15, bottom: 25, left: 15}
+           w =1200 - margin.left - margin.right,
+           h = 400 - margin.top - margin.bottom-titlepadding;
+		   
+  var chartpadding = 40;
+  var NumCategories = 3;
+  var barPadding = 20;
+  var hgt = (h - 4*barPadding)/(5);
+  var wid = (1200 - NumCategories*(2*margin.left+chartpadding))/NumCategories;
+  
+  var svg = d3.select("body")
+		   .append("svg")		   
+		   .attr("width", w + margin.left+margin.right)
+		   .attr("height", h + margin.top + margin.bottom+titlepadding)
+		   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  
+	function chart(dataset,countries,category,chartno) {
+	
+	//create scale
+	
+      var scale = d3.scale.linear()
+                     .domain([0, d3.max(dataset, function(d) { return d; })])
+                     .range([0,wid]);
+					 
+	
+	
+	//Left rectangle.  This is the horizontal bar that actually shows the metric			
+        svg.selectAll()
+		       .data(dataset)
+		       .enter()
+		       .append("g")
+		       .append("rect")				   
+		       .attr("y", function(d,i) { return hgt*i +barPadding*i;})
+		       .attr("x", 0)
+		       .attr("height", hgt)
+		       .attr("width", function(d ) {    return scale(d);})			   
+		       .attr("fill","steelblue")					
+			 //.attr("id", function(d, i) { return i; })
+				.attr("class","datarect")
+		       .attr("transform", "translate(" + ((wid+2*chartpadding)*(chartno-1)+margin.left) + "," + (margin.top+titlepadding) + ")");
+		
+
+		
+		//Text Labels - countries
+       svg.selectAll()
+	  .data(countries)
+	  .enter()			   
+	  .append("text")
+	  //.append("g")	  
+	  .text(function(d) {        return d;   })
+	  .attr("y", function(d,i) { return hgt*i +barPadding*i-barPadding*.1;})
+	  .attr("x", 0)
+	  .attr("font-family", "sans-serif")
+	  .attr("font-size", "12px")
+	  .attr("text-anchor", "left")
+	  //.attr("id", function(d, i) { return i; })
+	  .attr("class","yeartext")
+	  .attr("transform", "translate(" + ((wid+2*chartpadding)*(chartno-1)+margin.left) + "," + (margin.top+titlepadding) + ")")
+			   
+			   
+			   
+      
+	   
+	   //title
+	   var title =svg.append("text")
+	   .text(category)
+	   .attr("y", titlepadding/2)
+	   //.attr("x",((wid+margin.left+chartpadding)*chartno+(chartno-1)*chartpadding)/2)
+	   .attr("x",((wid+2*chartpadding)*(chartno-1)+margin.left)+(wid+margin.left)/2)
+	   .attr("class","title")
+	   .attr("text-anchor","middle");
+	   
+	   
+	    //black border that surrounds entire visualization
+       var outline = svg.append("rect")			   
+			.attr("y",0)
+			.attr("class","outline")
+			.attr("x",0+(chartno-1)*chartpadding)
+			//.append("g")
+			.attr("width",wid+2*margin.left)
+			.attr("height",h+margin.top+margin.bottom+titlepadding)
+			.attr("stroke","black")
+			.attr("stroke-width",3)
+			.attr("fill","none")
+			.attr("transform", "translate(" + ((wid+chartpadding)*(chartno-1))+ ",0)");
+	   
+	   //axis
+      var xAxis = d3.svg.axis()
+			.scale(scale)
+			.orient("middle")
+			.ticks(5);
+	   
+	   svg.append("g")
+	   .attr("class","axis")
+	   .attr("transform", "translate("+ ((wid+2*chartpadding)*(chartno-1)+margin.left) +"," + (h+margin.top+titlepadding+margin.bottom*.2)  + ")")
+	   .call(xAxis);	    	
+	}
+
+chart(values_1,countries_1,category_1,1);	
+chart(values_2,countries_2,category_2,2);	
+chart(values_3,countries_3,category_3,3);	
+chart(values_4,countries_4,category_4,4);	  
+  </script>
+    
+  </body>
+</html>
