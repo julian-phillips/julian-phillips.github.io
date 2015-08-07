@@ -11,6 +11,7 @@
 <script src="js/d3.slider.js"></script>
 <script src="js/wheel.js"></script>
 <script src="js/topfive.js" ></script>
+<script src="js/sankeydisplay.js" ></script>
 
 <style>
  body {
@@ -152,7 +153,8 @@
 
   <script>
    var data = {};
-   window.onload = function () { data = loaddata(); initWheel(); updatedata(); }
+   var slider = null;
+   window.onload = function () { data = loaddata(); initWheel(); initslider(); updatedata(); }
 
    function initWheel()
    {
@@ -171,17 +173,17 @@
      var region = document.getElementById("region").value;
      var year = document.getElementById("year").value;
      var valuetype = document.getElementById("units").value;
+     var hierarchy = document.getElementById("hierarchy").value;
 
      if (typeof turn != "undefined") {
          turnToSelectedYear(year);
      }
-     var hierarchy = document.getElementById("hierarchy").value;
        
      var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
-     displaysankeyleft(sankeyproddata, '#sankeyleft');
+     displaysankey(sankeyproddata, '#sankeyleft', 'left');
 
      var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
-     displaysankeyright(sankeyconsdata, '#sankeyright');
+     displaysankey(sankeyconsdata, '#sankeyright', 'right');
 
      // update and refresh the slider
      self.slider.setValue(year);
@@ -194,227 +196,35 @@
 
    }
 
-   function displaysankeyleft(graph, elementid)
+   function initslider()
    {
-
-     var units = "MkWh";
+     // construct a slider for the year parameter
+     slider = d3.slider()
+                .min(1990)
+                .max(2012)
+                .tickValues([1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,
+                             2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,
+                             2010,2011,2012])
+                .tickFormat(function(d) {return d.toString();})
+                .stepValues([1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,
+                             2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,
+                             2010,2011,2012])
+                .showRange(true)
+                .value(2007)
+                .callback(function(evt) {
+                  var cyear = document.getElementById("year").value;
+                  var newyear = self.slider.value();
+                  if (newyear != cyear)
+                  {
+                    document.getElementById("year").value = newyear;
+                    updatedata(true);
+                  }
+                });
      
-     var margin = {top: 10, right: 10, bottom: 10, left: 10},
-         width = 600 - margin.left - margin.right,
-         height = 400 - margin.top - margin.bottom;
-     
-     var formatNumber = d3.format(",.0f"),    // zero decimal places
-         format = function(d) { return formatNumber(d) + " " + units; },
-         color = d3.scale.category20();
-
-     // clear the canvas
-     d3.select(elementid).selectAll("*").remove();
-     // append the svg canvas to the page
-     var svg = d3.select(elementid).append("svg")
-                 .attr("width", width + margin.left + margin.right)
-                 .attr("height", height + margin.top + margin.bottom)
-                 .append("g")
-                 .attr("transform", 
-                       "translate(" + margin.left + "," + margin.top + ")");
-     
-     // Set the sankey diagram properties
-     var sankey = d3.sankey()
-                .nodeWidth(15)
-                .nodePadding(15)
-                .size([width, height])
-	        .scaleRight(true)
-	        .rightHeight(100)
-	        .leftHeight(height);
-     
-     var path = sankey.link();
-
-     var nodeMap = {};
-     graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
-     graph.links = graph.links.map(function(x) {
-       return {
-         source: nodeMap[x.source],
-         target: nodeMap[x.target],
-         value: x.value
-       };
-     });
-     
-     sankey
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .layout(0);
-     
-     // add in the links
-     var link = svg.append("g").selectAll(".link")
-                   .data(graph.links)
-                   .enter().append("path")
-                   .attr("class", "link")
-                   .attr("d", path)
-                   .sort(function(a, b) { return b.dy - a.dy; });
-     
-     // add the link titles
-     link.append("title")
-         .text(function(d) {
-      	   return d.source.name + " → " + 
-                  d.target.name + "\n" + format(d.value); });
-
-     
-     // add in the nodes
-     var node = svg.append("g").selectAll(".node")
-                   .data(graph.nodes)
-                   .enter().append("g")
-                   .attr("class", "node")
-                   .attr("transform", function(d) { 
-		     return "translate(" + d.x + "," + d.y + ")"; });
-     
-     // add the rectangles for the nodes
-     node.append("rect")
-         .filter(function(d) { return !(d.right_ghost == 1) })   // Don't add text if it is a base node
-         .attr("height", function(d) { return Math.max(0, d.dy); })
-         .attr("width", sankey.nodeWidth())
-         .style("fill", function(d) { 
-	   return d.color = color(d.name.replace(/ .*/, "")); })
-         .style("stroke", function(d) { 
-	   return d3.rgb(d.color).darker(2); })
-         .append("title")
-         .text(function(d) { 
-	   return d.name + "\n" + format(d.value); });
-     
-     // add in the title for the nodes
-     node.append("text")
-         .filter(function(d) { return !(d.right_ghost == 1) })   // Don't add text if it is a base node
-         .attr("x", 6 + sankey.nodeWidth())
-         .attr("text-anchor", "start")
-         .attr("y", function(d) { return d.dy /5; })
-         .attr("dy", ".35em")
-         .attr("transform", null)
-         .text(function(d) { return d.name; });
-
+     // Render the slider
+     d3.select('#slider').call(slider);
    }
 
-   function displaysankeyright(graph, elementid)
-   {
-     var units = "MkWh";
-     
-     var margin = {top: 10, right: 10, bottom: 10, left: 10},
-         width = 600 - margin.left - margin.right,
-         height = 400 - margin.top - margin.bottom;
-     
-     var formatNumber = d3.format(",.0f"),    // zero decimal places
-         format = function(d) { return formatNumber(d) + " " + units; },
-         color = d3.scale.category20();
-     
-     // clear the canvas
-     d3.select(elementid).selectAll("*").remove();
-     // append the svg canvas to the page
-     var svg = d3.select(elementid).append("svg")
-                 .attr("width", width + margin.left + margin.right)
-                 .attr("height", height + margin.top + margin.bottom)
-                 .append("g")
-                 .attr("transform", 
-                       "translate(" + margin.left + "," + margin.top + ")");
-     
-     // Set the sankey diagram properties
-     var sankey = d3.sankey()
-                    .nodeWidth(15)
-                    .nodePadding(15)
-                    .size([width, height])
-	            .scaleLeft(true)
-	            .rightHeight(height)
-	            .leftHeight(100);
-     
-     var path = sankey.link();
-     
-       
-     var nodeMap = {};
-     graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
-     graph.links = graph.links.map(function(x) {
-       return {
-         source: nodeMap[x.source],
-         target: nodeMap[x.target],
-         value: x.value
-       }
-       });
-       
-     sankey
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .layout(0);
-       
-       // add in the links
-       var link = svg.append("g").selectAll(".link")
-                     .data(graph.links)
-                     .enter().append("path")
-                     .attr("class", "link")
-                     .attr("d", path)
-                     .sort(function(a, b) { return b.dy - a.dy; });
-       
-       // add the link titles
-       link.append("title")
-           .text(function(d) {
-      	     return d.source.name + " → " + 
-                    d.target.name + "\n" + format(d.value); });
-
-       
-       // add in the nodes
-       var node = svg.append("g").selectAll(".node")
-                     .data(graph.nodes)
-                     .enter().append("g")
-                     .attr("class", "node")
-                     .attr("transform", function(d) { 
-		       return "translate(" + d.x + "," + d.y + ")"; });
-       
-       // add the rectangles for the nodes
-       node.append("rect")
-           .filter(function(d) { return !(d.left_ghost == 1) })   // Don't add text if it is a base node
-           .attr("height", function(d) { return d.dy; })
-           .attr("width", sankey.nodeWidth())
-           .style("fill", function(d) { 
-	     return d.color = color(d.name.replace(/ .*/, "")); })
-           .style("stroke", function(d) { 
-	     return d3.rgb(d.color).darker(2); })
-           .append("title")
-           .text(function(d) { 
-	     return d.name + "\n" + format(d.value); });
-       
-       // add in the title for the nodes
-       node.append("text")
-           .filter(function(d) { return !(d.left_ghost == 1) })   // Don't add text if it is a base node
-           .attr("x", -6)
-           .attr("y", function(d) { return d.dy /5; })
-           .attr("dy", ".35em")
-           .attr("text-anchor", "end")
-           .attr("transform", null)
-           .text(function(d) { return d.name; });
-         //.filter(function(d) { return d.x < width / 2; })
-         //  .attr("x", 6 + sankey.nodeWidth())
-         //  .attr("text-anchor", "start");
-   }     
-
-   // construct a slider for the year parameter
-   var slider = d3.slider()
-                  .min(1990)
-                  .max(2012)
-                  .tickValues([1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,
-                              2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,
-                               2010,2011,2012])
-                  .tickFormat(function(d) {return d.toString();})
-                  .stepValues([1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,
-                              2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,
-                              2010,2011,2012])
-                  .showRange(true)
-                  .value(2007)
-                  .callback(function(evt) {
-                    var cyear = document.getElementById("year").value;
-                    var newyear = self.slider.value();
-                    if (newyear != cyear)
-                    {
-                      document.getElementById("year").value = newyear;
-                      updatedata(true);
-                    }
-                  });
-
-   // Render the slider
-   d3.select('#slider').call(slider);
 
   </script>
   
