@@ -436,7 +436,6 @@ function sortbyvalue(x, y)
     return (sortby(x, y, 'value') * -1);
 }
 
-var topfivecategories = ['produced', 'consumed', 'renewable', 'nuclear'];
 function gettopfivedata(year, valuetype, flowlist)
 {
     var topfivedata = {};

@@ -91,12 +91,12 @@
        var wheeldata = getwheeldata(region, year, valuetype, adjoiningyears);
        var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
        var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
-       var topfivedata = gettopfivedata(year, valuetype);
+       var topfivecategories = ['produced', 'consumed', 'renewable', 'nuclear', 'combustion'];
+       var topfivedata = gettopfivedata(year, valuetype, topfivecategories);
        displayJSON(wheeldata, 'Wheel', 'wheeldata');
        displayJSON([sankeyproddata], 'Sankey Production', 'sankeyproddata');
        displayJSON([sankeyconsdata], 'Sankey Consumption Data', 'sankeyconsdata');
        displayJSON(topfivedata, 'Top Five', 'topfivedata');
-//       drawdata([wheeldata], [sankeyproddata], [sankeyconsdata], [topfivedata], ['Wheel Data', 'Sankey Production', 'Sankey Consumption', 'Top Five Data']);
      }
 
      function displayJSON(o, label, id)
