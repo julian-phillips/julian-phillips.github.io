@@ -4,7 +4,10 @@
 {"node":"1","name":"Renewables"},
 {"node":"2","name":"Canada"},
 {"node":"3","name":"USA"},
-{"node":"4","name":"Mexico"}
+{"node":"4","name":"Mexico"},
+{"node":"5","name":"Test1"},
+{"node":"6","name":"Test2"},
+{"node":"7","name":"Test3"}
 ],
 "links":[
 {"source":"Canada","target":"Non Renewables","value":"70","percentage":"0.32"},
@@ -12,5 +15,8 @@
 {"source":"USA","target":"Non Renewables","value":"60","percentage":"0.27"},
 {"source":"USA","target":"Renewables","value":"40","percentage":"0.5"},
 {"source":"Mexico","target":"Non Renewables","value":"90","percentage":"0.41"},
-{"source":"Mexico","target":"Renewables","value":"10","percentage":"0.13"}
+{"source":"Mexico","target":"Renewables","value":"10","percentage":"0.13"},
+{"source":"Test1","target":"Mexico","value":"30","percentage":"0.13"},
+{"source":"Test2","target":"Mexico","value":"30","percentage":"0.13"},
+{"source":"Test3","target":"Mexico","value":"40","percentage":"0.13"}
 ]}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>e2</title>
+<link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
+<!-- JavaScript libraries -->
+<script src="js/jquery.min.js"></script>
+<script src="js/d3.min.js" charset="utf-8"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- Data Queries -->
+<script src="data/electricity_codes.js" ></script>
+<script src="data/electricity.js" ></script>
+<!-- Year Slider -->
+<script src="js/d3.slider.js"></script>
+<!-- Bar charts -->
+<script src="js/wheel.js"></script>
+<script src="js/topfive.js" ></script>
+<!-- Sankeys -->
+<script src="js/sankey.js"></script>
+<script src="js/sankeydisplay.js" ></script>
+
+<style>
+	 body {
+	   font: 11px sans-serif;
+	 }
+	 .node rect {
+	   fill-opacity: .9;
+	   shape-rendering: crispEdges;
+	 }
+	 .node text {
+	   pointer-events: none;
+	   //text-shadow: 0 1px 0 #fff;
+	   font-weight: bold;
+	 }
+	 .node rect:hover {
+	   fill-opacity: .6;
+	   stroke-width: 2;
+	   font-weight: bold;
+	 }
+	 .link {
+	   fill-opacity: .2;
+	   stroke: none;
+	   stroke-opacity: .2;
+	 }
+	 .link:hover {
+	   fill-opacity: .5;
+	 }
+		  .axis path,
+		 .axis line {
+		   fill: none;
+		   stroke: black;
+		   shape-rendering: crispEdges;
+		 }
+		 .axis text {
+		   font-family: sans-serif;
+		   font-size: 10px;
+		   transform: rotate(0deg);
+		 }
+		 .datarect:hover {
+		   fill: green;
+		 }
+		 .title{
+		   font: 18px sans-serif;
+		 }
+
+</style>
+<body>
+  <div class="options">
+    <span>Country/Region 
+      <select id="region" onChange="updatedata()" >
+        <option value="World" >World</option>
+        <option value="Africa" >Africa</option>
+        <option value="Eastern Africa" >&middot; Eastern Africa</option>
+        <option value="Middle Africa" >&middot; Middle Africa</option>
+        <option value="Northern Africa" >&middot; Northern Africa</option>
+        <option value="Southern Africa" >&middot; Southern Africa</option>
+        <option value="Western Africa" >&middot; Western Africa</option>
+        <option value="Americas" >Americas</option>
+        <option value="Caribbean" >&middot; Caribbean</option>
+        <option value="Central America" >&middot; Central America</option>
+        <option value="Northern America" >&middot; Northern America</option>
+        <option value="South America" >&middot; South America</option>
+        <option value="Asia" >Asia</option>
+        <option value="Central Asia" >&middot; Central Asia</option>
+        <option value="Eastern Asia" >&middot; Eastern Asia</option>
+        <option value="China">&middot; &middot; China</option>
+        <option value="Japan">&middot; &middot; Japan</option>
+        <option value="South-Eastern Asia" >&middot; South-Eastern Asia</option>
+        <option value="Western Asia" >&middot; Western Asia</option>
+        <option value="Europe" >Europe</option>
+        <option value="Eastern Europe" >&middot; Eastern Europe</option>
+        <option value="Northern Europe" >&middot; Northern Europe</option>
+        <option value="Southern Europe" >&middot; Southern Europe</option>
+        <option value="Western Europe" >&middot; Western Europe</option>
+        <option value="Oceania" >Oceania</option>
+        <option value="Australia and New Zealand" >&middot; Australia and New Zealand</option>
+        <option value="Melanesia" >&middot; Melanesia</option>
+        <option value="Micronesia" >&middot; Micronesia</option>
+        <option value="Polynesia" >&middot; Polynesia</option>
+      </select>
+    </span>
+    <span>Year
+      <select name="year" id="year" onChange="updatedata(true)"  >
+        <option value="1990">1990</option>
+        <option value="1991">1991</option>
+        <option value="1992">1992</option>
+        <option value="1993">1993</option>
+        <option value="1994">1994</option>
+        <option value="1995">1995</option>
+        <option value="1996">1996</option>
+        <option value="1997">1997</option>
+        <option value="1998">1998</option>
+        <option value="1999">1999</option>
+        <option value="2000">2000</option>
+        <option value="2001">2001</option>
+        <option value="2002">2002</option>
+        <option value="2003">2003</option>
+        <option value="2004">2004</option>
+        <option value="2005">2005</option>
+        <option value="2006">2006</option>
+        <option value="2007" selected>2007</option>
+        <option value="2008">2008</option>
+        <option value="2009">2009</option>
+        <option value="2010">2010</option>
+        <option value="2011">2011</option>
+        <option value="2012">2012</option>
+      </select>
+    </span>
+    <span>Units
+      <select id="units" onChange="updatedata()" >
+        <option value="absolute" selected="selected" >Absolute MkWh</option>
+        <option value="percap">Per Capita kWh</option>
+      </select>
+    </span>
+    <span>Hierarchy
+      <select id="hierarchy" onChange="updatedata()" >
+        <option value="region" >Region first -> then energy</option>
+        <option value="energy" selected >Energy first -> then region</option>
+      </select>
+    </span>
+    <br/>
+    <hr/>
+  </div>
+
+  <div>
+	  <div class="chart" >
+		<span class="chart" id="sankeyleft" style="float:left;"></span>
+		<span class="chart"  style="display: table; float: left; margin-top: 100px; border: thin solid #000000">
+			<div><button onclick="turnWheel(false);">Up</button></div>
+			<span id="wheel">
+			</span>
+			<div><button onclick="turnWheel(true);">Down</button></div>
+		</span>
+		  <span class="chart" id="sankeyright" style="float:left;"></span>
+	  </div>
+	  <div class="slider" id="slider" width="auto"></div>
+	  <div class="topfive" id="topfive" ></div>
+  </div>  
+
+  <script>
+   var data = {};
+   var slider = null;
+   window.onload = function () { data = loaddata(); initWheel(); initslider(); updatedata(); }
+
+   function initWheel()   {
+       var region = document.getElementById("region").value;
+       var year = document.getElementById("year").value;
+       var valuetype = document.getElementById("units").value;
+
+       setCenterIndex(year);
+       var wheeldata = getwheeldata(region, year, valuetype, -1);
+       drawwheel(wheeldata);
+
+   }
+
+   function updatedata(turn)   {
+     var region = document.getElementById("region").value;
+     var year = document.getElementById("year").value;
+     var valuetype = document.getElementById("units").value;
+     var hierarchy = document.getElementById("hierarchy").value;
+
+     if (typeof turn != "undefined") {
+         turnToSelectedYear(year);
+     }
+       
+     var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
+     displaysankey(sankeyproddata, '#sankeyleft', 'left' );
+
+     var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
+     displaysankey(sankeyconsdata, '#sankeyright', 'right');
+
+     // update and refresh the slider
+     self.slider.setValue(year);
+
+     // update the top five charts
+     // list of Top Five categories
+     var flowlist = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear', 'Combustion'];
+     var topfivedata = gettopfivedata(year, valuetype, flowlist);
+     drawcharts(topfivedata);
+
+   }
+
+   function initslider()   {
+     // construct a slider for the year parameter
+     slider = d3.slider()
+                .min(1990)
+                .max(2012)
+                .tickValues([1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,
+                             2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,
+                             2010,2011,2012])
+                .tickFormat(function(d) {return d.toString();})
+                .stepValues([1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,
+                             2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,
+                             2010,2011,2012])
+                .showRange(true)
+                .value(2007)
+                .callback(function(evt) {
+                  var cyear = document.getElementById("year").value;
+                  var newyear = self.slider.value();
+                  if (newyear != cyear)
+                  {
+                    document.getElementById("year").value = newyear;
+                    updatedata(true);
+                  }
+                });
+     
+     // Render the slider
+     d3.select('#slider').call(slider);
+   }
+
+
+  </script>
+  
+</body>
+</html>
+

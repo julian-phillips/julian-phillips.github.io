@@ -47,26 +47,26 @@ function getflowtypes(flow)
     var flowlist = [];
     if (flow == "consumption")
     {
-        flowlist = ['consumed', 'exported', 'lost_stored'];
+        flowlist = ['Total Consumption', 'Exports', 'Lost or Stored'];
     }
-    else if (flow == 'consumed')
+    else if (flow == 'Total Consumption')
     {
-        flowlist = ['household', 'services', 'energy_ind', 'non_energy_ind',
-                    'transport', 'agri', 'cons_other'];
+        flowlist = ['Households', 'Services', 'Energy Industry', 'Non-Energy Industries',
+                    'Transportation', 'Agriculture', 'Other Consumption'];
     }
     else if (flow == "production")
     {
-        flowlist = ['produced', 'imported', 'prod_error'];
+        flowlist = ['Total Production', 'Imports', 'Production Imbalance'];
     }
-    else if (flow == "produced")
+    else if (flow == "Total Production")
     {
-        flowlist = ['renewable', 'nonrenewable'];
+        flowlist = ['Renewable', 'Non-Renewable'];
     }
-    else if (flow == "renewable")
+    else if (flow == "Renewable")
     {
         flowlist = renewables; // defined in electricity_codes.js
     }
-    else if (flow == "nonrenewable")
+    else if (flow == "Non-Renewable")
     {
         flowlist = nonrenewables; // defined in electricity_codes.js
     }
@@ -152,6 +152,7 @@ var SankeyLink = function(source, target, region, flow)
 }
 
 function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, direction)
+// Call: getsankeydata(region, year, valuetype, 'production'/'consumption', hierarchy, 'left'/'right');
 {
     var sankeydata = [];
     var flowtypes = getflowtypes(flow);
@@ -436,6 +437,7 @@ function sortbyvalue(x, y)
     return (sortby(x, y, 'value') * -1);
 }
 
+var topfivecategories = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear'];
 function gettopfivedata(year, valuetype, flowlist)
 {
     var topfivedata = {};
