@@ -183,10 +183,10 @@
      }
        
      var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
-     displaysankey(sankeyproddata, '#sankeyleft', 'left' );
+     displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype );
 
      var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
-     displaysankey(sankeyconsdata, '#sankeyright', 'right');
+     displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype);
 
      // update and refresh the slider
      self.slider.setValue(year);

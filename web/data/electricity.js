@@ -47,7 +47,7 @@ function getflowtypes(flow)
     var flowlist = [];
     if (flow == "consumption")
     {
-        flowlist = ['Total Consumption', 'Exports', 'Lost or Stored'];
+        flowlist = ['Total Consumption', 'Exports', 'Lost or Stored', 'Consumption Imbalance'];
     }
     else if (flow == 'Total Consumption')
     {

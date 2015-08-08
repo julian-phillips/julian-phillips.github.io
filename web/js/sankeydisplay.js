@@ -1,6 +1,9 @@
-function displaysankey(graph, elementid, orientation)
+function displaysankey(graph, elementid, orientation, valuetype)
 {
     var units = "MkWh";
+	if (valuetype == 'percap') {
+		units = "kWh per capita";
+	}
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10};
     if (orientation == 'left') {
