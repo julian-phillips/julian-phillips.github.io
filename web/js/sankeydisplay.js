@@ -14,8 +14,30 @@ function displaysankey(graph, elementid, orientation, valuetype)
 	var width = 600 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-    var formatNumber = d3.format(",.0f"),    // zero decimal places
-        format = function(d) { return formatNumber(d) + " " + units; },
+    var noDecimals = d3.format(",.0f"),    // zero decimal places
+		oneDecimals = d3.format(",.1f"),    // zero decimal places
+		twoDecimals = d3.format(",.2f"),    // zero decimal places
+	    rounding = function(val) { 
+			if (val < 100) {
+				return val;
+			} else if (val < 100000) {
+				return Math.round(val/10)*10;
+			} else if (val < 1000000) {
+				return Math.round(val/100)*100;
+			} else if (val < 10000000) {
+				return Math.round(val/1000)*1000;
+			} else if (val < 100000000) {
+				return Math.round(val/10000)*10000;
+			} else {
+				return Math.round(val/100000)*100000;
+			}},
+        format = function(d) { return noDecimals(rounding(d)) + " " + units; },
+		formatPercent = function(d) { 
+			if (d < 0.1) {
+				return twoDecimals(d);
+			} else {
+				return oneDecimals(d);
+			}},
         color = d3.scale.category20();
 
     // clear the canvas
@@ -59,7 +81,8 @@ function displaysankey(graph, elementid, orientation, valuetype)
         return {
             source: nodeMap[x.source],
             target: nodeMap[x.target],
-            value: x.value
+            value: x.value,
+			percentage: x.percentage
         };
     });
 
@@ -79,8 +102,9 @@ function displaysankey(graph, elementid, orientation, valuetype)
     // add the link titles
     link.append("title")
         .text(function(d) {
-            return d.source.name + " → " + 
-                d.target.name + "\n" + format(d.value); });
+            return d.source.name + " → " + d.target.name + 
+			       "\n" + format(d.value) +
+				   "\n" + formatPercent(d.percentage) + "%"; });
 
 
     // add in the nodes
@@ -91,14 +115,10 @@ function displaysankey(graph, elementid, orientation, valuetype)
         .attr("transform", function(d) { 
             return "translate(" + d.x + "," + d.y + ")"; });
 
-    function filterfunc(d)
-    {
-        if (orientation == 'left')
-        {
+    function filterfunc(d) {
+        if (orientation == 'left') {
             return !(d.right_ghost == 1);
-        }
-        else
-        {
+        } else {
             return !(d.left_ghost == 1);
         }
     }
