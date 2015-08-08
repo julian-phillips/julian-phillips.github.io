@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>SANKEY Experiment</title>
+<title>e1</title>
 <link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
 <script src="js/jquery.min.js"></script>
 <script src="js/d3.min.js" charset="utf-8"></script>
@@ -14,48 +14,48 @@
 <script src="js/sankeydisplay.js" ></script>
 
 <style>
- body {
-   font: 11px sans-serif;
- }
- .node rect {
-   fill-opacity: .9;
-   shape-rendering: crispEdges;
- }
- .node text {
-   pointer-events: none;
-   //text-shadow: 0 1px 0 #fff;
-   font-weight: bold;
- }
- .node rect:hover {
-   fill-opacity: .6;
-   stroke-width: 2;
-   font-weight: bold;
- }
- .link {
-   fill-opacity: .2;
-   stroke: none;
-   stroke-opacity: .2;
- }
- .link:hover {
-   fill-opacity: .5;
- }
-      .axis path,
-     .axis line {
-       fill: none;
-       stroke: black;
-       shape-rendering: crispEdges;
-     }
-     .axis text {
-       font-family: sans-serif;
-       font-size: 10px;
-       transform: rotate(0deg);
-     }
-     .datarect:hover {
-       fill: green;
-     }
-     .title{
-       font: 18px sans-serif;
-     }
+	 body {
+	   font: 11px sans-serif;
+	 }
+	 .node rect {
+	   fill-opacity: .9;
+	   shape-rendering: crispEdges;
+	 }
+	 .node text {
+	   pointer-events: none;
+	   //text-shadow: 0 1px 0 #fff;
+	   font-weight: bold;
+	 }
+	 .node rect:hover {
+	   fill-opacity: .6;
+	   stroke-width: 2;
+	   font-weight: bold;
+	 }
+	 .link {
+	   fill-opacity: .2;
+	   stroke: none;
+	   stroke-opacity: .2;
+	 }
+	 .link:hover {
+	   fill-opacity: .5;
+	 }
+		  .axis path,
+		 .axis line {
+		   fill: none;
+		   stroke: black;
+		   shape-rendering: crispEdges;
+		 }
+		 .axis text {
+		   font-family: sans-serif;
+		   font-size: 10px;
+		   transform: rotate(0deg);
+		 }
+		 .datarect:hover {
+		   fill: green;
+		 }
+		 .title{
+		   font: 18px sans-serif;
+		 }
 
 </style>
 <body>
@@ -137,18 +137,18 @@
   </div>
 
   <div>
-  <div class="chart" >
-    <span class="chart" id="sankeyleft" style="float:left;"></span>
-    <span class="chart"  style="display: table; float: left; margin-top: 100px; border: thin solid #000000">
-        <div><button onclick="turnWheel(false);">Up</button></div>
-        <span id="wheel">
-        </span>
-        <div><button onclick="turnWheel(true);">Down</button></div>
-    </span>
-      <span class="chart" id="sankeyright" style="float:left;"></span>
-  </div>
-  <div class="slider" id="slider" width="auto"></div>
-  <div class="topfive" id="topfive" ></div>
+	  <div class="chart" >
+		<span class="chart" id="sankeyleft" style="float:left;"></span>
+		<span class="chart"  style="display: table; float: left; margin-top: 100px; border: thin solid #000000">
+			<div><button onclick="turnWheel(false);">Up</button></div>
+			<span id="wheel">
+			</span>
+			<div><button onclick="turnWheel(true);">Down</button></div>
+		</span>
+		  <span class="chart" id="sankeyright" style="float:left;"></span>
+	  </div>
+	  <div class="slider" id="slider" width="auto"></div>
+	  <div class="topfive" id="topfive" ></div>
   </div>  
 
   <script>
@@ -156,8 +156,7 @@
    var slider = null;
    window.onload = function () { data = loaddata(); initWheel(); initslider(); updatedata(); }
 
-   function initWheel()
-   {
+   function initWheel()   {
        var region = document.getElementById("region").value;
        var year = document.getElementById("year").value;
        var valuetype = document.getElementById("units").value;
@@ -168,8 +167,7 @@
 
    }
 
-   function updatedata(turn)
-   {
+   function updatedata(turn)   {
      var region = document.getElementById("region").value;
      var year = document.getElementById("year").value;
      var valuetype = document.getElementById("units").value;
@@ -196,8 +194,7 @@
 
    }
 
-   function initslider()
-   {
+   function initslider()   {
      // construct a slider for the year parameter
      slider = d3.slider()
                 .min(1990)
