@@ -2,8 +2,13 @@ function displaysankey(graph, elementid, orientation)
 {
     var units = "MkWh";
 
-    var margin = {top: 10, right: 10, bottom: 10, left: 10},
-        width = 600 - margin.left - margin.right,
+    var margin = {top: 10, right: 10, bottom: 10, left: 10};
+    if (orientation == 'left') {
+		margin.right = 0;
+	} else {
+		margin.left = 0;
+	}
+	var width = 600 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
     var formatNumber = d3.format(",.0f"),    // zero decimal places

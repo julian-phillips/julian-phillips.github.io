@@ -1,23 +1,30 @@
 function drawcharts(topfivedata)
 {
-    var titlepadding = 50
-    var margin = {top:20, right: 15, bottom: 25, left: 15};
-    var w = 1200 - margin.left - margin.right;
-    var h = 400 - margin.top - margin.bottom - titlepadding;
-    
-    var chartpadding = 40;
+    var titlepadding = 45,
+	    bottompadding = 5;
+	var chartpadding = 10; //space between boxes of each top-5 category
+	var barPadding = {y:20, x:20}; //y: vertical space between graph bars, x: offset from main box
+	
+	var width = 1400,
+	    height = 350;
+	// Margins for all bar-charts
+    var margin = {top:20, right: 20, bottom: 20, left: 20};
+    var w = width - margin.left - margin.right;
+    var h = height - margin.top - margin.bottom - titlepadding - bottompadding;
+	
     var NumCategories = topfivedata.length;
-    var barPadding = 20;
-    var hgt = (h - (4 * barPadding))/(NumCategories + 1);
-    var wid = (1200 - NumCategories * (2 * margin.left + chartpadding))/NumCategories;
+    var hgt = (h - (4 * barPadding.y))/(NumCategories + 1); // height of each bar
+    
+	var wid = (w - (NumCategories -1) * chartpadding)/NumCategories; // width of box
+	var box_hgt = height - margin.top - margin.bottom ; // height of box
 
     // clear the canvas
     d3.select("#topfive").selectAll("*").remove();
     var svg = d3.select("#topfive")
-	.append("svg")		   
-	.attr("width", w + margin.left + margin.right)
-	.attr("height", h + margin.top + margin.bottom + titlepadding)
-	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.append("svg")		   
+		.attr("width", width)
+		.attr("height", height)
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     for (var i = 0; i < topfivedata.length; i++)
     {
@@ -31,7 +38,7 @@ function drawcharts(topfivedata)
         //create scale
         var scale = d3.scale.linear()
             .domain([0, cdata.maxvalue()])
-            .range([0,wid]);
+            .range([0,wid - 2*barPadding.x]);
         
         //Left rectangle.  This is the horizontal bar that actually shows the metric			
         svg.selectAll()
@@ -39,15 +46,15 @@ function drawcharts(topfivedata)
 	    .enter()
 	    .append("g")
 	    .append("rect")				   
-	    .attr("y", function(d,i) { return (hgt * i) + (barPadding * i);})
-	    .attr("x", 0)
+	    .attr("y", function(d,i) { return margin.top + (hgt * i) + (barPadding.y * i);})
+	    .attr("x", barPadding.x)
 	    .attr("height", hgt)
 	    .attr("width", function(d) {    return scale(d.value);})			   
 	    .attr("fill","steelblue")					
 	//.attr("id", function(d, i) { return i; })
 	    .attr("class","datarect")
-	    .attr("transform", "translate(" + ((wid+2*chartpadding)*(ndx)+margin.left) + "," + (margin.top+titlepadding) + ")");
-        
+	    .attr("transform", "translate(" + (margin.left + (wid + chartpadding)*(ndx)) + "," + (margin.top + titlepadding) + ")");
+    
 
         //Text Labels - countries
         svg.selectAll()
@@ -55,34 +62,38 @@ function drawcharts(topfivedata)
 	    .enter()			   
 	    .append("text")
 	    .text(function(d) { return d.name; })
-	    .attr("y", function(d,i) { return (hgt * i) + (barPadding * i) - (barPadding * .1);})
-	    .attr("x", 0)
+	    .attr("y", function(d,i) { return margin.top + (hgt * i) + (barPadding.y * i) - (barPadding.y * .2);})
+	    .attr("x", barPadding.x)
 	    .attr("font-family", "sans-serif")
 	    .attr("font-size", "12px")
 	    .attr("text-anchor", "left")
 	    .attr("class","yeartext")
-	    .attr("transform", "translate(" + ((wid+2*chartpadding)*(ndx)+margin.left) + "," + (margin.top+titlepadding) + ")")
+	    .attr("transform", "translate(" + (margin.left + (wid + chartpadding)*(ndx)) + "," + (margin.top + titlepadding) + ")")
 
-	//title
+	// top-5 title
 	var title = svg.append("text")
 	    .text(cdata.category)
-	    .attr("y", titlepadding/2)
-	    .attr("x",((wid+2*chartpadding)*(ndx)+margin.left)+(wid+margin.left)/2)
-	    .attr("class","title")
-	    .attr("text-anchor","middle");
+		.attr("class","title")
+	    .attr("y", margin.top + titlepadding/2 +5)
+	// Align in Center of Box
+	//	.attr("x", margin.left + wid/2 + (ndx * (wid + chartpadding)))
+	//    .attr("text-anchor","middle");
+	// Align at the Left
+		.attr("x", margin.left + barPadding.x + (ndx * (wid + chartpadding)))
+	    .attr("text-anchor","left");
         
         
-        //black border that surrounds entire visualization
-        var outline = svg.append("rect")			   
-	    .attr("y", 0)
+    // Border that surrounds each top-5 chart
+    var outline = svg.append("rect")			   
+	    .attr("y", margin.top)
 	    .attr("class", "outline")
-	    .attr("x",0 + (ndx * chartpadding))
-	    .attr("width", wid + (2 * margin.left))
-	    .attr("height", h + margin.top + margin.bottom + titlepadding)
-	    .attr("stroke", "black")
-	    .attr("stroke-width", 3)
+	    .attr("x", margin.left + (ndx * (wid + chartpadding)))
+	    .attr("width", wid )
+	    .attr("height", box_hgt )
+	    .attr("stroke", "#D8D8D8 ")
+	    .attr("stroke-width", 2)
 	    .attr("fill", "none")
-	    .attr("transform", "translate(" + ((wid + chartpadding) * ndx)+ ",0)");
+	    //.attr("transform", "translate(" + ((wid + chartpadding) * ndx)+ ",0)");
         
         /*
         //axis

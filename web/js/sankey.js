@@ -389,6 +389,8 @@ d3.sankey = function() {
 						   
 	nodes.forEach(function(node) {
       if (node.right_ghost == 1) {
+        node.x = node.x + node.dx;
+		node.dx = 0;
         node.value = yRescaleAbs(node.value);
 		node.y = yRescaleAbs(node.y);
         node.dy = yRescaleRel(node.dy);
@@ -410,6 +412,7 @@ d3.sankey = function() {
 						   
 	nodes.forEach(function(node) {
       if (node.left_ghost == 1) {
+		node.dx = 0;
         node.value = yRescaleAbs(node.value);
 		node.y = yRescaleAbs(node.y);
         node.dy = yRescaleRel(node.dy);
