@@ -110,11 +110,16 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
 				return d.target.name + 
 			       "\n" + format(d.value) +
 				   "\n" + formatPercent(d.percentage) + "%";
-			} else {
+			} else if (orientation == 'left') {
 				return d.source.name + " → " + d.target.name + 
 			       "\n" + format(d.value) +
-				   "\n" + formatPercent(d.percentage) + "%"; 
-		}});
+				   "\n" + formatPercent(d.percentage) + "% of " +  d.target.name; 
+		    } else {
+				return d.source.name + " → " + d.target.name + 
+			       "\n" + format(d.value) +
+				   "\n" + formatPercent(d.percentage) + "% of " +  d.source.name; 
+		    }
+		   });
 
     // add in the nodes
     var node = svg.append("g").selectAll(".node")
@@ -124,6 +129,8 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
         .attr("transform", function(d) { 
             return "translate(" + d.x + "," + d.y + ")"; });
 
+	// Auxiliary function to determine if node is NOT a PushOut node
+	// Used to hide pushout nodes
     function node_notPushout(d) {
         if (orientation == 'left') {
             return !(d.right_ghost == 1);
