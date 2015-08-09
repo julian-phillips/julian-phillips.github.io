@@ -3,6 +3,7 @@
 var leftRect, yArray, heightArray, yearLabels, margin;
 var NumElements = 7;
 var centerIndex = 0;
+var dataspace = 100;
 
 //////////////////////////////////////////////////////////////////////////////////////		 
 // HELP FUNCTIONS
@@ -112,6 +113,22 @@ function getTextTransform(i) {
 
 }
 
+function getStrokeWidth(i){
+    if (i == centerIndex) {
+        return 3;
+    }
+    return 0;
+
+}
+
+function getRectFill(i) {
+    if (i == centerIndex) {
+        return "rgb(255, 127, 14)";
+    }
+    return "url(#graygradient)";
+
+}
+
 function getRelativeCoord(trueIndex, customCenter) {
     if (typeof customCenter == "undefined") {
         customCenter = centerIndex;
@@ -210,7 +227,8 @@ function displaywheel(dataset, years)
             .data(dataset)
             .enter()
             .append("g")
-            .append("rect")				   
+            .append("rect")
+            .attr("class","bleh")
             .attr("y", function (d, i) { return Summation(getRelativeCoord(i)); })
             .attr("x", 0)
             .attr("height", function (d, i) {
@@ -221,15 +239,46 @@ function displaywheel(dataset, years)
                 }
             })
             .attr("width", function(d ) { return scale(d);})			   
-            .attr("fill","url(#graygradient)")					
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("fill", function (d, i) {
+                return getRectFill(i);
+            })
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("stroke-width", function (d,i)
+            {
+                return getStrokeWidth(i);
+            })
+            .attr("stroke", "black")
+            .on("mouseover", function (d, i) {
+                d3.select(this).attr("fill", "url(#redgradient)");
+                d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
+                    .attr("fill", "black");
+            })
+            .on("mouseout", function (d, i) {
+                d3.select(this).attr("fill", function () {
+                    return getRectFill(i);
+                });
+                d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
+                    .attr("fill", "none");
+            });		
+		  
+  
        
-    var drag = d3.behavior.drag()
+    /*var drag = d3.behavior.drag()
          .origin(function (d) { return d; })
          .on("dragstart", dragstarted)
          .on("drag", dragged)
          .on("dragend", dragended);
+         */
 
+    var xAxis = d3.svg.axis()
+     .scale(scale)
+     .orient("middle")
+     .ticks(5);
+
+    svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + margin.left + "," + (h / 2 + margin.top) + ")")
+    .call(xAxis);
     //Text Labels
        
     yearLabels = svg.selectAll("text")
@@ -245,6 +294,23 @@ function displaywheel(dataset, years)
 		   .attr("transform", function (d, i) {
 			   return getTextTransform(i);
 		   });
+
+    //Text Labels for data
+    svg.selectAll("datatext")
+       .data(dataset)
+       .enter()
+       .append("text")
+       .text(function (d) { return d.toLocaleString() + ' Mkwh'; })
+       .attr("y", 13)
+       .attr("x", w / 2)
+       .attr("font-family", "sans-serif")
+       .attr("font-size", "18px")
+       .attr("fill", "none")
+       .attr("text-anchor", "middle")
+       .attr("id", function (d, i) { return 'datatext' + i; })
+       .attr("class", "datatext")
+    //.attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace)+ ")")
+    //.attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"});
 
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK
@@ -276,6 +342,7 @@ function displaywheel(dataset, years)
         .attr("stop-color", "rgb(50,50,50)")
         .attr("stop-opacity", 1);
        
+
     var redgradient = svg.append("svg:defs")
              .append("svg:linearGradient")
              .attr("id", "redgradient")
@@ -284,8 +351,7 @@ function displaywheel(dataset, years)
              .attr("x2", "0%")
              .attr("y2", "100%")
              .attr("spreadMethod", "pad")
-             .attr("gradientUnits","userSpaceOnUse")
-
+             .attr("gradientUnits", "userSpaceOnUse")
     // Define the gradient colors
     redgradient.append("svg:stop")
                .attr("offset", "0%")
@@ -296,12 +362,11 @@ function displaywheel(dataset, years)
        .attr("offset", "50%")
        .attr("stop-color", "red")
        .attr("stop-opacity", 1);
-       
+
     redgradient.append("svg:stop")
        .attr("offset", "100%")
        .attr("stop-color", "rgb(50,50,50)")
        .attr("stop-opacity", 1);
-
 
     //fake rectangle(2 of them) to give impression that wheels are disappearing at bottom and top
     svg.append("g")
@@ -368,22 +433,27 @@ function turnWheel(downward) {
                 return Summation(getRelativeCoord(i));
 
             }
-             
+
         })
         .attr("height", function () {
             //next level reached 
-     
-            
-                if (getRelativeCoord(i) == -1) {
-                    return 0;
-                } else {
 
-                    return hgt * ElementReductions[getRelativeCoord(i)];
-                }
+
+            if (getRelativeCoord(i) == -1) {
+                return 0;
+            } else {
+
+                return hgt * ElementReductions[getRelativeCoord(i)];
+            }
 
             //;}
-        });
-
+        })
+        .attr("stroke-width", function () {
+            return getStrokeWidth(i);
+        })
+        .attr("fill", function () {
+            return getRectFill(i);
+        })
 
         //.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
     })
