@@ -45,11 +45,11 @@ function drawcharts(topfivedata)
         .domain([0, cdata.maxvalue()])
         .range([0,wid - 2*barPadding.x]);
 		
-    var xAxis = d3.svg.axis()
+    /*var xAxis = d3.svg.axis()
 		.scale(scale)
 		.orient("bottom")
 		.tickSize(box_hgt);  
-		
+	*/	
     //Left rectangles.  This is the horizontal bar that actually shows the metric			
     var bar =  svg.selectAll()
 	    .data(cdata.countries)
@@ -73,8 +73,7 @@ function drawcharts(topfivedata)
 		.attr("dy", ".35em")
 		.text(function(d, i) { 
 			if (i == 0) {
-				//return format(d.value) + " " + "Trillion kWh";
-			    return format(d.value) + " " + d.units;
+				return format(d.value) + " " + "Trillion kWh";
 		} else { return format(d.value); }}); 
 		
     // Add text labels with Country name

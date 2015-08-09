@@ -68,10 +68,13 @@
 	   border: thin solid #707070;
 	 }
 	 .axis line {
-  stroke: #fff;
-  stroke-opacity: .5;
-  shape-rendering: crispEdges;
-}
+		  stroke: #E5E5E5;
+		  stroke-opacity: .5;
+		  shape-rendering: crispEdges;
+		}
+	 .bleh:hover {
+	     fill: url(#hover_gradient); 
+	 }
 	  
 </style>
 <body>
@@ -187,7 +190,6 @@
        setCenterIndex(year);
        var wheeldata = getwheeldata(region, year, valuetype, -1);
        drawwheel(wheeldata, wheel_width, wheel_height);
-
    }
 
    function updatedata(turn)   {
@@ -199,8 +201,7 @@
      if (typeof turn != "undefined") {
          turnToSelectedYear(year);
      }
-
-		 
+	 
      var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
      displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype, sank_width, sank_height );
 

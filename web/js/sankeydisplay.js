@@ -25,11 +25,11 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
 			} else if (val < 1000000) {
 				return Math.round(val/100)*100;
 			} else if (val < 10000000) {
-				return Math.round(val/1000)*1000;
+				return Math.round(val/100)*100;
 			} else if (val < 100000000) {
-				return Math.round(val/10000)*10000;
+				return Math.round(val/100)*100;
 			} else {
-				return Math.round(val/100000)*100000;
+				return Math.round(val/1000)*1000;
 			}},
         format = function(d) { return noDecimals(rounding(d)) + " " + units; },
 		formatPercent = function(d) { 
@@ -52,8 +52,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
 
     // Set the sankey diagram properties
     var sankey = null;
-    if (orientation == 'left')
-    {
+    if (orientation == 'left')  {
         sankey = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
@@ -61,9 +60,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
             .scaleRight(true)
             .rightHeight(84)
             .leftHeight(height);
-    }
-    else
-    {
+    } else {
         sankey = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
@@ -74,8 +71,8 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
     }
 
     var path = sankey.link();
-
     var nodeMap = {};
+	
     graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
     graph.links = graph.links.map(function(x) {
         return {

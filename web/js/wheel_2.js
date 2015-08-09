@@ -5,6 +5,13 @@ var NumElements = 7;
 var centerIndex = 0;
 var dataspace = 100;
 
+var bar_color = "lightgrey",
+    center_bar_color = "#ffc999",
+	mask_color = "rgb(20,20,20)",
+	hover_bar_color = "#ffa556",
+	hover_mask_color = "#e5944d";
+	
+	
 //////////////////////////////////////////////////////////////////////////////////////		 
 // HELP FUNCTIONS
 
@@ -115,15 +122,14 @@ function getTextTransform(i) {
 
 function getStrokeWidth(i){
     if (i == centerIndex) {
-        return 3;
+        return 2;
     }
     return 0;
-
 }
 
 function getRectFill(i) {
     if (i == centerIndex) {
-        return "rgb(255, 127, 14)";
+        return center_bar_color;
     }
     return "url(#graygradient)";
 
@@ -165,6 +171,26 @@ function drawwheel(wheeljson, input_width, input_height) // Get data and send it
 
 function displaywheel(dataset, years)
 {	
+
+	var noDecimals = d3.format(",.0f"),    // zero decimal places
+		oneDecimals = d3.format(",.1f"),    // zero decimal places
+		twoDecimals = d3.format(",.2f"),    // zero decimal places
+	    rounding = function(val) { 
+			if (val < 100) {
+				return val;
+			} else if (val < 100000) {
+				return Math.round(val/10)*10;
+			} else if (val < 1000000) {
+				return Math.round(val/100)*100;
+			} else if (val < 10000000) {
+				return Math.round(val/100)*100;
+			} else if (val < 100000000) {
+				return Math.round(val/100)*100;
+			} else {
+				return Math.round(val/1000)*1000;
+			}},
+        format = function(d) { return noDecimals(rounding(d)) + " " + 'MkWh'; };
+	
     //This series of variables creates the array to be used to reduce elements later on.  
 	//Because the number of elements can change how the svg is filled up, the height will vary.  
 	// Algebra used to determine element total which will later feed the hgt variable to make sure the entire svg canvas is filled (except margins of course)
@@ -248,21 +274,23 @@ function displaywheel(dataset, years)
                 return getStrokeWidth(i);
             })
             .attr("stroke", "black")
+			//.append("title")
+			//.text(function(d) { return format(d); })
             .on("mouseover", function (d, i) {
-                d3.select(this).attr("fill", "url(#redgradient)");
-                d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
-                    .attr("fill", "black");
+                d3.select(this).attr("fill", "url(#hover_gradient)")
+				.append("title")
+			    .text(function(d) { return format(d); });
+              //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
+               //     .attr("fill", "black");
             })
             .on("mouseout", function (d, i) {
                 d3.select(this).attr("fill", function () {
                     return getRectFill(i);
                 });
-                d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
-                    .attr("fill", "none");
+              //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
+               //     .attr("fill", "none");
             });		
-		  
   
-       
     /*var drag = d3.behavior.drag()
          .origin(function (d) { return d; })
          .on("dragstart", dragstarted)
@@ -271,16 +299,17 @@ function displaywheel(dataset, years)
          */
 
     var xAxis = d3.svg.axis()
-     .scale(scale)
-     .orient("middle")
-     .ticks(5);
+		 .scale(scale)
+		 .orient("top")
+		 .ticks(5)
+		 .tickSize(h);
 
     svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(" + margin.left + "," + (h / 2 + margin.top) + ")")
-    .call(xAxis);
-    //Text Labels
-       
+		.attr("class", "axis")
+		.attr("transform", "translate(" + margin.left + "," + (h+ margin.top) + ")")
+		.call(xAxis);
+    
+	//Text Labels   
     yearLabels = svg.selectAll("text")
 		   .data(years)
 		   .enter()			   
@@ -300,7 +329,7 @@ function displaywheel(dataset, years)
        .data(dataset)
        .enter()
        .append("text")
-       .text(function (d) { return d.toLocaleString() + ' Mkwh'; })
+       .text(function (d) { return format(d); })
        .attr("y", 13)
        .attr("x", w / 2)
        .attr("font-family", "sans-serif")
@@ -314,7 +343,7 @@ function displaywheel(dataset, years)
 
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK
-
+	
     //gradient	
     var graygradient = svg.append("svg:defs")
               .append("svg:linearGradient")
@@ -329,43 +358,44 @@ function displaywheel(dataset, years)
 	// Define the gradient colors
     graygradient.append("svg:stop")
                 .attr("offset", "0%")
-                .attr("stop-color", "rgb(50,50,50)")
-                .attr("stop-opacity", 1);
+                .attr("stop-color", mask_color)
+                .attr("stop-opacity", 0.6);
 
     graygradient.append("svg:stop")
         .attr("offset", "50%")
-        .attr("stop-color", "lightgrey")
-        .attr("stop-opacity", 1);
+        .attr("stop-color", bar_color)
+        .attr("stop-opacity", 0.6);
        
     graygradient.append("svg:stop")
         .attr("offset", "100%")
-        .attr("stop-color", "rgb(50,50,50)")
-        .attr("stop-opacity", 1);
+        .attr("stop-color", mask_color)
+        .attr("stop-opacity", 0.6);
        
 
-    var redgradient = svg.append("svg:defs")
+    var hover_gradient = svg.append("svg:defs")
              .append("svg:linearGradient")
-             .attr("id", "redgradient")
+             .attr("id", "hover_gradient")
              .attr("x1", "0%")
              .attr("y1", "0%")
              .attr("x2", "0%")
              .attr("y2", "100%")
              .attr("spreadMethod", "pad")
              .attr("gradientUnits", "userSpaceOnUse")
-    // Define the gradient colors
-    redgradient.append("svg:stop")
+			 
+    // Define the hover gradient colors
+    hover_gradient.append("svg:stop")
                .attr("offset", "0%")
-               .attr("stop-color", "rgb(50,50,50)")
+               .attr("stop-color", hover_mask_color)
                .attr("stop-opacity", 1);
 
-    redgradient.append("svg:stop")
+    hover_gradient.append("svg:stop")
        .attr("offset", "50%")
-       .attr("stop-color", "red")
+       .attr("stop-color", hover_bar_color)
        .attr("stop-opacity", 1);
 
-    redgradient.append("svg:stop")
+    hover_gradient.append("svg:stop")
        .attr("offset", "100%")
-       .attr("stop-color", "rgb(50,50,50)")
+       .attr("stop-color", hover_mask_color)
        .attr("stop-opacity", 1);
 
     //fake rectangle(2 of them) to give impression that wheels are disappearing at bottom and top
@@ -403,16 +433,24 @@ function turnToSelectedYear(year) {
             turnWheel(false);
         }
     }
-
 }
 
 
 function turnWheel(downward) {
        
-    if (getYearFromIndex(centerIndex) == minyear || getYearFromIndex(centerIndex) == maxyear) {
-        return;
-    }
-    if (downward) {
+    if (getYearFromIndex(centerIndex) == minyear) {
+		if (downward) {
+			return;
+		} else {
+        centerIndex++;
+		}
+	} else if (getYearFromIndex(centerIndex) == maxyear) {
+		if (!downward) {
+			return;
+		} else {
+        centerIndex--;
+		}
+    } else if (downward) {
         centerIndex--;
     } else {
         centerIndex++;
@@ -426,27 +464,19 @@ function turnWheel(downward) {
         d3.select(this)
         .transition()
         .attr("y", function () {
-
             if (getRelativeCoord(i) == -1) {
                 return (downward) ? containerHeight * 2 : -50;
             } else {
                 return Summation(getRelativeCoord(i));
-
             }
-
         })
         .attr("height", function () {
             //next level reached 
-
-
             if (getRelativeCoord(i) == -1) {
                 return 0;
             } else {
-
                 return hgt * ElementReductions[getRelativeCoord(i)];
             }
-
-            //;}
         })
         .attr("stroke-width", function () {
             return getStrokeWidth(i);
@@ -454,7 +484,6 @@ function turnWheel(downward) {
         .attr("fill", function () {
             return getRectFill(i);
         })
-
         //.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
     })
     /*} else {
@@ -471,18 +500,13 @@ function turnWheel(downward) {
         d3.select(this)
         .transition()
         .attr("y", function () {
-
             return getTextY(i, downward);
-
         })
         .attr("transform", function () {
             return getTextTransform(i);
         });
-
-
         //.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
     })
-
 }
 
 
