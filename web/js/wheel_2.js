@@ -311,18 +311,6 @@ function displaywheel(dataset, years)
 		   .attr("transform", function (d, i) {
 			   return getTextTransform(i);
 		   });
-	
-	// Add Axis	
-	var xAxis = d3.svg.axis()
-		 .scale(scale)
-		 .orient("top")
-		 .ticks(5)
-		 .tickSize(h);
-
-    svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(" + margin.left + "," + (h+ margin.top) + ")")
-		.call(xAxis);
 		
     //Text Labels for data
   /*  svg.selectAll("datatext")
@@ -398,7 +386,29 @@ function displaywheel(dataset, years)
        .attr("stop-color", hover_mask_color)
        .attr("stop-opacity", 1);
 
-    //fake rectangle(2 of them) to give impression that wheels are disappearing at bottom and top
+    // Top-white rectangle to give impression that wheel is disappearing at the top
+	svg.append("g")
+		.append("rect")
+		.attr("y", 0)
+		.attr("x", -3)
+		.attr("height", heightArray[NumElements-1]/2)
+		.attr("width", w * 2)
+		.attr("fill", "white")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	// Add Axis	- Place on top of top-white box
+	var xAxis = d3.svg.axis()
+		 .scale(scale)
+		 .orient("top")
+		 .ticks(5)
+		 .tickSize(h);
+
+    svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(" + margin.left + "," + (5 + h + margin.top) + ")")
+		.call(xAxis);
+		
+    // Bottom-white rectangle to give impression that wheel is disappearing at the bottom
     svg.append("g")
 	   .append("rect")
 	   .attr("y", (heightArray[NumElements - 1] / 2) + yArray[NumElements - 1])
@@ -407,15 +417,8 @@ function displaywheel(dataset, years)
 	   .attr("width",w*2)
 	   .attr("fill", "white")
 	   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-     
-    svg.append("g")
-		.append("rect")
-		.attr("y", 0)
-		.attr("x", -3)
-		.attr("height", heightArray[NumElements-1]/2)
-		.attr("width", w * 2)
-		.attr("fill", "white")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+
 }
 //}
 

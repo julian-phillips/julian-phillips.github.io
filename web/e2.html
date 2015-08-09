@@ -65,15 +65,36 @@
 	   display: table;
 	   float: left;
 	   //margin-top: 10px;
-	   border: thin solid #707070;
+	   //border: thin solid #707070;
+	 }
+	 
+	 #wheel {
+		border: thin solid #A8A8A8 ;
+	 }
+
+	 .bleh:hover {
+	     fill: url(#hover_gradient); 
+	 }
+	 
+	 .up-down {
+		background: rgba(112, 112, 112, 0.5);
+		color: #fff;
+		font-size: 14px;
+		text-decoration: none;
+		cursor: pointer;
+		border: none;
+		padding-right: 150px;
+		padding-left: 150px;
+	 }
+
+	 .up-down:hover {
+		border: none;
+		background: rgba(112, 112, 112, 1);
 	 }
 	 .axis line {
 		  stroke: #E5E5E5;
 		  stroke-opacity: .5;
 		  shape-rendering: crispEdges;
-		}
-	 .bleh:hover {
-	     fill: url(#hover_gradient); 
 	 }
 	  
 </style>
@@ -160,10 +181,9 @@
 	  <div class="chart" >
 		<span class="chart" id="sankeyleft" style="float:left;"></span>
 		<span class="chart"  id="center_elements">
-			<div><button onclick="turnWheel(false);">Up</button></div>
-			<span id="wheel">
-			</span>
-			<div><button onclick="turnWheel(true);">Down</button></div>
+			<div><button class="up-down" onclick="turnWheel(false);">&#9650</button></div>
+			<div id="wheel"></div>
+			<div><button class="up-down" onclick="turnWheel(true);">&#9660</button></div>
 		</span>
 		  <span class="chart" id="sankeyright" style="float:left;"></span>
 	  </div>

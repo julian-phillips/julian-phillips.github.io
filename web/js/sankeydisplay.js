@@ -7,9 +7,9 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
 
     var margin = {top: 35, right: 10, bottom: 30, left: 10};
     if (orientation == 'left') {
-		margin.right = 0;
+		margin.right = 5;
 	} else {
-		margin.left = 0;
+		margin.left = 5;
 	}
 	var width = w - margin.left - margin.right,
         height = h - margin.top - margin.bottom;
