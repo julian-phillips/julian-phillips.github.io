@@ -86,7 +86,7 @@ function setCenterIndex(year) {
 }
 
 function getYearFromIndex(index) {
-    return minyear + centerIndex;
+    return minyear + index;
 }
 
 function getTextY(i, downward) {
@@ -274,8 +274,6 @@ function displaywheel(dataset, years)
                 return getStrokeWidth(i);
             })
             .attr("stroke", "black")
-			//.append("title")
-			//.text(function(d) { return format(d); })
             .on("mouseover", function (d, i) {
                 d3.select(this).attr("fill", "url(#hover_gradient)")
 				.append("title")
@@ -298,16 +296,6 @@ function displaywheel(dataset, years)
          .on("dragend", dragended);
          */
 
-    var xAxis = d3.svg.axis()
-		 .scale(scale)
-		 .orient("top")
-		 .ticks(5)
-		 .tickSize(h);
-
-    svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(" + margin.left + "," + (h+ margin.top) + ")")
-		.call(xAxis);
     
 	//Text Labels   
     yearLabels = svg.selectAll("text")
@@ -323,9 +311,21 @@ function displaywheel(dataset, years)
 		   .attr("transform", function (d, i) {
 			   return getTextTransform(i);
 		   });
+	
+	// Add Axis	
+	var xAxis = d3.svg.axis()
+		 .scale(scale)
+		 .orient("top")
+		 .ticks(5)
+		 .tickSize(h);
 
+    svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(" + margin.left + "," + (h+ margin.top) + ")")
+		.call(xAxis);
+		
     //Text Labels for data
-    svg.selectAll("datatext")
+  /*  svg.selectAll("datatext")
        .data(dataset)
        .enter()
        .append("text")
@@ -340,7 +340,7 @@ function displaywheel(dataset, years)
        .attr("class", "datatext")
     //.attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace)+ ")")
     //.attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"});
-
+*/
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK
 	
