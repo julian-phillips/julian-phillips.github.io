@@ -102,10 +102,24 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
     // add the link titles
     link.append("title")
         .text(function(d) {
-            return d.source.name + " → " + d.target.name + 
+			if (d.target.right_ghost == 1) {
+				return d.source.name + 
 			       "\n" + format(d.value) +
-				   "\n" + formatPercent(d.percentage) + "%"; });
-
+				   "\n" + formatPercent(d.percentage) + "%";	
+			} else if (d.source.left_ghost == 1) {
+				return d.target.name + 
+			       "\n" + format(d.value) +
+				   "\n" + formatPercent(d.percentage) + "%";
+			} else if (orientation == 'left') {
+				return d.source.name + " → " + d.target.name + 
+			       "\n" + format(d.value) +
+				   "\n" + formatPercent(d.percentage) + "% of " +  d.target.name; 
+		    } else {
+				return d.source.name + " → " + d.target.name + 
+			       "\n" + format(d.value) +
+				   "\n" + formatPercent(d.percentage) + "% of " +  d.source.name; 
+		    }
+		   });
 
     // add in the nodes
     var node = svg.append("g").selectAll(".node")
@@ -115,7 +129,9 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
         .attr("transform", function(d) { 
             return "translate(" + d.x + "," + d.y + ")"; });
 
-    function filterfunc(d) {
+	// Auxiliary function to determine if node is NOT a PushOut node
+	// Used to hide pushout nodes
+    function node_notPushout(d) {
         if (orientation == 'left') {
             return !(d.right_ghost == 1);
         } else {
@@ -125,7 +141,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
     
     // add the rectangles for the nodes
     node.append("rect")
-        .filter(function(d) { return filterfunc(d); })   // Don't add text if it is a base node
+        .filter(function(d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("height", function(d) { return Math.max(0, d.dy); })
         .attr("width", sankey.nodeWidth())
         .style("fill", function(d) { 
@@ -138,7 +154,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
 
     // add in the title for the nodes
     node.append("text")
-        .filter(function(d) { return filterfunc(d); })   // Don't add text if it is a base node
+        .filter(function(d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
         .attr("text-anchor", (orientation == 'left') ? "start" : "end")
         .attr("y", function(d) { return d.dy /5; })
