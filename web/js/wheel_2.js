@@ -112,6 +112,22 @@ function getTextTransform(i) {
 
 }
 
+function getStrokeWidth(i){
+    if (i == centerIndex) {
+        return 3;
+    }
+    return 0;
+
+}
+
+function getRectFill(i) {
+    if (i == centerIndex) {
+        return "rgb(255, 127, 14)";
+    }
+    return "url(#graygradient)";
+
+}
+
 function getRelativeCoord(trueIndex, customCenter) {
     if (typeof customCenter == "undefined") {
         customCenter = centerIndex;
@@ -210,7 +226,8 @@ function displaywheel(dataset, years)
             .data(dataset)
             .enter()
             .append("g")
-            .append("rect")				   
+            .append("rect")
+            .attr("class","bleh")
             .attr("y", function (d, i) { return Summation(getRelativeCoord(i)); })
             .attr("x", 0)
             .attr("height", function (d, i) {
@@ -221,8 +238,15 @@ function displaywheel(dataset, years)
                 }
             })
             .attr("width", function(d ) { return scale(d);})			   
-            .attr("fill","url(#graygradient)")					
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("fill", function (d, i) {
+                return getRectFill(i);
+            })
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("stroke-width", function (d,i)
+            {
+                return getStrokeWidth(i);
+            })
+            .attr("stroke", "black");
        
     var drag = d3.behavior.drag()
          .origin(function (d) { return d; })
@@ -368,22 +392,27 @@ function turnWheel(downward) {
                 return Summation(getRelativeCoord(i));
 
             }
-             
+
         })
         .attr("height", function () {
             //next level reached 
-     
-            
-                if (getRelativeCoord(i) == -1) {
-                    return 0;
-                } else {
 
-                    return hgt * ElementReductions[getRelativeCoord(i)];
-                }
+
+            if (getRelativeCoord(i) == -1) {
+                return 0;
+            } else {
+
+                return hgt * ElementReductions[getRelativeCoord(i)];
+            }
 
             //;}
-        });
-
+        })
+        .attr("stroke-width", function () {
+            return getStrokeWidth(i);
+        })
+        .attr("fill", function () {
+            return getRectFill(i);
+        })
 
         //.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
     })
