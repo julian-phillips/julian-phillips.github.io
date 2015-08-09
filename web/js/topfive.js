@@ -73,7 +73,8 @@ function drawcharts(topfivedata)
 		.attr("dy", ".35em")
 		.text(function(d, i) { 
 			if (i == 0) {
-				return format(d.value) + " " + "Trillion kWh";
+				//return format(d.value) + " " + "Trillion kWh";
+			    return format(d.value) + " " + d.units;
 		} else { return format(d.value); }}); 
 		
     // Add text labels with Country name
