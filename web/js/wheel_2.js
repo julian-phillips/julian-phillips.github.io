@@ -295,7 +295,6 @@ function displaywheel(dataset, years)
          .on("drag", dragged)
          .on("dragend", dragended);
          */
-
     
 	//Text Labels   
     yearLabels = svg.selectAll("text")
@@ -442,25 +441,25 @@ function turnToSelectedYear(year) {
 function turnWheel(downward) {
        
     if (getYearFromIndex(centerIndex) == minyear) {
-		if (downward) {
-			return;
-		} else {
-        centerIndex++;
-		}
+			if (downward) { 
+				return;
+			} else {
+			centerIndex++;
+			}
 	} else if (getYearFromIndex(centerIndex) == maxyear) {
-		if (!downward) {
-			return;
-		} else {
-        centerIndex--;
-		}
+			if (!downward) {
+				return;
+			} else {
+			centerIndex--;
+			}
     } else if (downward) {
         centerIndex--;
     } else {
         centerIndex++;
-    };
+    }
 
     document.getElementById("year").value = getYearFromIndex(centerIndex);
-    updatedata();
+	updateSST();
 
     leftRect.each(function (d, i) {
            
@@ -481,34 +480,16 @@ function turnWheel(downward) {
                 return hgt * ElementReductions[getRelativeCoord(i)];
             }
         })
-        .attr("stroke-width", function () {
-            return getStrokeWidth(i);
-        })
-        .attr("fill", function () {
-            return getRectFill(i);
-        })
-        //.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+        .attr("stroke-width", function () {return getStrokeWidth(i); })
+        .attr("fill", function () { return getRectFill(i);})
     })
-    /*} else {
-        currentIncrement=0;
-        //next level reached 
-        if (downward)
-        {
-            centerIndex++;
-            refresh();
-        }
-    }*/
+
     yearLabels.each(function (d, i) {
              
         d3.select(this)
         .transition()
-        .attr("y", function () {
-            return getTextY(i, downward);
-        })
-        .attr("transform", function () {
-            return getTextTransform(i);
-        });
-        //.attr("height", function(d,i) {return  hgt * ElementReductions[i];})
+        .attr("y", function () { return getTextY(i, downward);})
+        .attr("transform", function () { return getTextTransform(i); });
     })
 }
 

@@ -218,28 +218,46 @@
      var year = document.getElementById("year").value;
      var valuetype = document.getElementById("units").value;
      var hierarchy = document.getElementById("hierarchy").value;
-
-     if (typeof turn != "undefined") {
+	 
+	 // Update Wheel
+     if (typeof turn != "undefined") {	
+		 // If the change was the selected year, turn the wheel
          turnToSelectedYear(year);
-     }
-
-     var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
-     displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype, sank_width, sank_height );
-
-     var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
-     displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype, sank_width, sank_height);
-
-     // update and refresh the slider
-     self.slider.setValue(year);
-
-     // update the top five charts
-     // list of Top Five categories
-     var flowlist = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear', 'Combustion'];
-     var topfivedata = gettopfivedata(year, valuetype, flowlist);
-     drawcharts(topfivedata);
-
+     } else { 
+	    // If the change is something else, update the data and the wheel
+		var wheeldata = getwheeldata(region, year, valuetype, -1);
+        drawwheel(wheeldata, wheel_width, wheel_height);
+		updateSST();
+	 }
+	 
    }
+	
+    function updateSST() { 
+		// Update Sankey, Slider, and Top-5
+	     var region = document.getElementById("region").value;
+		 var year = document.getElementById("year").value;
+		 var valuetype = document.getElementById("units").value;
+		 var hierarchy = document.getElementById("hierarchy").value;
+		 
+		 // Update left Sankey (Production)
+		 var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
+		 displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype, sank_width, sank_height );
+		 
+		 // Update Right Sankey (Consumption)
+		 var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
+		 displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype, sank_width, sank_height);
 
+		 // update and refresh the slider
+		 self.slider.setValue(year);
+
+		 // update the top five charts
+		 // list of Top Five categories
+		 var flowlist = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear', 'Combustion'];
+		 var topfivedata = gettopfivedata(year, valuetype, flowlist);
+		 drawcharts(topfivedata);
+	}
+	
+	
    function initslider()   {
      // construct a slider for the year parameter
      slider = d3.slider()
