@@ -12,7 +12,7 @@
 <!-- Year Slider -->
 <script src="js/d3.slider.js"></script>
 <!-- Bar charts -->
-<script src="js/wheel.js"></script>
+<script src="js/wheel_2.js"></script>
 <script src="js/topfive.js" ></script>
 <!-- Sankeys -->
 <script src="js/sankey.js"></script>
@@ -44,24 +44,35 @@
 	 .link:hover {
 	   fill-opacity: .5;
 	 }
-		  .axis path,
-		 .axis line {
-		   fill: none;
-		   stroke: black;
-		   shape-rendering: crispEdges;
-		 }
-		 .axis text {
-		   font-family: sans-serif;
-		   font-size: 10px;
-		   transform: rotate(0deg);
-		 }
-		 .datarect:hover {
-		   fill: green;
-		 }
-		 .title{
-		   font: 18px sans-serif;
-		 }
-
+	 .axis path,
+	 .axis line {
+	   fill: none;
+	   stroke: black;
+	   shape-rendering: crispEdges;
+	 }
+	 .axis text {
+	   font-family: sans-serif;
+	   font-size: 10px;
+	   transform: rotate(0deg);
+	 }
+	 .datarect:hover {
+	   fill: green;
+	 }
+	 .title{
+	   font: 18px sans-serif;
+	 }
+	 #center_elements {
+	   display: table;
+	   float: left;
+	   //margin-top: 10px;
+	   border: thin solid #707070;
+	 }
+	 .axis line {
+  stroke: #fff;
+  stroke-opacity: .5;
+  shape-rendering: crispEdges;
+}
+	  
 </style>
 <body>
   <div class="options">
@@ -144,7 +155,7 @@
   <div>
 	  <div class="chart" >
 		<span class="chart" id="sankeyleft" style="float:left;"></span>
-		<span class="chart"  style="display: table; float: left; margin-top: 100px; border: thin solid #000000">
+		<span class="chart"  id="center_elements">
 			<div><button onclick="turnWheel(false);">Up</button></div>
 			<span id="wheel">
 			</span>
@@ -159,6 +170,13 @@
   <script>
    var data = {};
    var slider = null;
+   
+   // Set size of visualization globally
+   var wheel_width = 300,
+	   sank_width = 550,
+	   wheel_height = 450,
+       sank_height = wheel_height + 21 +21 ; //21 is the height of the div with buttons
+	   
    window.onload = function () { data = loaddata(); initWheel(); initslider(); updatedata(); }
 
    function initWheel()   {
@@ -168,7 +186,7 @@
 
        setCenterIndex(year);
        var wheeldata = getwheeldata(region, year, valuetype, -1);
-       drawwheel(wheeldata);
+       drawwheel(wheeldata, wheel_width, wheel_height);
 
    }
 
@@ -181,12 +199,13 @@
      if (typeof turn != "undefined") {
          turnToSelectedYear(year);
      }
-       
+
+		 
      var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
-     displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype );
+     displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype, sank_width, sank_height );
 
      var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
-     displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype);
+     displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype, sank_width, sank_height);
 
      // update and refresh the slider
      self.slider.setValue(year);

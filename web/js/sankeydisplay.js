@@ -1,18 +1,18 @@
-function displaysankey(graph, elementid, orientation, valuetype)
+function displaysankey(graph, elementid, orientation, valuetype, w, h)
 {
     var units = "MkWh";
 	if (valuetype == 'percap') {
 		units = "kWh per capita";
 	}
 
-    var margin = {top: 10, right: 10, bottom: 10, left: 10};
+    var margin = {top: 35, right: 10, bottom: 30, left: 10};
     if (orientation == 'left') {
 		margin.right = 0;
 	} else {
 		margin.left = 0;
 	}
-	var width = 600 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
+	var width = w - margin.left - margin.right,
+        height = h - margin.top - margin.bottom;
 
     var noDecimals = d3.format(",.0f"),    // zero decimal places
 		oneDecimals = d3.format(",.1f"),    // zero decimal places
@@ -56,21 +56,21 @@ function displaysankey(graph, elementid, orientation, valuetype)
     {
         sankey = d3.sankey()
             .nodeWidth(15)
-            .nodePadding(15)
+            .nodePadding(10)
             .size([width, height])
             .scaleRight(true)
-            .rightHeight(100)
+            .rightHeight(84)
             .leftHeight(height);
     }
     else
     {
         sankey = d3.sankey()
             .nodeWidth(15)
-            .nodePadding(15)
+            .nodePadding(10)
             .size([width, height])
-	    .scaleLeft(true)
-	    .rightHeight(height)
-	    .leftHeight(100);
+			.scaleLeft(true)
+			.rightHeight(height)
+			.leftHeight(84);
     }
 
     var path = sankey.link();

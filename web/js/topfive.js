@@ -1,5 +1,10 @@
 function drawcharts(topfivedata)
-{
+{	
+	var noDecimals = d3.format(",.2f"),    // zero decimal places
+	    rounding = function(val) { return Math.round(val/10000)/100;},
+        format = function(d) { return noDecimals(rounding(d)) ; }; //+ "GkWh"
+	
+	
     var titlepadding = 45,
 	    bottompadding = 5;
 	var chartpadding = 10; //space between boxes of each top-5 category
@@ -35,51 +40,60 @@ function drawcharts(topfivedata)
     function chart(cdata, ndx)
     {
 
-        //create scale
-        var scale = d3.scale.linear()
-            .domain([0, cdata.maxvalue()])
-            .range([0,wid - 2*barPadding.x]);
-        
-        //Left rectangle.  This is the horizontal bar that actually shows the metric			
-        svg.selectAll()
+    //create scale
+    var scale = d3.scale.linear()
+        .domain([0, cdata.maxvalue()])
+        .range([0,wid - 2*barPadding.x]);
+		
+    var xAxis = d3.svg.axis()
+		.scale(scale)
+		.orient("bottom")
+		.tickSize(box_hgt);  
+		
+    //Left rectangles.  This is the horizontal bar that actually shows the metric			
+    var bar =  svg.selectAll()
 	    .data(cdata.countries)
 	    .enter()
 	    .append("g")
-	    .append("rect")				   
+	    .attr("transform", "translate(" + (margin.left + (wid + chartpadding)*(ndx)) + "," + (margin.top + titlepadding) + ")");
+    
+	bar.append("rect")				   
 	    .attr("y", function(d,i) { return margin.top + (hgt * i) + (barPadding.y * i);})
 	    .attr("x", barPadding.x)
 	    .attr("height", hgt)
-	    .attr("width", function(d) {    return scale(d.value);})			   
+	    .attr("width", function(d) { return scale(d.value);})			   
 	    .attr("fill","steelblue")					
-	//.attr("id", function(d, i) { return i; })
 	    .attr("class","datarect")
-	    .attr("transform", "translate(" + (margin.left + (wid + chartpadding)*(ndx)) + "," + (margin.top + titlepadding) + ")");
-    
-
-        //Text Labels - countries
-        svg.selectAll()
-	    .data(cdata.countries)
-	    .enter()			   
-	    .append("text")
-	    .text(function(d) { return d.name; })
+		
+	// Add text labels with bar value
+	bar.append("text")
+		.attr("y", function(d,i) { return margin.top + (hgt * i) + (barPadding.y * i) + hgt/2;})
+		.attr("x", barPadding.x + 6)
+		.attr("fill", "white")
+		.attr("dy", ".35em")
+		.text(function(d, i) { 
+			if (i == 0) {
+				return format(d.value) + " " + "Trillion kWh";
+		} else { return format(d.value); }}); 
+		
+    // Add text labels with Country name
+     bar.append("text")
+	    .text(function(d) { return d.name })
 	    .attr("y", function(d,i) { return margin.top + (hgt * i) + (barPadding.y * i) - (barPadding.y * .2);})
 	    .attr("x", barPadding.x)
 	    .attr("font-family", "sans-serif")
 	    .attr("font-size", "12px")
 	    .attr("text-anchor", "left")
 	    .attr("class","yeartext")
-	    .attr("transform", "translate(" + (margin.left + (wid + chartpadding)*(ndx)) + "," + (margin.top + titlepadding) + ")")
 
-	// top-5 title
+	// Add title of top-5 category
 	var title = svg.append("text")
 	    .text(cdata.category)
 		.attr("class","title")
 	    .attr("y", margin.top + titlepadding/2 +5)
-	// Align in Center of Box
-	//	.attr("x", margin.left + wid/2 + (ndx * (wid + chartpadding)))
+	//	.attr("x", margin.left + wid/2 + (ndx * (wid + chartpadding))) // Align in Center of Box
 	//    .attr("text-anchor","middle");
-	// Align at the Left
-		.attr("x", margin.left + barPadding.x + (ndx * (wid + chartpadding)))
+		.attr("x", margin.left + barPadding.x + (ndx * (wid + chartpadding))) // Align at the Left
 	    .attr("text-anchor","left");
         
         
@@ -94,11 +108,12 @@ function drawcharts(topfivedata)
 	    .attr("stroke-width", 2)
 	    .attr("fill", "none")
 	    //.attr("transform", "translate(" + ((wid + chartpadding) * ndx)+ ",0)");
-        
+    
+
         /*
         //axis
-        var xAxis = d3.svg.axis()
-	.scale(scale)
+     var xAxis = d3.svg.axis()
+	 .scale(scale)
 	.orient("middle")
 	.ticks(5);
         svg.append("g")
