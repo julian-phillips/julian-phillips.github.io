@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <meta charset="utf-8">
 <title>e2</title>
 <link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
@@ -58,10 +58,14 @@
 	   font-size: 10px;
 	   transform: rotate(0deg);
 	 }
-	 .datarect:hover {
-	   fill: green;
-	 }
-	 .title{
+	 .datarect {
+           fill: steelblue;
+         }
+          .datarect:hover {
+            //fill: green;
+            fill: #bbbbbb;
+	  }
+ 	 .title{
 	   font: 18px sans-serif;
 	 }
 	 #center_elements {
@@ -120,8 +124,10 @@
         <option value="Asia" >Asia</option>
         <option value="Central Asia" >&middot; Central Asia</option>
         <option value="Eastern Asia" >&middot; Eastern Asia</option>
+        <!--
         <option value="China">&middot; &middot; China</option>
         <option value="Japan">&middot; &middot; Japan</option>
+        -->
         <option value="South-Eastern Asia" >&middot; South-Eastern Asia</option>
         <option value="Southern Asia" >&middot; Southern Asia</option>
         <option value="Western Asia" >&middot; Western Asia</option>
@@ -192,6 +198,7 @@
 	  </div>
 	  <div class="slider" id="slider" width="auto"></div>
 	  <div class="topfive" id="topfive" ></div>
+	  <div class="bottomfive" id="bottomfive" ></div>
   </div>  
 
   <script>
@@ -262,8 +269,13 @@
 		 // update the top five charts
 		 // list of Top Five categories
 		 var flowlist = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear', 'Combustion'];
-		 var topfivedata = gettopfivedata(year, valuetype, flowlist);
-		 drawcharts(topfivedata);
+		 var topfivedata = gettopfivedata(year, valuetype, flowlist, 'desc');
+                 drawcharts(topfivedata, "#topfive");
+      
+                 /*
+                 var bottomfivedata = gettopfivedata(year, valuetype, flowlist, 'asc');
+                 drawcharts(bottomfivedata, "#bottomfive");
+                 */
 	}
 	
 	

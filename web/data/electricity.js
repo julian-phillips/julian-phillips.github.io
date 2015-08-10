@@ -30,7 +30,8 @@ function getunits(valuetype, population)
     if (valuetype == 'percap') {
         if (population > 0)
         {
-            mult = 1000000 / Number(population);
+            //mult = 1000000 / Number(population);
+            mult = 1000 / Number(population);
             units = "kWh per capita"
         }
         else // no population data available
@@ -268,6 +269,7 @@ function setsankeyvalues(links, selectedyear, valuetype)
         var rdata = data[link.region][selectedyear];
         var units = getunits(valuetype, rdata.population);
         var target = link.target;
+        // combine all PushOutX values as one
         if (target.substring(0,7).toLowerCase() == 'pushout')
         {
             target = 'pushout';
@@ -293,7 +295,10 @@ function setsankeyvalues(links, selectedyear, valuetype)
             target = 'pushout';
         }
         var total = flowtotals[target];
-        link.percentage = (100 * (link.value / total)).toFixed(2);
+        if (total > 0)
+        {
+            link.percentage = (100 * (link.value / total)).toFixed(2);
+        }
     }
 }
                         
@@ -406,9 +411,16 @@ var TopFive = function(category, year, units)
             this.units = country.units;
         }
     };
-    this.settopfive = function()
+    this.settopfive = function(direction)
     {
-        this.countries.sort(sortbyvalue);
+        if (direction == 'desc')
+        {
+            this.countries.sort(sortbyvaluedescending);
+        }
+        else
+        {
+            this.countries.sort(sortbyvalueascending);
+        }
         for (var i = 0; i < 5 && i < this.countries.length; i++)
         {
             this.countries[i].rank = (i + 1);
@@ -418,8 +430,15 @@ var TopFive = function(category, year, units)
     };
     this.maxvalue = function()
     {
-        this.countries.sort(sortbyvalue);
-        return this.countries[0].value;
+        var maximum = 0;
+        for (var i = 0; i < this.countries.length; i++)
+        {
+            if (this.countries[i].value > maximum)
+            {
+                maximum = this.countries[i].value;
+            }
+        }
+        return maximum;
     }
 };
 
@@ -431,14 +450,19 @@ var TopFiveCountry = function(name, rank, value, units)
     this.units = units;
 }
 
-function sortbyvalue(x, y)
+function sortbyvaluedescending(x, y)
 {
     // sort in descending order
     return (sortby(x, y, 'value') * -1);
 }
+function sortbyvalueascending(x, y)
+{
+    // sort in descending order
+    return (sortby(x, y, 'value') * 1);
+}
 
 var topfivecategories = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear'];
-function gettopfivedata(year, valuetype, flowlist)
+function gettopfivedata(year, valuetype, flowlist, direction)
 {
     var topfivedata = {};
     for (var i = 0; i < flowlist.length; i++)
@@ -462,7 +486,7 @@ function gettopfivedata(year, valuetype, flowlist)
     for (var i = 0; i < flowlist.length; i++)
     {
         var category = flowlist[i];
-        topfivedata[category].settopfive();
+        topfivedata[category].settopfive(direction);
         tmp.push(topfivedata[category]);
     }
     return tmp;

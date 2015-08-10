@@ -1,4 +1,4 @@
-function drawcharts(topfivedata)
+function drawcharts(topfivedata, divid)
 {	
 	var noDecimals = d3.format(",.2f"),    // zero decimal places
 	    rounding = function(val) { return Math.round(val/10000)/100;},
@@ -24,8 +24,8 @@ function drawcharts(topfivedata)
 	var box_hgt = height - margin.top - margin.bottom ; // height of box
 
     // clear the canvas
-    d3.select("#topfive").selectAll("*").remove();
-    var svg = d3.select("#topfive")
+    d3.select(divid).selectAll("*").remove();
+    var svg = d3.select(divid)
 		.append("svg")		   
 		.attr("width", width)
 		.attr("height", height)
@@ -62,19 +62,35 @@ function drawcharts(topfivedata)
 	    .attr("x", barPadding.x)
 	    .attr("height", hgt)
 	    .attr("width", function(d) { return scale(d.value);})			   
-	    .attr("fill","steelblue")					
 	    .attr("class","datarect")
+            .on("mouseover", function (d, i) {
+                d3.select(this).attr("fill", "url(#hover_gradient)")
+				.append("title")
+		    .text(function(d) { return d3.format("0,000")(d.value) + ' ' + d.units; });
+            })
+            .on("mouseout", function (d, i) {
+                d3.select(this).attr("fill", function () {
+                    return getRectFill(i);
+                });
+            });		
 		
 	// Add text labels with bar value
-	bar.append("text")
+        bar.append("text")
 		.attr("y", function(d,i) { return margin.top + (hgt * i) + (barPadding.y * i) + hgt/2;})
 		.attr("x", barPadding.x + 6)
 		.attr("fill", "white")
 		.attr("dy", ".35em")
-		.text(function(d, i) { 
+	    .text(function(d, i) {
+                if (d.units == 'MkWh') {
 			if (i == 0) {
 				return format(d.value) + " " + "Trillion kWh";
-		} else { return format(d.value); }}); 
+		        } else { return format(d.value); }
+                } else {
+                    if (i == 0) {
+                        return d3.format(',.2f')(d.value / 1000) + " " + "Thousand kWh per capita";
+                    } else { return d3.format(',.2f')(d.value / 1000); }
+                }
+            });
 		
     // Add text labels with Country name
      bar.append("text")
