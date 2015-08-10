@@ -1,3 +1,7 @@
+//user same color scale for both sankeys so we won't have overlap
+var color = d3.scale.category20();
+
+
 function displaysankey(graph, elementid, orientation, valuetype, w, h, passedColorSchemes)
 {
     var newColorSchemes = new Array();
@@ -41,8 +45,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
 				return twoDecimals(d);
 			} else {
 				return oneDecimals(d);
-			}},
-        color = d3.scale.category20();
+			}}
 
     // clear the canvas
     d3.select(elementid).selectAll("*").remove();
