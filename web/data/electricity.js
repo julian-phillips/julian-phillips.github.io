@@ -462,7 +462,7 @@ function sortbyvalueascending(x, y)
 }
 
 var topfivecategories = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear'];
-function gettopfivedata(year, valuetype, flowlist, direction)
+function gettopfivedata(region, year, valuetype, flowlist, direction)
 {
     var topfivedata = {};
     for (var i = 0; i < flowlist.length; i++)
@@ -470,7 +470,7 @@ function gettopfivedata(year, valuetype, flowlist, direction)
         category = flowlist[i];
         topfivedata[category] = new TopFive(category, year, null);
     }
-    var yeardata = getcountryyeardata(year);
+    var yeardata = getcountryyeardata(region, year);
     for (var name in yeardata)
     {
         var yd = yeardata[name];
@@ -517,7 +517,23 @@ function gettopfivecountries(year, valuetype, flow)
     return t5;
 }
 
-function getcountryyeardata(year)
+function getcountryyeardata(region, year)
+{
+    var countrylist = getcountriesinregion(region);
+    // gather all yeardata objects
+    var yeardata = {};
+    for (var i = 0; i < countrylist.length; i++)
+    {
+        var region = data[countrylist[i]];
+        // include only those for countries, not regions or aggregates
+        if (region.iscountry == 'Y' && countrylist[i] != 'Micronesia') // hack for Micronesia
+        {
+            yeardata[countrylist[i]] = region[year];
+        }
+    }
+    return yeardata;
+}
+function getcountryyeardata_old(region, year)
 {
     // gather all yeardata objects
     var yeardata = {};
@@ -532,4 +548,39 @@ function getcountryyeardata(year)
         }
     }
     return yeardata;
+}
+
+function getcountriesinregion(name)
+{
+    var countrylist = [];
+    var regionlist = [];
+    var region = data[name];
+    if (name == 'World')
+    {
+        regionlist = Object.keys(regions);
+        for (var i in regionlist)
+        {
+            countrylist = countrylist.concat(getcountriesinregion(regionlist[i]));
+        }
+    }
+    else
+    {
+        if (region.isregion == 'Y')
+        {
+            regionlist = Object.keys(regions[name]);
+            for (var i in regionlist)
+            {
+                countrylist = countrylist.concat(getcountriesinregion(regionlist[i]));
+            }
+        }
+        else if (region.issubregion == 'Y')
+        {
+            return regions[region.region][name];
+        }
+        else if (region.iscountry == 'Y')
+        {
+            return regions[region.region][region.subregion];
+        }
+    }
+    return countrylist;
 }

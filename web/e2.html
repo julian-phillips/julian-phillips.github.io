@@ -716,11 +716,11 @@
 		 // update the top five charts
 		 // list of Top Five categories
 		 var flowlist = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear', 'Combustion'];
-		 var topfivedata = gettopfivedata(year, valuetype, flowlist, 'desc');
+		 var topfivedata = gettopfivedata(region, year, valuetype, flowlist, 'desc');
                  drawcharts(topfivedata, "#topfive");
       
                  /*
-                 var bottomfivedata = gettopfivedata(year, valuetype, flowlist, 'asc');
+                 var bottomfivedata = gettopfivedata(region, year, valuetype, flowlist, 'asc');
                  drawcharts(bottomfivedata, "#bottomfive");
                  */
 	}
