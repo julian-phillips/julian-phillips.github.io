@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <meta charset="utf-8">
 <title>e2</title>
 <link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
@@ -590,6 +590,7 @@
         <option value="Zimbabwe" style="display:none;" >&middot; &middot; Zimbabwe</option>
       </select>
     </span>
+
     <span>Year
       <select name="year" id="year" onChange="updatedata(true)"  >
         <option value="1990">1990</option>
@@ -704,11 +705,11 @@
 		 
 		 // Update left Sankey (Production)
 		 var sankeyproddata = getsankeydata(region, year, valuetype, 'production', hierarchy, 'left');
-		 displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype, sank_width, sank_height );
+		 var colorSchemes = displaysankey(sankeyproddata, '#sankeyleft', 'left', valuetype, sank_width, sank_height );
 		 
 		 // Update Right Sankey (Consumption)
 		 var sankeyconsdata = getsankeydata(region, year, valuetype, 'consumption', hierarchy, 'right');
-		 displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype, sank_width, sank_height);
+		 displaysankey(sankeyconsdata, '#sankeyright', 'right', valuetype, sank_width, sank_height, colorSchemes);
 
 		 // update and refresh the slider
 		 self.slider.setValue(year);

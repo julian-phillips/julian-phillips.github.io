@@ -1,5 +1,8 @@
-function displaysankey(graph, elementid, orientation, valuetype, w, h)
+function displaysankey(graph, elementid, orientation, valuetype, w, h, passedColorSchemes)
 {
+    var newColorSchemes = new Array();
+
+
     var units = "MkWh";
 	if (valuetype == 'percap') {
 		units = "kWh per capita";
@@ -141,8 +144,31 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
         .filter(function(d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("height", function(d) { return Math.max(0, d.dy); })
         .attr("width", sankey.nodeWidth())
-        .style("fill", function(d) { 
-            return d.color = color(d.name.replace(/ .*/, "")); })
+        .style("fill", function (d)
+        {
+            nodeName = d.name; //.replace(/ .*/, "");
+
+            if (typeof passedColorSchemes != "undefined")
+            {
+                var passedColor = $.grep(passedColorSchemes, function (n, i) {
+                    return ( n.name == nodeName );
+                });
+
+                if (passedColor.length != 0)
+                {
+                    return passedColor[0].color;
+                }
+
+            }
+
+            var newColor = color(nodeName);
+            newColorSchemes.push({
+                name: nodeName,
+                color: newColor
+            });
+
+            return d.color = newColor;
+        })
         .style("stroke", function(d) { 
             return d3.rgb(d.color).darker(2); })
         // click node to select country/region
@@ -173,5 +199,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
         .attr("y", function(d) { return d.dy /5; })
         .attr("dy", ".35em")
         .attr("transform", null)
-        .text(function(d) { return d.name; });
+        .text(function (d) { return d.name; });
+
+    return newColorSchemes;
 }
