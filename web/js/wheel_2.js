@@ -180,6 +180,11 @@ function drawwheel(wheeljson, input_width, input_height) // Get data and send it
     displaywheel(dataset, years);
 }
 	 
+function getUnit() {
+    if ($("#units").val() == "absolute")    
+        return 'MkWh';
+    else return "kWh";
+}
 
 function displaywheel(dataset, years)
 {	
@@ -201,7 +206,7 @@ function displaywheel(dataset, years)
 			} else {
 				return Math.round(val/1000)*1000;
 			}},
-        format = function(d) { return noDecimals(rounding(d)) + " " + 'MkWh'; };
+        format = function(d) { return noDecimals(rounding(d)) + " " + getUnit(); };
 	
     //This series of variables creates the array to be used to reduce elements later on.  
 	//Because the number of elements can change how the svg is filled up, the height will vary.  
@@ -327,7 +332,6 @@ function displaywheel(dataset, years)
   /*  svg.selectAll("datatext")
        .data(dataset)
        .enter()
-       .append("text")
        .text(function (d) { return format(d); })
        .attr("y", 13)
        .attr("x", w / 2)

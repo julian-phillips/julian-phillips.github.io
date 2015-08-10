@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <meta charset="utf-8">
 <title>e2</title>
 <link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
@@ -17,6 +17,9 @@
 <!-- Sankeys -->
 <script src="js/sankey.js"></script>
 <script src="js/sankeydisplay.js" ></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 	 body {
@@ -202,6 +205,11 @@
        sank_height = wheel_height + 21 +21 ; //21 is the height of the div with buttons
 	   
    window.onload = function () { data = loaddata(); initWheel(); initslider(); updatedata(); }
+   /*
+   function setupDropDown() {
+       $('region').dropdown()
+   }
+   */
 
    function initWheel()   {
    
