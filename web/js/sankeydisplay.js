@@ -145,9 +145,25 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h)
             return d.color = color(d.name.replace(/ .*/, "")); })
         .style("stroke", function(d) { 
             return d3.rgb(d.color).darker(2); })
+        // click node to select country/region
+        .on("click", function(d)
+            {
+                // if country or region update selection and update data
+                var s = data[d.name];
+                if (typeof s != 'undefined' && (s.isregion == 'Y' || s.issubregion == 'Y' || s.iscountry == 'Y'))
+                {
+                    document.getElementById("region").value = d.name;
+                    if (s.iscountry == 'Y')
+                    {
+                        document.getElementById('hierarchy').value = 'region';
+                    }
+                    updatedata();
+                }
+            })
         .append("title")
         .text(function(d) { 
-            return d.name + "\n" + format(d.value); });
+            return d.name + "\n" + format(d.value); })
+    ;
 
     // add in the title for the nodes
     node.append("text")

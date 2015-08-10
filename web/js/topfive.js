@@ -63,16 +63,22 @@ function drawcharts(topfivedata, divid)
 	    .attr("height", hgt)
 	    .attr("width", function(d) { return scale(d.value);})			   
 	    .attr("class","datarect")
-            .on("mouseover", function (d, i) {
-                d3.select(this).attr("fill", "url(#hover_gradient)")
-				.append("title")
-		    .text(function(d) { return d3.format("0,000")(d.value) + ' ' + d.units; });
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this).attr("fill", function () {
-                    return getRectFill(i);
-                });
-            });		
+            .on("click", function(d)
+                {
+                // if country or region update selection and update data
+                var s = data[d.name];
+                if (typeof s != 'undefined' && (s.isregion == 'Y' || s.issubregion == 'Y' || s.iscountry == 'Y'))
+                {
+                    document.getElementById("region").value = d.name;
+                    if (s.iscountry == 'Y')
+                    {
+                        document.getElementById('hierarchy').value = 'region';
+                    }
+                    updatedata();
+                }
+                })
+	    .append("title")
+	    .text(function(d) { return d3.format("0,000")(d.value) + ' ' + d.units; });
 		
 	// Add text labels with bar value
         bar.append("text")
