@@ -148,6 +148,18 @@ function getRelativeCoord(trueIndex, customCenter) {
     }
 }
 
+function getMaxValue(d) {
+	if (d <10000) {
+		return d3.round(d/100+1)*100;
+	} else if (d <100000) {
+		return d3.round(d/1000+0.5)*1000;
+	} else if (d <1000000) {
+		return d3.round(d/10000+0.5)*10000;
+	} else {
+		return d3.round(d/100000+0.5)*100000;
+	}
+}
+
 var ElementReductions = [];
 var hgt = 0;
 var PaddingReductions = [];
@@ -236,7 +248,7 @@ function displaywheel(dataset, years)
     }
 	
     var scale = d3.scale.linear()
-                  .domain([0, d3.max(dataset, function(d) { return d; })])
+                  .domain([0, d3.max(dataset, function(d) { return getMaxValue(d); })])
                   .range([0,w]);
        
     // Erase any pre-existing content
