@@ -3,6 +3,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
     var newColorSchemes = new Array();
 
 
+
     var units = "MkWh";
 	if (valuetype == 'percap') {
 		units = "kWh per capita";
@@ -154,14 +155,18 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
                     return ( n.name == nodeName );
                 });
 
+
                 if (passedColor.length != 0)
                 {
+                    newColor = color(nodeName);
+
                     return passedColor[0].color;
                 }
 
             }
 
             var newColor = color(nodeName);
+
             newColorSchemes.push({
                 name: nodeName,
                 color: newColor
