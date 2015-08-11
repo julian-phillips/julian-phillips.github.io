@@ -22,6 +22,17 @@ function isnumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function getregion(name)
+{
+    var d = data[name];
+    var r = name;
+    if (d.iscountry == 'Y')
+    {
+        r = d.subregion;
+    }
+    return r;
+}
+
 function getunits(valuetype, population)
 {
     // determine the multiplier to use for per capita units

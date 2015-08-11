@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <meta charset="utf-8">
 <title>e2</title>
 <link rel="stylesheet" type="text/css" href="css/d3.slider.css" media="screen" />
@@ -103,9 +103,14 @@
 		  stroke-opacity: .5;
 		  shape-rendering: crispEdges;
 	 }
+         .topfiveintro {
+           font-size: 18px;
+           font-weight: bold;
+         }
 	  
 </style>
 <body>
+  <div class="intro" ></div>
   <div class="options">
     <span>Country/Region 
       <select id="region" onChange="updatedata()" >
@@ -645,8 +650,9 @@
 		  <span class="chart" id="sankeyright" style="float:left;"></span>
 	  </div>
 	  <div class="slider" id="slider" width="auto"></div>
+          <div class="topfiveintro" id="topfiveintro" ></div>
 	  <div class="topfive" id="topfive" ></div>
-	  <div class="bottomfive" id="bottomfive" ></div>
+          <!--  <div class="bottomfive" id="bottomfive" ></div> -->
   </div>  
 
   <script>
@@ -719,6 +725,7 @@
 		 var flowlist = ['Total Production', 'Total Consumption', 'Renewable', 'Nuclear', 'Combustion'];
 		 var topfivedata = gettopfivedata(region, year, valuetype, flowlist, 'desc');
                  drawcharts(topfivedata, "#topfive");
+                 document.getElementById("topfiveintro").innerHTML = 'Top Five countries for selected energy categories in region: ' + getregion(region);
       
                  /*
                  var bottomfivedata = gettopfivedata(region, year, valuetype, flowlist, 'asc');
