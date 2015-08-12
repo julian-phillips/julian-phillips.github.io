@@ -474,7 +474,8 @@ function turnWheel(downward) {
         centerIndex++;
     }
 
-    document.getElementById("year").value = getYearFromIndex(centerIndex);
+    //document.getElementById("year").value = getYearFromIndex(centerIndex);
+    $('#year').selectpicker('val', getYearFromIndex(centerIndex));
 	updateSST();
 
     leftRect.each(function (d, i) {
