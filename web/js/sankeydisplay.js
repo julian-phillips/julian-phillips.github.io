@@ -39,7 +39,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
 			} else {
 				return Math.round(val/1000)*1000;
 			}},
-        format = function(d) { return noDecimals(rounding(d)) + " " + units; },
+        format = function (d) { return twoDecimals((d / divideBy)) + " " + currentUnit; /*return noDecimals(rounding(d)) + " " + units;*/ },
 		formatPercent = function(d) { 
 			if (d < 0.1) {
 				return twoDecimals(d);

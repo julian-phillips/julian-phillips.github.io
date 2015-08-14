@@ -1,3 +1,7 @@
+//used by sankey as well
+var currentUnit = "kWh"; //kilo, Mi
+var divideBy = "1000"; //kilo, Mi
+
 
 // JavaScript source code	
 var leftRect, yArray, heightArray, yearLabels, margin;
@@ -158,7 +162,7 @@ function getMaxValue(d) {
 	} else {
 		return d3.round(d/100000+0.5)*100000;
 	}
-}*/
+}
 
 
 function calculateUnits(d, min) {
@@ -178,7 +182,7 @@ function calculateUnits(d, min) {
     }
 
 }
-
+*/
 
 var ElementReductions = [];
 var hgt = 0;
@@ -199,7 +203,8 @@ function drawwheel(wheeljson, input_width, input_height) // Get data and send it
     containerHeight = input_height;
     displaywheel(dataset, years);
 }
-	 
+	
+/*
 function getUnit(minValue) {
     if ($("#units").val() == "absolute") {
         if (minValue > 10000000) {
@@ -210,48 +215,66 @@ function getUnit(minValue) {
             //then use billion kWh
             return "Billion kWh";
         } else {
-            return "kWh";
+            return "Million kWh";
         }
     } else return "kWh";
-}
+}*/
 
 function displaywheel(dataset, years)
 {
-    var mini = d3.min(dataset);
+    var minValue = d3.min(dataset);
+
+    if ($("#units").val() == "absolute") {
+            if (minValue > 1000000) {
+                //then use trillion kWh
+                currentUnit = "Trillion kWh";
+                divideBy = 1000000
+            }
+            else if (minValue > 1000) {
+                //then use billion kWh
+                currentUnit = "Billion kWh";
+                divideBy = 1000;
+            } else {
+                currentUnit = "Million kWh";
+                divideBy = 1;
+            }
+        
+    } else { //per capita. base unit is kWh
+        if (minValue > 10000000) {
+            //then use trillion kWh
+            currentUnit = "Billion kWh";
+            divideBy = 10000000;
+        }
+        else if (minValue > 1000) {
+            //then use billion kWh
+            currentUnit = "Million kWh";
+            divideBy = 1000;
+
+        } else {
+            currentUnit = "kWh";
+            divideBy = 1;
+        }
+    }
 
 	var noDecimals = d3.format(",.0f"),    // zero decimal places
 		oneDecimals = d3.format(",.1f"),    // zero decimal places
 		twoDecimals = d3.format(",.2f"),    // zero decimal places
-	    rounding = function (val, minValue) {
-	        if (minValue > 1000000) {
-	            //then use trillion kWh
-	            return val / 1000000;
-	        }
-	        else if (minValue > 1000) {
-	            //then use billion kWh
-	            return val / 1000;
-	        } else {
-	            return val;
-	        }
+        format = function (d) { return twoDecimals((d/divideBy)) + " " + currentUnit; };
 
-            /*            
-			if (val < 100) {
-				return val;
-			} else if (val < 100000) {
-				return Math.round(val/10)*10;
-			} else if (val < 1000000) {
-				return Math.round(val/100)*100;
-			} else if (val < 10000000) {
-				return Math.round(val/100)*100;
-			} else if (val < 100000000) {
-				return Math.round(val/100)*100;
-			} else {
-				return Math.round(val/1000)*1000;
-			}*/
+    /*rounding = function (val) {
+                if (minValue > 1000000) {
+                    //then use trillion kWh
+                    return val / 1000000;
+                }
+                else if (minValue > 1000) {
+                    //then use billion kWh
+                    return val / 1000;
+                } else {
+                    return val;
+                }
+    
+            },*/
 
-	    },
-        format = function (d) { return twoDecimals(rounding(d, mini)) + " " + getUnit(mini); };
-	
     //This series of variables creates the array to be used to reduce elements later on.  
 	//Because the number of elements can change how the svg is filled up, the height will vary.  
 	// Algebra used to determine element total which will later feed the hgt variable to make sure the entire svg canvas is filled (except margins of course)
@@ -449,31 +472,18 @@ function displaywheel(dataset, years)
 		 .orient("top")
 		 .ticks(5)
 		 .tickSize(h)
-         .tickFormat(function (d) { return calculateUnits(d, d3.min(dataset)); });
+         .tickFormat(function (d) { return (d/divideBy); });
 
     svg.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(" + margin.left + "," + (5 + h + margin.top) + ")")
 		.call(xAxis);
 
-    var wheelUnits = "kwh";
-    var minValue = d3.min(dataset);
-
-    if (minValue > 10000000) {
-        //then use trillion kWh
-        wheelUnits = "Trillion " + wheelUnits;
-    }
-    else if (minValue > 1000) {
-        //then use billion kWh
-        wheelUnits = "Billion " + wheelUnits;
-    } else {
-        wheelUnits = "Million " + wheelUnits;
-    }
 
     //add title
     svg.append("text")
 		.attr("transform", "translate(150,15)")
-        .text("Total Production ( " + wheelUnits + " )")
+        .text("Total Production ( " + currentUnit + " )")
         .attr("font-size", "14px")
         .attr("text-anchor", "middle")
         .attr("font-family", "Montserrat,sans-serif");
