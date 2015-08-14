@@ -328,22 +328,6 @@ function displaywheel(dataset, years)
 			   return getTextTransform(i);
 		   });
 		
-    //Text Labels for data
-  /*  svg.selectAll("datatext")
-       .data(dataset)
-       .enter()
-       .text(function (d) { return format(d); })
-       .attr("y", 13)
-       .attr("x", w / 2)
-       .attr("font-family", "sans-serif")
-       .attr("font-size", "18px")
-       .attr("fill", "none")
-       .attr("text-anchor", "middle")
-       .attr("id", function (d, i) { return 'datatext' + i; })
-       .attr("class", "datatext")
-    //.attr("transform", "translate(" + margin.left + "," + (margin.top + dataspace)+ ")")
-    //.attr("transform", function(d,i) {return "scale(1.0," + new String(ElementReductions[i]) + ")"});
-*/
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK
 	
@@ -432,6 +416,17 @@ function displaywheel(dataset, years)
 	   .attr("width",w*2)
 	   .attr("fill", "white")
 	   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Bottom-white rectangle to give impression that wheel is disappearing at the bottom
+    svg.append("g")
+	   .append("rect")
+	   .attr("y", 3)
+	   .attr("x", containerWidth-5)
+	   .attr("height", containerHeight*2)
+	   .attr("width", 10)
+	   .attr("fill", "white")
+	   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 	
 
 }
