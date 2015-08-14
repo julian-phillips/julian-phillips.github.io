@@ -13,7 +13,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
 		units = "kWh per capita";
 	}
 
-    var margin = {top: 35, right: 10, bottom: 30, left: 10};
+    var margin = {top: 55, right: 10, bottom: 30, left: 10};
     if (orientation == 'left') {
 		margin.right = 5;
 	} else {

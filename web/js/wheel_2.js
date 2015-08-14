@@ -147,7 +147,7 @@ function getRelativeCoord(trueIndex, customCenter) {
         }
     }
 }
-
+/*
 function getMaxValue(d) {
 	if (d <10000) {
 		return d3.round(d/100+1)*100;
@@ -158,7 +158,27 @@ function getMaxValue(d) {
 	} else {
 		return d3.round(d/100000+0.5)*100000;
 	}
+}*/
+
+
+function calculateUnits(d, min) {
+    
+    if (min > 10000000)
+    {
+        //then use trillion kWh
+        return d / 1000000;
+    }
+    else if (min > 1000) {
+        //then use billion kWh
+        return d / 1000;
+    }      
+    else {                                              
+        //use million kWh
+        return d;
+    }
+
 }
+
 
 var ElementReductions = [];
 var hgt = 0;
@@ -180,19 +200,41 @@ function drawwheel(wheeljson, input_width, input_height) // Get data and send it
     displaywheel(dataset, years);
 }
 	 
-function getUnit() {
-    if ($("#units").val() == "absolute")    
-        return 'MkWh';
-    else return "kWh";
+function getUnit(minValue) {
+    if ($("#units").val() == "absolute") {
+        if (minValue > 10000000) {
+            //then use trillion kWh
+            return "Trillion kWh";
+        }
+        else if (minValue > 1000) {
+            //then use billion kWh
+            return "Billion kWh";
+        } else {
+            return "kWh";
+        }
+    } else return "kWh";
 }
 
 function displaywheel(dataset, years)
-{	
+{
+    var mini = d3.min(dataset);
 
 	var noDecimals = d3.format(",.0f"),    // zero decimal places
 		oneDecimals = d3.format(",.1f"),    // zero decimal places
 		twoDecimals = d3.format(",.2f"),    // zero decimal places
-	    rounding = function(val) { 
+	    rounding = function (val, minValue) {
+	        if (minValue > 1000000) {
+	            //then use trillion kWh
+	            return val / 1000000;
+	        }
+	        else if (minValue > 1000) {
+	            //then use billion kWh
+	            return val / 1000;
+	        } else {
+	            return val;
+	        }
+
+            /*            
 			if (val < 100) {
 				return val;
 			} else if (val < 100000) {
@@ -205,8 +247,10 @@ function displaywheel(dataset, years)
 				return Math.round(val/100)*100;
 			} else {
 				return Math.round(val/1000)*1000;
-			}},
-        format = function(d) { return noDecimals(rounding(d)) + " " + getUnit(); };
+			}*/
+
+	    },
+        format = function (d) { return twoDecimals(rounding(d, mini)) + " " + getUnit(mini); };
 	
     //This series of variables creates the array to be used to reduce elements later on.  
 	//Because the number of elements can change how the svg is filled up, the height will vary.  
@@ -236,7 +280,7 @@ function displaywheel(dataset, years)
        
     //THERE SHOULD BE A WAY TO APPLY TO MARGIN TO ALL SVG ITEMS IN A CANVAS RATHER THAN ONE AT A TIME THE WAY IT IS NOW	
        
-    margin = {top: 15, right: 0, bottom: 15, left: 0},
+    margin = {top: 35, right: 0, bottom: 15, left: 5},
         w = containerWidth - margin.left - margin.right,
         h = containerHeight - margin.top - margin.bottom;
 	var textOffset = {y: 0, x: 10}
@@ -251,10 +295,14 @@ function displaywheel(dataset, years)
         heightArray.push(hgt * ElementReductions[q]);
         yArray.push(Summation(q)); 
     }
-	
     var scale = d3.scale.linear()
-                  .domain([0, d3.max(dataset, function(d) { return getMaxValue(d); })])
-                  .range([0,w]);
+                  .domain([0, d3.max(dataset)])
+                  .range([0, w]);
+
+/*    var scale = d3.scale.linear()
+                  .domain([0, d3.max(dataset, function (d) { return getMaxValue(d); })])
+                  .range([0, w]);*/
+
        
     // Erase any pre-existing content
     d3.select("#wheel").selectAll("*").remove();
@@ -400,13 +448,37 @@ function displaywheel(dataset, years)
 		 .scale(scale)
 		 .orient("top")
 		 .ticks(5)
-		 .tickSize(h);
+		 .tickSize(h)
+         .tickFormat(function (d) { return calculateUnits(d, d3.min(dataset)); });
 
     svg.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(" + margin.left + "," + (5 + h + margin.top) + ")")
 		.call(xAxis);
+
+    var wheelUnits = "kwh";
+    var minValue = d3.min(dataset);
+
+    if (minValue > 10000000) {
+        //then use trillion kWh
+        wheelUnits = "Trillion " + wheelUnits;
+    }
+    else if (minValue > 1000) {
+        //then use billion kWh
+        wheelUnits = "Billion " + wheelUnits;
+    } else {
+        wheelUnits = "Million " + wheelUnits;
+    }
+
+    //add title
+    svg.append("text")
+		.attr("transform", "translate(150,15)")
+        .text("Total Production ( " + wheelUnits + " )")
+        .attr("font-size", "14px")
+        .attr("text-anchor", "middle")
+        .attr("font-family", "Montserrat,sans-serif");
 		
+    //<text transform="translate(150,15)" font-family="Montserrat,sans-serif" font-size="14px" text-anchor="middle" width="">Total Production (Trillion kwh)</text>
     // Bottom-white rectangle to give impression that wheel is disappearing at the bottom
     svg.append("g")
 	   .append("rect")
@@ -417,11 +489,11 @@ function displaywheel(dataset, years)
 	   .attr("fill", "white")
 	   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // Bottom-white rectangle to give impression that wheel is disappearing at the bottom
+    // rect to hide leftmost axis
     svg.append("g")
 	   .append("rect")
 	   .attr("y", 3)
-	   .attr("x", containerWidth-5)
+	   .attr("x", containerWidth-10)
 	   .attr("height", containerHeight*2)
 	   .attr("width", 10)
 	   .attr("fill", "white")
