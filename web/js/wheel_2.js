@@ -459,9 +459,9 @@ function displaywheel(dataset, years)
     // Top-white rectangle to give impression that wheel is disappearing at the top
 	svg.append("g")
 		.append("rect")
-		.attr("y", 0)
+		.attr("y", -35)
 		.attr("x", -3)
-		.attr("height", heightArray[NumElements-1]/2)
+		.attr("height", heightArray[NumElements-1]/2 +35)
 		.attr("width", w * 2)
 		.attr("fill", "white")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");

@@ -72,7 +72,7 @@
         }
 
             .datarect:hover {
-                //fill: green;
+               
                 fill: #bbbbbb;
             }
 
@@ -83,8 +83,7 @@
         #center_elements {
             display: table;
             float: left;
-            //margin-top: 10px;
-            //border: thin solid #707070;
+         
         }
 
         #wheel {
@@ -136,7 +135,6 @@
         .underline {
             text-decoration: underline;
         }
-        
 
        
     </style>
@@ -226,44 +224,62 @@
 				</div>
 			</div>
         </div>
-    </section><hr>
- 
+    </section>
+ <hr />
 	<!-- Section: visualization -->
-	<section id="visual" class="home-section text-center">
+	<section id="visual" class="text-center">
 			<!--<div class="col-lg-8 col-lg-offset-2">
 				<div class="wow bounceInDown" data-wow-delay="0.4s">-->
-          <div class="text-left" >
-            <hr/>
-            <div class="instructions" >
-              The visualization below presents the opportunity to explore the world's electricity production and usage.
-              <ul>
-                <li>The center wheel displays the total electricity for the selected year and geographical region</li>
-                <ul><li>Click on the up or down arrows to select the next or previous year.</li></ul>
-                <li>The diagrams to the left and right of the central wheel display electricity production and consumption, respectively.</li>
-                <ul><li>The flowing gray bars represent proportions of electricity that are associated with the labeled vertical bars.</li></ul>
-                <li>The bar graphs at the bottom show the countries in the selected region that rank highest for various electricity categories.</li>
-              </ul>
-            </div>
-            <div class="instructions" >
-              Use the dropdown boxes to select the following options:
-              <ul>
-                <li>Region: Select a region or subregion, using the United Nations standard nomenclature</li>
-                <li>Year: Select a year of interest. Data is available from 1990 to 2012.</li>
-                <li>Units: Energy values can be displayed in absolute terms, as millions of kilowatt hours (MkWh), or in per capita terms, as kilowatt hours per capita, based on the population of the region or country.</li>
-                <li>Hierarchy: Select whether the diagram displays energy type or geographic region as the top hierarchy. Try both and see which you prefer.</li>
-              </ul>
-              Click on any bar representing a region or a country to drill down deeper.
-              <br/><br/>
-              Use the year slider in the middle of the diagram to animate the display and view trends over time.
-              <br/><br/>
-              Hold your mouse over any element to view the data value that underlies it.
-              <br/>
-              <br/>
-              
-            </div>
-          </div>
+
 		<div class="section-heading">
 			<h2>Visualization</h2>
+            <a class="text-center" id="showHideLink" onclick="showHide()" style="font-size: 18px;">Hide Instructions</a>
+            <script>
+                function showHide() {
+                    if ($("#guide").is(":visible")) {
+                        $("#guide").hide();
+
+                        $("#showHideLink").text("Show Instructions");
+
+                    } else {
+                        $("#guide").show();
+
+                        $("#showHideLink").text("Hide Instructions");
+
+                    }
+                }
+
+            </script>
+            <div id="guide" class="text-left">
+                <div class="instructions">
+                    The visualization below presents the opportunity to explore the world's electricity production and usage.
+                    <ul>
+                        <li>The center wheel displays the total electricity for the selected year and geographical region</li>
+                        <ul><li>Click on the up or down arrows to select the next or previous year.</li></ul>
+                        <li>The diagrams to the left and right of the central wheel display electricity production and consumption, respectively.</li>
+                        <ul><li>The flowing gray bars represent proportions of electricity that are associated with the labeled vertical bars.</li></ul>
+                        <li>The bar graphs at the bottom show the countries in the selected region that rank highest for various electricity categories.</li>
+                    </ul>
+                </div>
+                <div class="instructions">
+                    Use the dropdown boxes to select the following options:
+                    <ul>
+                        <li>Region: Select a region or subregion, using the United Nations standard nomenclature</li>
+                        <li>Year: Select a year of interest. Data is available from 1990 to 2012.</li>
+                        <li>Units: Energy values can be displayed in absolute terms, as millions of kilowatt hours (MkWh), or in per capita terms, as kilowatt hours per capita, based on the population of the region or country.</li>
+                        <li>Hierarchy: Select whether the diagram displays energy type or geographic region as the top hierarchy. Try both and see which you prefer.</li>
+                    </ul>
+                    Click on any bar representing a region or a country to drill down deeper.
+                    <br /><br />
+                    Use the year slider in the middle of the diagram to animate the display and view trends over time.
+                    <br /><br />
+                    Hold your mouse over any element to view the data value that underlies it.
+                    <br />
+                    <br />
+
+                </div>
+            </div>
+            <div style="clear:both"></div>
 			<p>
 				<div class="options">
 					<span>
