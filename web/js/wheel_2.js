@@ -364,7 +364,7 @@ function displaywheel(dataset, years)
             .attr("stroke", "black")
             .on("mouseover", function (d, i) {
                 d3.select(this).attr("fill", "url(#hover_gradient)")
-				.append("title")
+				.append("text")
 			    .text(function(d) { return format(d); });
               //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
                //     .attr("fill", "black");

@@ -196,18 +196,36 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
             })
         .append("title")
         .text(function(d) { 
-            return d.name + "\n" + format(d.value); })
-    ;
+            return d.name + "\n" + format(d.value); });
 
     // add in the title for the nodes
-    node.append("text")
-        .filter(function(d) { return node_notPushout(d); })   // Don't add text if it is a base node
+    textG = node.append("g")
+            .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
+        .attr("y", function (d) { return d.dy / 5; })
+            .attr("transform", null);
+
+
+    textG.append("text")
+        .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("text-anchor", (orientation == 'left') ? "start" : "end")
-        .attr("y", function(d) { return d.dy /5; })
         .attr("dy", ".35em")
-        .attr("transform", null)
-        .text(function (d) { return d.name; });
+        .text(function (d) {
+            if (d.name.toLowerCase().indexOf("imbalance") != -1) {
+                return d.name + " (?)";
+            } else {
+                return d.name;
+            }
+        })
+        .attr("font-family", "Montserrat,sans-serif");
+
+    textG.append("title").text(function(d)  {
+            if (d.name.toLowerCase().indexOf("imbalance") != -1) {
+                return "These numbers didn't match up";
+            } else {
+                return "";
+            }
+        });
 
     return newColorSchemes;
 }
