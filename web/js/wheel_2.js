@@ -5,7 +5,7 @@ var divideBy = "1000"; //kilo, Mi
 
 // JavaScript source code	
 var leftRect, yArray, heightArray, yearLabels, margin;
-var NumElements = 7;
+var NumElements = 9;
 var centerIndex = 0;
 var dataspace = 100;
 
@@ -364,9 +364,12 @@ function displaywheel(dataset, years)
             .attr("stroke", "black")
             .on("mouseover", function (d, i) {
                 d3.select(this).attr("fill", "url(#hover_gradient)")
-				.append("text")
+                //old tooltip on wheel
+				/*.append("text")
 			    .text(function(d) { return format(d); });
-              //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
+                */
+
+                //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
                //     .attr("fill", "black");
             })
             .on("mouseout", function (d, i) {
@@ -389,7 +392,7 @@ function displaywheel(dataset, years)
 		   .data(years)
 		   .enter()			   
 		   .append("text")			   
-		   .text(function(d) { return d;})
+		   .text(function(d,i) { return format(dataset[i]) + " in " +  d;})
 		   .attr("y", function (d, i) { return getTextY(i); })
 		   .attr("x", textOffset.x)
 		   .attr("font-size", "14px")
@@ -398,6 +401,8 @@ function displaywheel(dataset, years)
 		   .attr("transform", function (d, i) {
 			   return getTextTransform(i);
 		   });
+
+
 		
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK
