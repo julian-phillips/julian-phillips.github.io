@@ -80,11 +80,11 @@
             font: 18px sans-serif;
         }
 
-        #center_elements {
+        /*#center_elements {
             display: table;
-            float: left;
+           
          
-        }
+        }*/
 
         #wheel {
             border: thin solid #A8A8A8;
@@ -136,7 +136,9 @@
             text-decoration: underline;
         }
 
-       
+        .inlineBlock {
+            display:inline-block;
+        }
     </style>
 	
 </head>
@@ -816,20 +818,20 @@
 
 				<div>
                     <div class="chart">
-                        <span style="float:left;width:500px" class="underline"><h3>Production</h3></span>
-                        <span style="float: left; width: 400px" class="underline"><h3>Total</h3></span>
-                        <span class="underline">
+                        <span style="padding-right:200px" class="underline inlineBlock"><h3>Production</h3></span>
+                        <span style="padding-right: 200px" class="underline inlineBlock"><h3>Total</h3></span>
+                        <span class="underline inlineBlock">
                             <h3>Consumption</h3>
                         </span>
                     </div>
 					<div class="chart">
-						<span class="chart" id="sankeyleft" style="float:left;"></span>
-						<span class="chart" id="center_elements">
-							<div><button class="up-down" onclick="turnWheel(true);">&#9650</button></div>
-							<div id="wheel"></div>
-							<div><button class="up-down" onclick="turnWheel(false);">&#9660</button></div>
-						</span>
-						<span class="chart" id="sankeyright" style="float:left;"></span>
+                        <span class="chart inlineBlock" id="sankeyleft"></span>
+                        <span class="chart inlineBlock" id="center_elements">
+                            <div><button class="up-down" onclick="turnWheel(true);">&#9650</button></div>
+                            <div id="wheel"></div>
+                            <div><button class="up-down" onclick="turnWheel(false);">&#9660</button></div>
+                        </span>
+                        <span class="chart inlineBlock" id="sankeyright"></span>
 					</div>
 					<div class="slider" id="slider" width="auto"></div>
 					<div class="topfiveintro" id="topfiveintro"></div>

@@ -200,7 +200,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
     ;
 
     // add in the title for the nodes
-    node.append("text")
+   node.append("text")
         .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
         .attr("text-anchor", (orientation == 'left') ? "start" : "end")
@@ -222,37 +222,36 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
                 return "";
             }
         });
+            
+    //    textG = node.append("a")
+    //        .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
+    //    .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
+    //    .attr("y", function (d) { return d.dy / 5; })
+    //        .attr("transform", null);
 
-    /*
-        textG = node.append("g")
-            .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
-        .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
-        .attr("y", function (d) { return d.dy / 5; })
-            .attr("transform", null);
 
+    //textG.append("text")
+    //    .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
+    //    .attr("text-anchor", (orientation == 'left') ? "start" : "end")
+    //    .attr("dy", ".35em")
+    //    .text(function (d) {
+    //        if (d.name.toLowerCase().indexOf("imbalance") != -1) {
+    //            return d.name + " (?)";
+    //        } else {
+    //            return d.name;
+    //        }
+    //    })
+    //    .attr("font-family", "Montserrat,sans-serif");
 
-    textG.append("text")
-        .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
-        .attr("text-anchor", (orientation == 'left') ? "start" : "end")
-        .attr("dy", ".35em")
-        .text(function (d) {
-            if (d.name.toLowerCase().indexOf("imbalance") != -1) {
-                return d.name + " (?)";
-            } else {
-                return d.name;
-            }
-        })
-        .attr("font-family", "Montserrat,sans-serif");
+    //textG.append("title").text(function(d)  {
+    //        if (d.name.toLowerCase().indexOf("imbalance") != -1) {
+    //            return "These numbers didn't match up";
+    //        } else {
+    //            return "";
+    //        }
+    //    });
 
-    textG.append("title").text(function(d)  {
-            if (d.name.toLowerCase().indexOf("imbalance") != -1) {
-                return "These numbers didn't match up";
-            } else {
-                return "";
-            }
-        });
-
-    */
+    
 
     return newColorSchemes;
 }
