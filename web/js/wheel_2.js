@@ -373,6 +373,13 @@ function displaywheel(dataset, years)
                 //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
                //     .attr("fill", "black");
             })
+            .on("click", function (d, i) {
+
+                $('#year').selectpicker('val', years[i]);
+                updatedata(true);
+                
+                        
+            })
             .on("mouseout", function (d, i) {
                 d3.select(this).attr("fill", function () {
                     return getRectFill(i);

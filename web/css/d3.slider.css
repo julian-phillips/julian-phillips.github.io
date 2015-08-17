@@ -10,8 +10,8 @@
 }
 
 .d3slider-rect-value {
-  /* fill: #006EE3; */
-  fill: #777;
+  fill: #006EE3; 
+  /*fill: #777;*/
   stroke: none;
 }
 

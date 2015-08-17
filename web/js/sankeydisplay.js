@@ -187,10 +187,13 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
                 var s = data[d.name];
                 if (typeof s != 'undefined' && (s.isregion == 'Y' || s.issubregion == 'Y' || s.iscountry == 'Y'))
                 {
+                    $('#region').selectpicker('val', d.name);
+
                     document.getElementById("region").value = d.name;
                     if (s.iscountry == 'Y')
                     {
-                        document.getElementById('hierarchy').value = 'region';
+                        //document.getElementById('hierarchy').value = 'region';
+                        $('#hierarchy').selectpicker('val', 'region');
                     }
                     updatedata();
                 }
