@@ -53,7 +53,8 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
     var svg = d3.select(elementid).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .append("g")
+        .attr("class", "paddingTop10")
+        .append("g")      
         .attr("transform", 
               "translate(" + margin.left + "," + margin.top + ")");
 
@@ -199,8 +200,16 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
             return d.name + "\n" + format(d.value); })
     ;
 
+    var node2 = svg.append("g").selectAll(".node")
+        .data(graph.nodes)
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function (d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        });
+
     // add in the title for the nodes
-   node.append("text")
+   node2.append("text")
         .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
         .attr("text-anchor", (orientation == 'left') ? "start" : "end")
@@ -213,6 +222,23 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
             } else {
                 return d.name;
             }
+        })
+        .on("mouseover", function (d) {
+            var foo = "foo";
+            /*
+            //Get this bar's x/y values, then augment for the tooltip
+            var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
+            var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
+              
+            //Update the tooltip position and value
+            d3.select("#tooltip")
+              .style("left", xPosition + "px")
+              .style("top", yPosition + "px")
+              .select("#value")
+              .text(d);
+              
+            //Show the tooltip
+            d3.select("#tooltip").classed("hidden", false); */             
         })
         .attr("font-family", "Montserrat,sans-serif")
         .append("title").text(function(d)  {
