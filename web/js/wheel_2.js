@@ -408,7 +408,12 @@ function displaywheel(dataset, years)
 		   .attr("text-anchor", "left")
 		   .attr("transform", function (d, i) {
 			   return getTextTransform(i);
-		   });
+		   })
+                .on("click", function (d, i) {
+                $('#year').selectpicker('val', d);
+                updatedata(true);
+                        
+            });
 	
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK

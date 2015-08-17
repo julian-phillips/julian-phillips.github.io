@@ -182,7 +182,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, direction
         nodes.push(new SankeyNode(nodes.length, flow));
         links.push(new SankeyLink(flow, 'PushOut' + (i + 1).toString(), name, flow));
     }
-    if (hierarchy == 'energy' || subregions.length == 0)
+    if (hierarchy == 'region' || subregions.length == 0)
     {
         for (var i = 0; i < flowtypes.length; i++)
         {
@@ -219,7 +219,7 @@ function getsankeydata(name, selectedyear, valuetype, flow, hierarchy, direction
             nodes.push(new SankeyNode(nodes.length, subregions[i]));
         }
     }
-    else // hierarchy equals 'region'
+    else // hierarchy equals 'energy'
     {
         for (var i = 0; i < flowtypes.length; i++)
         {

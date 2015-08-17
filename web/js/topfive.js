@@ -70,10 +70,12 @@ function drawcharts(topfivedata, divid)
                 if (typeof s != 'undefined' && (s.isregion == 'Y' || s.issubregion == 'Y' || s.iscountry == 'Y'))
                 {
                     document.getElementById("region").value = d.name;
+/*
                     if (s.iscountry == 'Y')
                     {
                         document.getElementById('hierarchy').value = 'region';
                     }
+*/
                     updatedata();
                 }
                 })

@@ -190,11 +190,13 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
                     $('#region').selectpicker('val', d.name);
 
                     document.getElementById("region").value = d.name;
+/*
                     if (s.iscountry == 'Y')
                     {
                         //document.getElementById('hierarchy').value = 'region';
                         $('#hierarchy').selectpicker('val', 'region');
                     }
+*/
                     updatedata();
                 }
             })
