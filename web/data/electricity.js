@@ -131,8 +131,8 @@ function getyearlist(selectedyear, adjoining)
     //var padding = 3 // number of extra years to facilitate wheel widget
     //var start = minyear - padding;
     //var end = maxyear + padding;
-    var start = minyear;
-    var end = maxyear;
+    //var start = minyear;
+    //var end = maxyear;
     if (adjoining >= 0)
     {
         // start = Math.max(selectedyear - adjoining, minyear);
@@ -140,7 +140,8 @@ function getyearlist(selectedyear, adjoining)
         start = selectedyear - adjoining;
         end =   selectedyear + adjoining;
     }
-    for (var i = start; i <= end; i++)
+    //for (var i = maxyear; i >= minyear; i--)
+	for (var i = minyear; i <= maxyear; i++)
     {
         yearlist.push(String(i));
     }

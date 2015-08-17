@@ -5,15 +5,15 @@ function drawcharts(topfivedata, divid)
         format = function(d) { return noDecimals(rounding(d)) ; }; //+ "GkWh"
 	
 	
-    var titlepadding = 45,
+    var titlepadding = 65,
 	    bottompadding = 5;
 	var chartpadding = 10; //space between boxes of each top-5 category
 	var barPadding = {y:20, x:20}; //y: vertical space between graph bars, x: offset from main box
 	
 	var width = 1400,
-	    height = 350;
+	    height = 370;
 	// Margins for all bar-charts
-    var margin = {top:20, right: 20, bottom: 20, left: 20};
+    var margin = {top:0, right: 20, bottom: 20, left: 20};
     var w = width - margin.left - margin.right;
     var h = height - margin.top - margin.bottom - titlepadding - bottompadding;
 	
@@ -117,7 +117,8 @@ function drawcharts(topfivedata, divid)
 	//    .attr("text-anchor","middle");
 		.attr("x", margin.left + barPadding.x + (ndx * (wid + chartpadding))) // Align at the Left
 	    .attr("text-anchor","left");
-        
+		
+		
         
     // Border that surrounds each top-5 chart
     var outline = svg.append("rect")			   

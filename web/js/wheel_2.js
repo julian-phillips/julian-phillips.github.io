@@ -1,7 +1,7 @@
 //used by sankey as well
 var currentUnit = "kWh"; //kilo, Mi
+var shortUnit = "kWh"; //kilo, Mi
 var divideBy = "1000"; //kilo, Mi
-
 
 // JavaScript source code	
 var leftRect, yArray, heightArray, yearLabels, margin;
@@ -14,7 +14,8 @@ var bar_color = "lightgrey",
 	mask_color = "rgb(20,20,20)",
 	hover_bar_color = "#ffa556",
 	hover_mask_color = "#e5944d";
-	
+
+
 	
 //////////////////////////////////////////////////////////////////////////////////////		 
 // HELP FUNCTIONS
@@ -84,7 +85,7 @@ function GeneratePaddingList(m) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
-     
+    
 function setCenterIndex(year) {
     centerIndex = year - minyear;
 }
@@ -124,21 +125,6 @@ function getTextTransform(i) {
 
 }
 
-function getStrokeWidth(i){
-    if (i == centerIndex) {
-        return 2;
-    }
-    return 0;
-}
-
-function getRectFill(i) {
-    if (i == centerIndex) {
-        return center_bar_color;
-    }
-    return "url(#graygradient)";
-
-}
-
 function getRelativeCoord(trueIndex, customCenter) {
     if (typeof customCenter == "undefined") {
         customCenter = centerIndex;
@@ -151,7 +137,7 @@ function getRelativeCoord(trueIndex, customCenter) {
         }
     }
 }
-/*
+
 function getMaxValue(d) {
 	if (d <10000) {
 		return d3.round(d/100+1)*100;
@@ -164,7 +150,17 @@ function getMaxValue(d) {
 	}
 }
 
+function getStrokeWidth(i){
+    if (i == centerIndex) { return 1; }
+    return 0;
+}
 
+function getRectFill(i) {
+    if (i == centerIndex) { return center_bar_color;   }
+    return "url(#graygradient)";
+}
+
+/*
 function calculateUnits(d, min) {
     
     if (min > 10000000)
@@ -228,14 +224,17 @@ function displaywheel(dataset, years)
             if (minValue > 1000000) {
                 //then use trillion kWh
                 currentUnit = "Trillion kWh";
+				shortUnit = "TkWh";
                 divideBy = 1000000
             }
             else if (minValue > 1000) {
                 //then use billion kWh
                 currentUnit = "Billion kWh";
+				shortUnit = "GkWh";
                 divideBy = 1000;
             } else {
                 currentUnit = "Million kWh";
+				shortUnit = "MkWh";
                 divideBy = 1;
             }
         
@@ -243,15 +242,18 @@ function displaywheel(dataset, years)
         if (minValue > 10000000) {
             //then use trillion kWh
             currentUnit = "Billion kWh";
+			shortUnit = "GkWh";
             divideBy = 10000000;
         }
         else if (minValue > 1000) {
             //then use billion kWh
             currentUnit = "Million kWh";
+			shortUnit = "MkWh";
             divideBy = 1000;
 
         } else {
             currentUnit = "kWh";
+			shortUnit = "kWh";
             divideBy = 1;
         }
     }
@@ -259,7 +261,7 @@ function displaywheel(dataset, years)
 	var noDecimals = d3.format(",.0f"),    // zero decimal places
 		oneDecimals = d3.format(",.1f"),    // zero decimal places
 		twoDecimals = d3.format(",.2f"),    // zero decimal places
-        format = function (d) { return twoDecimals((d/divideBy)) + " " + currentUnit; };
+        format = function (d) { return twoDecimals((d/divideBy)) + " " + shortUnit; };
 
     /*rounding = function (val) {
                 if (minValue > 1000000) {
@@ -303,8 +305,8 @@ function displaywheel(dataset, years)
        
     //THERE SHOULD BE A WAY TO APPLY TO MARGIN TO ALL SVG ITEMS IN A CANVAS RATHER THAN ONE AT A TIME THE WAY IT IS NOW	
        
-    margin = {top: 35, right: 0, bottom: 15, left: 5},
-        w = containerWidth - margin.left - margin.right,
+    margin = {top: 35, right: 3, bottom: 15, left: 3},
+        w = containerWidth - margin.left - margin.right - 10,
         h = containerHeight - margin.top - margin.bottom;
 	var textOffset = {y: 0, x: 10}
 	
@@ -318,13 +320,13 @@ function displaywheel(dataset, years)
         heightArray.push(hgt * ElementReductions[q]);
         yArray.push(Summation(q)); 
     }
-    var scale = d3.scale.linear()
+/*    var scale = d3.scale.linear()
                   .domain([0, d3.max(dataset)])
                   .range([0, w]);
-
-/*    var scale = d3.scale.linear()
+*/
+    var scale = d3.scale.linear()
                   .domain([0, d3.max(dataset, function (d) { return getMaxValue(d); })])
-                  .range([0, w]);*/
+                  .range([0, w]);
 
        
     // Erase any pre-existing content
@@ -368,7 +370,6 @@ function displaywheel(dataset, years)
 				/*.append("text")
 			    .text(function(d) { return format(d); });
                 */
-
                 //  d3.selectAll("#datatext" + i)//.selectAll("text").filter("class","yeartext")
                //     .attr("fill", "black");
             })
@@ -392,18 +393,16 @@ function displaywheel(dataset, years)
 		   .data(years)
 		   .enter()			   
 		   .append("text")			   
-		   .text(function(d,i) { return format(dataset[i]) + " in " +  d;})
-		   .attr("y", function (d, i) { return getTextY(i); })
+		   .text(function(d,i) { return format(dataset[i]) + " in " +  d ; })
+		   .attr("y", function (d, i) { return getTextY(i)+2; })
 		   .attr("x", textOffset.x)
 		   .attr("font-size", "14px")
-		   .style("font-weight", "bold") 
+		   // .style("font-weight", "bold") 
 		   .attr("text-anchor", "left")
 		   .attr("transform", function (d, i) {
 			   return getTextTransform(i);
 		   });
-
-
-		
+	
     //////////////////////////////////////////////////////////////////////////////////////
     // GRADIENT AND MASK
 	
@@ -467,44 +466,47 @@ function displaywheel(dataset, years)
 		.attr("y", -35)
 		.attr("x", -3)
 		.attr("height", heightArray[NumElements-1]/2 +35)
-		.attr("width", w * 2)
+		.attr("width", w)
 		.attr("fill", "white")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-	// Add Axis	- Place on top of top-white box
-	var xAxis = d3.svg.axis()
-		 .scale(scale)
-		 .orient("top")
-		 .ticks(5)
-		 .tickSize(h)
-         .tickFormat(function (d) { return (d/divideBy); });
-
-    svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(" + margin.left + "," + (5 + h + margin.top) + ")")
-		.call(xAxis);
-
-
-    //add title
-    svg.append("text")
-		.attr("transform", "translate(150,15)")
-        .text("Total Production ( " + currentUnit + " )")
-        .attr("font-size", "14px")
-        .attr("text-anchor", "middle")
-        .attr("font-family", "Montserrat,sans-serif");
-		
-    //<text transform="translate(150,15)" font-family="Montserrat,sans-serif" font-size="14px" text-anchor="middle" width="">Total Production (Trillion kwh)</text>
+    
+	//<text transform="translate(150,15)" font-family="Montserrat,sans-serif" font-size="14px" text-anchor="middle" width="">Total Production (Trillion kwh)</text>
     // Bottom-white rectangle to give impression that wheel is disappearing at the bottom
     svg.append("g")
 	   .append("rect")
 	   .attr("y", (heightArray[NumElements - 1] / 2) + yArray[NumElements - 1])
 	   .attr("x", -3)
-	   .attr("height", 75)
-	   .attr("width",w*2)
+	   .attr("height", heightArray[NumElements-1]/2 +35)
+	   .attr("width",w)
 	   .attr("fill", "white")
 	   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	// Add Axis	- Place on top of top-white box
+	var xAxis = d3.svg.axis()
+		 .scale(scale)
+		 .orient("bottom")
+		 .ticks(5)
+		 .tickSize(h-2)
+         .tickFormat(function (d) { return (d/divideBy); });
 
-    // rect to hide leftmost axis
+    svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(" + margin.left + "," + ( margin.top) + ")")
+		.call(xAxis);
+	
+
+
+    //add title
+    svg.append("text")
+		.attr("transform", "translate(150,25)")
+        .text("Yearly Electricity ( " + currentUnit + " )")
+        .attr("font-size", "14px")
+        .attr("text-anchor", "middle")
+        .attr("font-family", "Montserrat,sans-serif");
+		
+
+
+    /*/ rect to hide leftmost axis
     svg.append("g")
 	   .append("rect")
 	   .attr("y", 3)
@@ -513,6 +515,7 @@ function displaywheel(dataset, years)
 	   .attr("width", 10)
 	   .attr("fill", "white")
 	   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	   */
 
 	
 
