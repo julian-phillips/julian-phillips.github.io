@@ -221,6 +221,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
         .attr("y", function (d) { return d.dy / 5; })
         .attr("dy", ".35em")
         .attr("transform", null)
+        .style("pointer-events", "auto")
         .text(function (d) {
             if (d.name.toLowerCase().indexOf("imbalance") != -1) {
                 return d.name + " (?)";
@@ -228,27 +229,10 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
                 return d.name;
             }
         })
-        .on("mouseover", function (d) {
-            var foo = "foo";
-            /*
-            //Get this bar's x/y values, then augment for the tooltip
-            var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-            var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
-              
-            //Update the tooltip position and value
-            d3.select("#tooltip")
-              .style("left", xPosition + "px")
-              .style("top", yPosition + "px")
-              .select("#value")
-              .text(d);
-              
-            //Show the tooltip
-            d3.select("#tooltip").classed("hidden", false); */             
-        })
         .attr("font-family", "Montserrat,sans-serif")
         .append("title").text(function(d)  {
             if (d.name.toLowerCase().indexOf("imbalance") != -1) {
-                return "These numbers didn't match up";
+                return "Since data are self-reported by each country,  consumption total and production total were sometimes unequal. Production/Consumption Imbalance indicates the gap between those numbers.";
             } else {
                 return "";
             }
