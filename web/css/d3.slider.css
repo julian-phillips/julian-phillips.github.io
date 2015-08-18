@@ -5,12 +5,12 @@
 }
 
 .d3slider-rect-range {
-  fill: #777;
+  fill: rgba(119, 119, 119, 0.2);
   stroke: none;
 }
 
 .d3slider-rect-value {
-  fill: #006EE3; 
+  fill: rgba(25, 124, 229, 0.6); 
   /*fill: #777;*/
   stroke: none;
 }
