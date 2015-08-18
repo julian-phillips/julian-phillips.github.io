@@ -290,8 +290,6 @@
 				<p>The following options are provided via dropdown menus:
 					<br> &#9654 Region:  UN standard regions and subregions available
 					<br> &#9654 Year:  Focus year ranging from 1990 to 2012
-					<br> &#9654 Units:  Display electricity in terms of absolute values (kilowatt hours - kWh) or per capita values (kWh per capita). 
-					For per capita values, the population is the population for the region, sub-region, or country being displayed.
 					<br> &#9654 Outermost Category:  Select which category to show in the outermost level of the flow diagrams. 
 					Change the category to see how the proportions vary within an element.
 				</p>
@@ -306,7 +304,7 @@
 		<div class="container text-left" style="padding-bottom: 30px; padding-top: 25px;">
 		 
 		 <div class="options row">
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 			<span>
 				<span class="selectTitle inlineBlock" >Region</span><br>
 				<select id="region" onchange="updatedata()" class="selectpicker">
@@ -792,7 +790,7 @@
 				</select>
 			</span>
 			</div>
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 			<span>
 				<span class="selectTitle inlineBlock" >Year</span><br>
 				<select name="year" id="year" onchange="updatedata(true)" class="selectpicker">
@@ -824,16 +822,16 @@
 			<br>
 			</span>
 			</div>
-			<div class="col-lg-3">
+			<!--<div class="col-lg-3">
 			<span>
 				<span class="selectTitle inlineBlock" >Units</span><br>
 				<select id="units" onchange="updatedata()" class="selectpicker">
 					<option value="absolute" selected="selected">Absolute</option>
 					<option value="percap">Per Capita</option>
-				</select>
+				</select> 
 			</span>
-			</div>
-			<div class="col-lg-3">
+			</div>-->
+			<div class="col-lg-4">
 			<span>
 				<span class="selectTitle inlineBlock" >Outermost Category</span><br>
 				<select id="hierarchy" onchange="updatedata()" class="selectpicker">
@@ -1082,7 +1080,7 @@
 
             var region = document.getElementById("region").value;
             var year = document.getElementById("year").value;
-            var valuetype = document.getElementById("units").value;
+            var valuetype = "absolute";
 
             setCenterIndex(year);
             var wheeldata = getwheeldata(region, year, valuetype, -1);
@@ -1092,7 +1090,7 @@
         function updatedata(turn) {
             var region = document.getElementById("region").value;
             var year = document.getElementById("year").value;
-            var valuetype = document.getElementById("units").value;
+            var valuetype = "absolute";
             var hierarchy = document.getElementById("hierarchy").value;
 
             // Update Wheel
@@ -1114,7 +1112,7 @@
             // Update Sankey, Slider, and Top-5
             var region = document.getElementById("region").value;
             var year = document.getElementById("year").value;
-            var valuetype = document.getElementById("units").value;
+            var valuetype = "absolute";
             var hierarchy = document.getElementById("hierarchy").value;
 
             // Update left Sankey (Production)
