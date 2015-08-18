@@ -1,4 +1,4 @@
-//user same color scale for both sankeys so we won't have overlap
+//use same color scale for both sankeys so we won't have overlap
 var color = d3.scale.category20();
 
 
@@ -152,21 +152,16 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
         .style("fill", function (d)
         {
             nodeName = d.name; //.replace(/ .*/, "");
-
             if (typeof passedColorSchemes != "undefined")
             {
                 var passedColor = $.grep(passedColorSchemes, function (n, i) {
                     return ( n.name == nodeName );
                 });
-
-
                 if (passedColor.length != 0)
                 {
                     newColor = color(nodeName);
-
                     return passedColor[0].color;
                 }
-
             }
 
             var newColor = color(nodeName);
@@ -205,16 +200,9 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
             return d.name + "\n" + format(d.value); })
     ;
 
-    var node2 = svg.append("g").selectAll(".node")
-        .data(graph.nodes)
-        .enter().append("g")
-        .attr("class", "node")
-        .attr("transform", function (d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
 
     // add in the title for the nodes
-   node2.append("text")
+   node.append("text")
         .filter(function (d) { return node_notPushout(d); })   // Don't add text if it is a base node
         .attr("x", (orientation == 'left') ? 6 + sankey.nodeWidth() : -6)
         .attr("text-anchor", (orientation == 'left') ? "start" : "end")
@@ -232,7 +220,7 @@ function displaysankey(graph, elementid, orientation, valuetype, w, h, passedCol
         .attr("font-family", "Montserrat,sans-serif")
         .append("title").text(function(d)  {
             if (d.name.toLowerCase().indexOf("imbalance") != -1) {
-                return "Since data are self-reported by each country,  consumption total and production total were sometimes unequal. Production/Consumption Imbalance indicates the gap between those numbers.";
+                return "Indicates the gap between \nproduction and consumption. \nIt is usually small and could be\n an error in reporting or measurement.";
             } else {
                 return "";
             }

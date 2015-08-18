@@ -245,52 +245,44 @@
 	<section id="intro" class="home-section text-center">
 		<div class="container">
 			<div class="row">
-				<h3 class="text-center" > Electricity production from renewable energy is reaching record highs, <br>but what portion of total production does it represent? </h3>
-				<p style="font-size: 18px; "> While electricity is undoubtedly essential for a modern society, few people actually think about its production or consumption.  This visualization allows the exploration of those trends over time along with the methods used to produce the energy and how the energy is being consumed broken down by different geographic entities.  
+				<h3 class="text-center" > Electricity production from renewable resources is gaining momentum, 
+				<br>but what portion of total production does it currently represent? </h3>
+				<p style="font-size: 18px; "> While electricity is undoubtedly essential for any modern society, 
+				few people actually think about its production or consumption. This visualization provides a 
+				way to explore the trends in electricity over time. The data can be broken down by geographic regions,
+				and be seen along with the methods used to produce it and the entities consuming it.  
 				  </p>
 				<br>
             </div>  
 		</div>
-            
-		<script>
-		//<a class="text-center" id="showHideLink" onclick="showHide()" style="font-size: 18px;">Hide Instructions</a>
-			function showHide() {
-				if ($("#guide").is(":visible")) {
-					$("#guide").hide();
-
-					$("#showHideLink").text("Show Instructions");
-
-				} else {
-					$("#guide").show();
-
-					$("#showHideLink").text("Hide Instructions");
-				}
-			}
-		</script>
 		
 		<!-- intro text and code -->		
 		<div id="guide" class="container text-left">
 			<div class="row instructions text-to-columns">
-				<p>The visualization below presents the opportunity to explore the world's electricity production and usage.
-				The visualization has four main components: one wheel, two flow diagrams, and a top five ranking area.</p>
-					<p> <b>Wheel</b> &#8212 Located at the center, the wheel shows the electric production and consumption for a given region. For the selected year, the  
-					four years before and after the are also displayed to show the trend around the year selected. Years can be navigated by using the up and down arrows or the year slider underneath the wheel and flow diagrams.</p>
+				<p>The visualization below presents the opportunity to explore the world's production and usage of electricity. 
+				The visualization has four main components: one wheel, two flow diagrams, and a ranking area.</p>
+					<p> <b>Wheel</b> &#8212 Located at the center, the wheel shows the electricity production and consumption for a given region.
+					To show the trend around the year selected, electricity for the years before and after are also displayed. Years can be 
+					navigated by using the up and down arrows or the year slider underneath the wheel and flow diagrams.
+					</p>
 					
-					<p> <b>Flow Diagrams</b> &#8212 The flow diagrams show the elements that constitute the production and consumption for the selected year.
-					The production elements are located at the left of the wheel, while the consumption elements are at the right of the wheel.
-					Countries were grouped according to the <a href="http://millenniumindicators.un.org/unsd/methods/m49/m49regin.htm">United Nations regional groups</a>. 
-					Energy classes were taken from the categories present in the data. For the production side, the energy classes describe the process by which the energy is produced
-					(for example, hydroelectric, nuclear, or combustion forms of generation). Similarly, for the consumption side, the energy classes describe how the electricity 
-					is consumed (for example, by households or service providers).</p>
-					<p> Each element is represented with a colored, vertical bar. The associations between elements that compose another element are shown with gray, connecting flows.</p>
+					<p> <b>Flow Diagrams</b> &#8212 The flow diagrams show the elements that constitute the production and consumption for the selected year. The production elements are 
+					located to the left of the wheel, while the consumption elements are to the right of the wheel. Countries were grouped according to 
+					the <a href="http://millenniumindicators.un.org/unsd/methods/m49/m49regin.htm">United Nations</a> regional groups. 
+					Energy classes were taken from the categories present in the data. For the production side, the energy classes describe 
+					the process by which electricity is produced (for example, hydroelectric, nuclear, or combustion forms of generation). Similarly, 
+					for the consumption side, the energy classes describe how the electricity is consumed (for example, by households or service providers).
+					Each element is represented with a colored, vertical bar. The associations between elements that compose another element are shown with gray, connecting flows.
+					</p>
 					
-					<p><b>Top-5 Ranking</b> &#8212 Located at the bottom, the ranking area shows the top-5 countries ranked according to total consumption, total production, and production 
-					by renewable processes, nuclear process, and combustion processes for the region selected. </p>
+					<p><b>Top-5 Ranking</b> &#8212 Located at the bottom, the ranking area shows the top-5 countries 
+					ranked according to total consumption, total production, and production by renewable processes, nuclear process, and combustion processes for the region selected.
+					</p>
 				
-				<p>The following options are provided via dropdown menus:
+				 <p>The following options are provided via dropdown menus:<br>
 					<br> &#9654 Region:  UN standard regions and subregions available
 					<br> &#9654 Year:  Focus year ranging from 1990 to 2012
-					<br> &#9654 Outermost Category:  Select which category to show in the outermost level of the flow diagrams. 
+					<br> &#9654 Outermost Category:  Category to show on the outermost level of the flow diagrams. 
 					Change the category to see how the proportions vary within an element.
 				</p>
 			</div>
@@ -890,18 +882,17 @@
 			<hr><h4>About This Visualization</h4>
 			<div class="row instructions text-to-columns text-left">
 
-				<p>This visualization is the final project submission for the class 'Data Visualization and Communication' of the MIDS program. 
+				<p>This visualization is the final project submission for the class 'Data Visualization and Communication' of the MIDS program.
 				</p>
 				<p>In this section, we describe in more detail how this visualization was made.</p>
 				
-				<p> <b>Data</b> &#8212 The data comes from the United Nations Annual Questionnaire on Energy Statistics. The country-specific data covers statistics on production, 
-				conversion and consumption of energy resources and products.
-				<br>Since our project focused on Electricity, we had to manually examine which fields were specifically related 
-				to electricity. With the relevant fields identified, we then organized and cleaned the data. The final dataset was stored as a 
-				JSON file to facilitate querying and communicating with the visualization. We used R and Python scripts to perform all the data cleaning tasks.
-				
-				</p><p>The data was downloaded on July of 2015 from the <a href="http://data.un.org/Explorer.aspx">UN Data Explorer</a> 
-				application.
+				<p> <b>Data</b> &#8212 he data comes from the United Nations Annual Questionnaire on Energy Statistics. The country-specific 
+				data covers statistics on production, conversion and consumption of energy resources and products.
+				<br>Since our project focused on Electricity, we had to manually examine which fields were specifically related to electricity. 
+				With the relevant fields identified, we then organized and cleaned the data. The final dataset was stored as a JSON file to 
+				facilitate querying and communicating with the visualization. We used R and Python scripts to perform all the data cleaning tasks.
+				</p>
+				<p>The data was downloaded on July of 2015 from the <a href="http://data.un.org/Explorer.aspx">UN Data Explorer</a> application.
 				</p>
 				
 				<p> <b>Design</b> &#8212 To come up with a design, we decided to worked separately on initial ideas so that each person's creative process would remain unbiased. 
@@ -909,12 +900,11 @@
 				we decided to implement the 'sankey design' because it was a good representation of the data, it was different from what we had seen before, and 
 				it had interesting interactivity associated with it.</p>
 				
-				<p><b>Implementation</b> &#8212 Like most visualization and website projects, we used a broad set of tools, including HTML, CSS, Javascript, JQuery, Bootstrap, and D3.js. 
-				We relied on GitHub to share and track our code, and also to host our site. 
+				<p><b>Implementation</b> &#8212 Like most visualization and website projects, we used a broad set of tools, including HTML, CSS, Javascript, JQuery, 
+				Bootstrap, and D3.js. We relied on GitHub to share and track our code, and also to host our site.
 				</p><p>Collaboration was a key factor in our success as a team. Each one of us developed sections of the code corresponding to different components of the visualization. 
 				Constant communication allowed one person to adjust the data queries to ease and assist the visual work done by the rest of the group. When the separate components were complete, 
 				we worked on bringing them together, making them work as one, adding interactivity, and raising issues or errors that required fixing. 
-				
 				</p>
 			</div>
 		</div>
